@@ -22,9 +22,13 @@ namespace ETModel
             float moveSpeed = numericComponent.GetAsFloat(NumericType.Speed);
 
             Vector3 moveDelta =  (input_Move.moveDir.normalized) * moveSpeed * EventSystem.FixedUpdateTime;
+            moveDelta.x = (float)Math.Round((double)moveDelta.x, 3);
+            moveDelta.y = (float)Math.Round((double)moveDelta.y, 3);
+            moveDelta.z = (float)Math.Round((double)moveDelta.z, 3);
 
-            CommandResult_Move result_Move = new CommandResult_Move();
+            CommandResult_Move result_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
             result_Move.postion = moveDelta + property_Position.Get();
+
             // result_Move.dir = input_Move.moveDir;// 暂时就以输入的方向作为角色的方向
             return result_Move;
 

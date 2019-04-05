@@ -10,13 +10,9 @@ namespace ETHotfix
 		{
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
-            UnitStateDelta unitStateDelta = new UnitStateDelta();
-            unitStateDelta.frame = message.Frame;
-            unitStateDelta.unit = unit;
-            CommandResult_Move commandResult_Move = new CommandResult_Move();
+            CommandResult_Move commandResult_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
             commandResult_Move.postion = new Vector3(message.Pos.X, message.Pos.Y, message.Pos.Z);
-            unitStateDelta.commandResults.Add(typeof(CommandResult_Move), commandResult_Move);
-            unitStateComponent.ReceivedPacket(unitStateDelta);
+            unitStateComponent.ReceivedPacket(message.Frame, commandResult_Move);
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace ETModel
 
         public int preActualFrame; //上一次收到服务器发来的确定帧
 
-        private const int maxDiffFrame = 120;//当前帧和上一次服务器发来的帧之间差距超过多少,就不模拟了
+        private const int maxDiffFrame = 30;//当前帧和上一次服务器发来的帧之间差距超过多少,就不模拟了
 
 
         public UnitStateComponent unitState;
@@ -58,9 +58,9 @@ namespace ETModel
         public void FixedUpdate()
         {
             //先上传这一帧的操作,同时缓存操作,然后客户端自己模拟操作的结果
-            currFrame++;
             if (collectedNewInput)
             {
+                currFrame++;
                 collectedNewInput = false;
                 cacheCommands[currFrame] = new List<Command>();
                 cacheCommands[currFrame].AddRange(currCommands.Values);
@@ -80,6 +80,7 @@ namespace ETModel
                             inputInfo_Move.MoveDir = new Vector3Info() { X = input_Move.moveDir.x, Y = input_Move.moveDir.y, Z = input_Move.moveDir.z };
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
 
+                            Log.Info(string.Format("frame {0} : 客户端预测位置信息 {1}", currFrame, result_Move.postion));
                             //再预测这一帧的结果
                             Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
                             property_Position.Set(result_Move.postion);
@@ -95,8 +96,9 @@ namespace ETModel
 
         public void CollectCommandInput(ICommandInput input)
         {
+            if (currFrame - preActualFrame > maxDiffFrame) return;
             collectedNewInput = true;
-            Command command = new Command();
+            Command command = CommandGCHelper.GetCommand();
             command.commandInput = input;
             currCommands[input.GetType()] = command;
 
@@ -104,12 +106,19 @@ namespace ETModel
 
         public void GetCommandResult(UnitStateDelta unitStateDelta)
         {
-            //移除上一次的确定帧和接收到的这一帧之间的缓存指令
-            for (int i = preActualFrame; i < unitStateDelta.frame; i++)
+            if (preActualFrame != unitStateDelta.frame)
             {
-                if (cacheCommands.ContainsKey(i))
+                //移除上一次的确定帧和接收到的这一帧之间的缓存指令
+                for (int i = preActualFrame; i < unitStateDelta.frame; i++)
                 {
-                    cacheCommands.Remove(i);
+                    if (cacheCommands.ContainsKey(i))
+                    {
+                        foreach (var v in cacheCommands[i])
+                        {
+                            CommandGCHelper.Recycle(v);
+                        }
+                        cacheCommands.Remove(i);
+                    }
                 }
             }
             bool needRecal = false;
@@ -126,12 +135,15 @@ namespace ETModel
                             }
                             else
                             {
+                                Log.Debug("frame  "+ unitStateDelta.frame + " 服务器发来的目标位置  " + actualMove.postion.ToString());
+                                Log.Debug("本地计算的当前位置" + simulateMove.ToString());
                                 simulateMove.postion = actualMove.postion;
                                 needRecal = true;
                             }
                             break;
                     }
                 }
+            
             preActualFrame = unitStateDelta.frame;
             if (needRecal)
             {

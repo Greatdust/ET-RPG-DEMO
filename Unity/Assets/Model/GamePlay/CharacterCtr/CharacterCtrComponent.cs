@@ -29,8 +29,6 @@ namespace ETModel
 
     public class CharacterCtrComponent : Component
     {
-        public CharacterController characterController;//一定要和角色根节点绑在一次
-
         private bool canMove;
         public Vector3 moveTarget;
         public Vector3 moveDir;
@@ -54,7 +52,6 @@ namespace ETModel
 
         public void Awake()
         {
-            characterController = GetParent<Unit>().GameObject.GetComponentInChildren<CharacterController>();
             transform = GetParent<Unit>().GameObject.transform;
             animatorComponent = GetParent<Unit>().GetComponent<AnimatorComponent>();
             timing = sendMsgInterval;
@@ -64,7 +61,7 @@ namespace ETModel
 
         public void MoveTo(Vector3 aim)
         {
-            if (Vector3.Distance(moveTarget, aim) < 0.2f)
+            if (Vector3.Distance(moveTarget, aim) < 0.05f)
             {
                 return;
             }
@@ -73,7 +70,7 @@ namespace ETModel
             moveDir = distance.normalized;
             Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
             //位置差距小于0.1f ,角度很接近,那就不同步了
-            if (distance.magnitude < 0.1f && Mathf.Abs(Quaternion.Angle(transform.rotation, quaDir)) < 10)
+            if (distance.magnitude < 0.05f && Mathf.Abs(Quaternion.Angle(transform.rotation, quaDir)) < 10)
             {
                 return;
             }
@@ -85,10 +82,6 @@ namespace ETModel
         public void Update()
         {
             Vector3 motion = Vector3.zero;
-            if (!characterController.isGrounded)
-            {
-                motion -= transform.up * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
-            }
             if (isInPlayerCtr)
             {
                 float moveLeft = Input.GetAxisRaw("Horizontal");
@@ -132,13 +125,13 @@ namespace ETModel
                 animatorComponent.SetFloatValue("MoveSpeed", moveSpeed);
             }
             if (!isInPlayerCtr)
-                if (Vector3.Distance(transform.position, moveTarget) < 0.1f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
+                if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
                 {
                     canMove = false;
                     return;
                 }
             motion += moveDir * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
-            characterController.Move(motion);
+            transform.position += motion;
 
 
         }

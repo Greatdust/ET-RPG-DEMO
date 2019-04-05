@@ -147,7 +147,7 @@ namespace App
                 }
 
                 float fixedUpdateInterval = EventSystem.FixedUpdateTime;
-                float timing = TimeHelper.ClientNowSeconds();
+                float timing = TimeHelper.ClientNowSeconds() - fixedUpdateInterval;
                 while (true)
                 {
                     try

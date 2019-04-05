@@ -10,7 +10,6 @@ namespace ETModel
     public class UnitStateDelta
     {
         public int frame;
-        public Unit unit;
         public Dictionary<Type, ICommandResult> commandResults = new Dictionary<Type, ICommandResult>();
         
     }

@@ -27,7 +27,7 @@ namespace ETModel
         {
             return position;
         }
-       
+        
 
         public IProperty GetCopy()
         {

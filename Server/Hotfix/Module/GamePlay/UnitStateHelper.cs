@@ -33,8 +33,11 @@ namespace ETHotfix
             }
             unitStateComponent.preSendMsgFrame = unitStateComponent.currFrame;
 
+            if (unitStateComponent.preGetInputFrame == unitStateComponent.currGetInputFrame)
+            {
+                return;
+            }
             //每次发送都发最新的一次输入所产生的结果
-
             var state = unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame];
 
             foreach (var v in state.commandResults)
@@ -46,9 +49,10 @@ namespace ETHotfix
                 {
                     case CommandResult_Move result_Move:
                         commandResultInfo_Move.Pos = new Vector3Info();
-                        commandResultInfo_Move.Pos.X = result_Move.postion.x;
-                        commandResultInfo_Move.Pos.Y = result_Move.postion.y;
-                        commandResultInfo_Move.Pos.Z = result_Move.postion.z;
+                        Property_Position postionPro = unitStateComponent.unitProperty[typeof(Property_Position)] as Property_Position;
+                        commandResultInfo_Move.Pos.X = postionPro.Get().x;
+                        commandResultInfo_Move.Pos.Y = postionPro.Get().y;
+                        commandResultInfo_Move.Pos.Z = postionPro.Get().z;
                         commandResultInfo_Move.Id = unitStateComponent.unit.Id;
                         MessageHelper.Broadcast(commandResultInfo_Move);
                         continue;
@@ -110,6 +114,7 @@ namespace ETHotfix
                     case CommandResult_Move result_Move:
                         Property_Position postionPro = unitStateComponent.unitProperty[typeof(Property_Position)] as Property_Position;
                         postionPro.Set(result_Move.postion);
+                        Log.Info(string.Format("frame {0} : 服务器位置信息 {1}" ,frame, result_Move.postion));
                         break;
                 }
                 unitStateDelta.commandResults.Add(result.GetType(), result);

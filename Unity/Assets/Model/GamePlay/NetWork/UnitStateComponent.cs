@@ -40,10 +40,10 @@ namespace ETModel
 
         private int packetsReceived = 1;
 
-        private const int minDiffFrame = -60;//估算和真实帧最小差距
-        private const int maxDiffFrame = 60;//估算和真实帧最大差距
+        private const int minDiffFrame = -20;//估算和真实帧最小差距
+        private const int maxDiffFrame = 20;//估算和真实帧最大差距
 
-        private const int largeDiffFrame = -30; // 落后多少帧就判断为极大落后
+        private const int largeDiffFrame = -15; // 落后多少帧就判断为极大落后
 
         private CommandSimulaterComponent simulaterComponent;
 
@@ -93,7 +93,7 @@ namespace ETModel
             }
             AdjustRemoteEstimatedFrame();
 
-            float applyProgress = Mathf.Clamp01((float)(remoteActualFrame - preActualFrame) / (remoteActualFrame - preActualFrame));//应用的进度,上一次实际帧和这一次实际帧之间
+            float applyProgress = Mathf.Clamp01((float)(remoteEstimatedFrame - preActualFrame) / (remoteActualFrame - preActualFrame));//应用的进度,上一次实际帧和这一次实际帧之间
             
             //应用模拟的结果
             foreach (var v in unitStatesDic[remoteActualFrame].commandResults.Values)
@@ -123,32 +123,45 @@ namespace ETModel
             haveInited = true;
         }
 
-        public void ReceivedPacket(UnitStateDelta unitState)
+        public void ReceivedPacket(int frame,ICommandResult commandResult)
         {
-            if (unitState.frame <= remoteActualFrame)
+            UnitStateDelta unitState;
+            if (unitStatesDic.ContainsKey(frame))
             {
-                //这是包顺序错了,目前处理是直接丢掉
-                return;
+                unitState = unitStatesDic[frame];
+                unitState.commandResults[commandResult.GetType()] = commandResult;
             }
-            //重置上一个快照的属性
-            foreach (var v in pre_unitProperty)
+            else
             {
-                switch (v.Value)
+
+                unitState = new UnitStateDelta();
+                unitState.frame = frame;
+                unitState.commandResults.Add(commandResult.GetType(), commandResult);
+                if (unitState.frame <= remoteActualFrame)
                 {
-                    case Property_Position position:
-                        position.Set(((Property_Position)unitProperty[v.Key]).Get());
-                        break;
+                    //这是包顺序错了,目前处理是直接丢掉
+                    return;
                 }
+                //重置上一个快照的属性
+                foreach (var v in pre_unitProperty)
+                {
+                    switch (v.Value)
+                    {
+                        case Property_Position position:
+                            position.Set(((Property_Position)unitProperty[v.Key]).Get());
+                            break;
+                    }
+                }
+                if (unitStatesDic.ContainsKey(preActualFrame))
+                    //收到新的实际帧了,上上个实际帧的数据可以清理掉了
+                    unitStatesDic.Remove(preActualFrame);
+
+                packetsReceived++;
+                preActualFrame = remoteActualFrame;
+                remoteActualFrame = unitState.frame;
+                unitStatesDic[remoteActualFrame] = unitState;
             }
-            if (unitStatesDic.ContainsKey(preActualFrame))
-                //收到新的实际帧了,上上个实际帧的数据可以清理掉了
-                unitStatesDic.Remove(preActualFrame);
-
-            packetsReceived++;
-            preActualFrame = remoteActualFrame;
-            remoteActualFrame = unitState.frame;
-            unitStatesDic[remoteActualFrame] = unitState;
-
+            //等待上一帧的所有信息全收到了,再发上一帧的数据
             if (unit.GetComponent<CommandComponent>() != null)
             {
                 GetParent<Unit>().GetComponent<CommandComponent>().currFrame = remoteActualFrame;
