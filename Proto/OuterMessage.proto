@@ -69,9 +69,9 @@ message UnitInfo
 {
 	int64 UnitId  = 1;
 
-	float X = 2;
-	float Y = 3;
-	float Z = 4;
+	Vector3Info Position = 2;
+	Vector3Info Dir = 3;
+	
 }
 
 message M2C_CreateUnits // IActorMessage
@@ -92,35 +92,34 @@ message Frame_ClickMap // IActorLocationMessage
 	float Z = 3;
 }
 
-message Unit_Move // IActorLocationMessage
-{
-	int32 RpcId = 90;
-	int64 ActorId = 93;
-	int64 Id = 94;
-	
-	float moveX = 1;
-	float moveY = 2;
-	float moveZ = 3;
-	
-	float eulerX = 4;
-	float eulerY = 5;
-	float eulerZ = 6;
-}
-
-message Unit_PosAngle // IActorMessage
+message CommandResultInfo_Move // IActorMessage
 {
 	int64 ActorId = 93;
 	int64 Id = 94;
 	
-	float moveX = 1;
-	float moveY = 2;
-	float moveZ = 3;
+	Vector3Info pos = 1;
 	
-	float eulerX = 4;
-	float eulerY = 5;
-	float eulerZ = 6;
+	Vector3Info dir = 2;
+	
+	int32 frame = 3;
 }
 
+message CommandInputInfo_Move // IActorLocationMessage
+{
+    int32 RpcId = 90;
+	int64 ActorId = 93;
+	int64 Id = 94;
+	
+	Vector3Info moveDir = 1; 
+	int32 frame = 2;
+}
+
+message Vector3Info
+{
+    float X = 1;
+	float Y = 2;
+	float Z = 3;
+}
 
 message M2C_PathfindingResult // IActorMessage
 {

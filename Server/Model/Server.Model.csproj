@@ -59,6 +59,14 @@
     <Compile Include="..\..\Unity\Assets\Model\Component\Config\StartConfig.cs">
       <Link>Component\Config\StartConfig.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Command.cs" Link="Command\Command.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInputAttribute.cs" Link="Command\CommandInputAttribute.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_Move.cs" Link="Command\CommandInput\CommandInput_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_Move.cs" Link="Command\CommandResult\CommandResult_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandSimulaterComponent.cs" Link="Command\CommandSimulaterComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\Property.cs" Link="Command\Property\Property.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_Move.cs" Link="Command\System\CommandInputSystem_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\UnitStateDelta.cs" Link="Command\UnitStateDelta.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\ActorLocation\IActorLocationMessage.cs">
       <Link>Module\ActorLocation\IActorLocationMessage.cs</Link>
     </Compile>
@@ -118,6 +126,7 @@
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\IChangeSystem.cs" Link="Base\Base\IChangeSystem.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\IDestroySystem.cs" Link="Base\Base\IDestroySystem.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\ILateUpdateSystem.cs" Link="Base\Base\ILateUpdateSystem.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\Base\Object\IFixedUpdateSystem.cs" Link="Base\Base\IFixedUpdateSystem.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\ILoadSystem.cs" Link="Base\Base\ILoadSystem.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\ISerializeToEntity.cs" Link="Base\Base\ISerializeToEntity.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\IStartSystem.cs" Link="Base\Base\IStartSystem.cs" />
@@ -323,7 +332,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\RecyclableMemoryStream\" />
-    <Folder Include="Base\Base\" />
+    <Folder Include="Command\CommandInput\" />
+    <Folder Include="Command\CommandResult\" />
+    <Folder Include="Command\Property\" />
+    <Folder Include="Command\System\" />
     <Folder Include="Component\Config\" />
     <Folder Include="Module\Message\Network\KCP\" />
     <Folder Include="Module\Message\Network\TCP\" />

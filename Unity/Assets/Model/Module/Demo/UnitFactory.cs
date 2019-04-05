@@ -15,8 +15,11 @@ namespace ETModel
             GameObject go = UnityEngine.Object.Instantiate(prefab);
             Unit unit = ComponentFactory.CreateWithId<Unit, GameObject>(id, go);
 
+            unit.AddComponent<NumericComponent>();
             unit.AddComponent<AnimatorComponent>();
             unit.AddComponent<CharacterCtrComponent>();
+            unit.AddComponent<UnitStateComponent>();
+            unit.AddComponent<TurnComponent>();
 
             unitComponent.Add(unit);
             return unit;

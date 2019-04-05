@@ -39,11 +39,14 @@ namespace ETModel
 	[Message(OuterOpcode.Frame_ClickMap)]
 	public partial class Frame_ClickMap : IActorLocationMessage {}
 
-	[Message(OuterOpcode.Unit_Move)]
-	public partial class Unit_Move : IActorLocationMessage {}
+	[Message(OuterOpcode.CommandResultInfo_Move)]
+	public partial class CommandResultInfo_Move : IActorMessage {}
 
-	[Message(OuterOpcode.Unit_PosAngle)]
-	public partial class Unit_PosAngle : IActorMessage {}
+	[Message(OuterOpcode.CommandInputInfo_Move)]
+	public partial class CommandInputInfo_Move : IActorLocationMessage {}
+
+	[Message(OuterOpcode.Vector3Info)]
+	public partial class Vector3Info {}
 
 	[Message(OuterOpcode.M2C_PathfindingResult)]
 	public partial class M2C_PathfindingResult : IActorMessage {}
@@ -80,13 +83,14 @@ namespace ETModel
 		 public const ushort UnitInfo = 110;
 		 public const ushort M2C_CreateUnits = 111;
 		 public const ushort Frame_ClickMap = 112;
-		 public const ushort Unit_Move = 113;
-		 public const ushort Unit_PosAngle = 114;
-		 public const ushort M2C_PathfindingResult = 115;
-		 public const ushort C2R_Ping = 116;
-		 public const ushort R2C_Ping = 117;
-		 public const ushort G2C_Test = 118;
-		 public const ushort C2M_Reload = 119;
-		 public const ushort M2C_Reload = 120;
+		 public const ushort CommandResultInfo_Move = 113;
+		 public const ushort CommandInputInfo_Move = 114;
+		 public const ushort Vector3Info = 115;
+		 public const ushort M2C_PathfindingResult = 116;
+		 public const ushort C2R_Ping = 117;
+		 public const ushort R2C_Ping = 118;
+		 public const ushort G2C_Test = 119;
+		 public const ushort C2M_Reload = 120;
+		 public const ushort M2C_Reload = 121;
 	}
 }

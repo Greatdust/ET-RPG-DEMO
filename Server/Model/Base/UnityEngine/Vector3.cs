@@ -54,6 +54,7 @@ namespace UnityEngine
             return false;
         }
 
+
         public override bool Equals(object obj)
         {
             bool flag = false;

@@ -23,7 +23,8 @@ namespace ETHotfix
 			{
 				// 注册热更层回调
 				ETModel.Game.Hotfix.Update = () => { Update(); };
-				ETModel.Game.Hotfix.LateUpdate = () => { LateUpdate(); };
+                ETModel.Game.Hotfix.FixedUpdate = () => { FixedUpdate(); };
+                ETModel.Game.Hotfix.LateUpdate = () => { LateUpdate(); };
 				ETModel.Game.Hotfix.OnApplicationQuit = () => { OnApplicationQuit(); };
 				
 				Game.Scene.AddComponent<UIComponent>();
@@ -57,6 +58,18 @@ namespace ETHotfix
 				Log.Error(e);
 			}
 		}
+
+        public static void FixedUpdate()
+        {
+            try
+            {
+                Game.EventSystem.FixedUpdate();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
 
 		public static void LateUpdate()
 		{

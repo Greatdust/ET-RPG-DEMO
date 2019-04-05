@@ -1,5 +1,7 @@
 ﻿using ETModel;
 using PF;
+using System;
+using System.Collections.Generic;
 using Vector3 = UnityEngine.Vector3;
 
 namespace ETHotfix
@@ -19,8 +21,16 @@ namespace ETHotfix
 				}
 				Unit unit = UnitFactory.Create(unitInfo.UnitId);
 
-				unit.Position = new Vector3(unitInfo.X, unitInfo.Y, unitInfo.Z);
-			}
+				unit.Position = new Vector3(unitInfo.Position.X,unitInfo.Position.Y,unitInfo.Position.Z);
+                unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);
+
+                Dictionary<Type, IProperty> unitStateList = new Dictionary<Type, IProperty>();
+                Property_Position property_Position = new Property_Position();
+                property_Position.Set(unit.Position);
+                unitStateList.Add(typeof(Property_Position), property_Position);
+                unit.GetComponent<UnitStateComponent>().Init(unitStateList);
+
+            }
 		}
 	}
 }

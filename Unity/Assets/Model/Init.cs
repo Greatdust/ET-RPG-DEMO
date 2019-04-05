@@ -8,6 +8,7 @@ namespace ETModel
 	{
 		private void Start()
 		{
+            Time.fixedDeltaTime = 1f / 60;
 			this.StartAsync().Coroutine();
 		}
 		
@@ -27,6 +28,9 @@ namespace ETModel
 				Game.Scene.AddComponent<PlayerComponent>();
 				Game.Scene.AddComponent<UnitComponent>();
 				Game.Scene.AddComponent<UIComponent>();
+
+                Game.Scene.AddComponent<CommandSimulaterComponent>();
+                Game.Scene.AddComponent<NumericWatcherComponent>();
 
 				// 下载ab包
 				await BundleHelper.DownloadBundle();
@@ -57,7 +61,13 @@ namespace ETModel
 			Game.EventSystem.Update();
 		}
 
-		private void LateUpdate()
+        private void FixedUpdate()
+        {
+            Game.Hotfix.FixedUpdate?.Invoke();
+            Game.EventSystem.FixedUpdate();
+        }
+
+        private void LateUpdate()
 		{
 			Game.Hotfix.LateUpdate?.Invoke();
 			Game.EventSystem.LateUpdate();

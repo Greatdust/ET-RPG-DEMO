@@ -768,27 +768,19 @@ namespace ETModel {
       }
     }
 
-    private float x_;
-    public float X {
-      get { return x_; }
+    private global::ETModel.Vector3Info position_;
+    public global::ETModel.Vector3Info Position {
+      get { return position_; }
       set {
-        x_ = value;
+        position_ = value;
       }
     }
 
-    private float y_;
-    public float Y {
-      get { return y_; }
+    private global::ETModel.Vector3Info dir_;
+    public global::ETModel.Vector3Info Dir {
+      get { return dir_; }
       set {
-        y_ = value;
-      }
-    }
-
-    private float z_;
-    public float Z {
-      get { return z_; }
-      set {
-        z_ = value;
+        dir_ = value;
       }
     }
 
@@ -797,17 +789,13 @@ namespace ETModel {
         output.WriteRawTag(8);
         output.WriteInt64(UnitId);
       }
-      if (X != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(X);
+      if (position_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Position);
       }
-      if (Y != 0F) {
-        output.WriteRawTag(29);
-        output.WriteFloat(Y);
-      }
-      if (Z != 0F) {
-        output.WriteRawTag(37);
-        output.WriteFloat(Z);
+      if (dir_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Dir);
       }
     }
 
@@ -816,23 +804,19 @@ namespace ETModel {
       if (UnitId != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(UnitId);
       }
-      if (X != 0F) {
-        size += 1 + 4;
+      if (position_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
       }
-      if (Y != 0F) {
-        size += 1 + 4;
-      }
-      if (Z != 0F) {
-        size += 1 + 4;
+      if (dir_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Dir);
       }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
       unitId_ = 0;
-      x_ = 0f;
-      y_ = 0f;
-      z_ = 0f;
+      if (position_ != null) MessagePool.Instance.Recycle(position_); position_ = null;
+      if (dir_ != null) MessagePool.Instance.Recycle(dir_); dir_ = null;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -843,16 +827,18 @@ namespace ETModel {
             UnitId = input.ReadInt64();
             break;
           }
-          case 21: {
-            X = input.ReadFloat();
+          case 18: {
+            if (position_ == null) {
+              position_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(position_);
             break;
           }
-          case 29: {
-            Y = input.ReadFloat();
-            break;
-          }
-          case 37: {
-            Z = input.ReadFloat();
+          case 26: {
+            if (dir_ == null) {
+              dir_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(dir_);
             break;
           }
         }
@@ -1087,9 +1073,140 @@ namespace ETModel {
 
   }
 
-  public partial class Unit_Move : pb::IMessage {
-    private static readonly pb::MessageParser<Unit_Move> _parser = new pb::MessageParser<Unit_Move>(() => (Unit_Move)MessagePool.Instance.Fetch(typeof(Unit_Move)));
-    public static pb::MessageParser<Unit_Move> Parser { get { return _parser; } }
+  public partial class CommandResultInfo_Move : pb::IMessage {
+    private static readonly pb::MessageParser<CommandResultInfo_Move> _parser = new pb::MessageParser<CommandResultInfo_Move>(() => (CommandResultInfo_Move)MessagePool.Instance.Fetch(typeof(CommandResultInfo_Move)));
+    public static pb::MessageParser<CommandResultInfo_Move> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info pos_;
+    public global::ETModel.Vector3Info Pos {
+      get { return pos_; }
+      set {
+        pos_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info dir_;
+    public global::ETModel.Vector3Info Dir {
+      get { return dir_; }
+      set {
+        dir_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (pos_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Pos);
+      }
+      if (dir_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Dir);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Frame);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Id);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (pos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pos);
+      }
+      if (dir_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Dir);
+      }
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      if (pos_ != null) MessagePool.Instance.Recycle(pos_); pos_ = null;
+      if (dir_ != null) MessagePool.Instance.Recycle(dir_); dir_ = null;
+      frame_ = 0;
+      actorId_ = 0;
+      id_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            if (pos_ == null) {
+              pos_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(pos_);
+            break;
+          }
+          case 18: {
+            if (dir_ == null) {
+              dir_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(dir_);
+            break;
+          }
+          case 24: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class CommandInputInfo_Move : pb::IMessage {
+    private static readonly pb::MessageParser<CommandInputInfo_Move> _parser = new pb::MessageParser<CommandInputInfo_Move>(() => (CommandInputInfo_Move)MessagePool.Instance.Fetch(typeof(CommandInputInfo_Move)));
+    public static pb::MessageParser<CommandInputInfo_Move> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1115,78 +1232,30 @@ namespace ETModel {
       }
     }
 
-    private float moveX_;
-    public float MoveX {
-      get { return moveX_; }
+    private global::ETModel.Vector3Info moveDir_;
+    public global::ETModel.Vector3Info MoveDir {
+      get { return moveDir_; }
       set {
-        moveX_ = value;
+        moveDir_ = value;
       }
     }
 
-    private float moveY_;
-    public float MoveY {
-      get { return moveY_; }
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
       set {
-        moveY_ = value;
-      }
-    }
-
-    private float moveZ_;
-    public float MoveZ {
-      get { return moveZ_; }
-      set {
-        moveZ_ = value;
-      }
-    }
-
-    private float eulerX_;
-    public float EulerX {
-      get { return eulerX_; }
-      set {
-        eulerX_ = value;
-      }
-    }
-
-    private float eulerY_;
-    public float EulerY {
-      get { return eulerY_; }
-      set {
-        eulerY_ = value;
-      }
-    }
-
-    private float eulerZ_;
-    public float EulerZ {
-      get { return eulerZ_; }
-      set {
-        eulerZ_ = value;
+        frame_ = value;
       }
     }
 
     public void WriteTo(pb::CodedOutputStream output) {
-      if (MoveX != 0F) {
-        output.WriteRawTag(13);
-        output.WriteFloat(MoveX);
+      if (moveDir_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(MoveDir);
       }
-      if (MoveY != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(MoveY);
-      }
-      if (MoveZ != 0F) {
-        output.WriteRawTag(29);
-        output.WriteFloat(MoveZ);
-      }
-      if (EulerX != 0F) {
-        output.WriteRawTag(37);
-        output.WriteFloat(EulerX);
-      }
-      if (EulerY != 0F) {
-        output.WriteRawTag(45);
-        output.WriteFloat(EulerY);
-      }
-      if (EulerZ != 0F) {
-        output.WriteRawTag(53);
-        output.WriteFloat(EulerZ);
+      if (Frame != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Frame);
       }
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
@@ -1213,34 +1282,18 @@ namespace ETModel {
       if (Id != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
       }
-      if (MoveX != 0F) {
-        size += 1 + 4;
+      if (moveDir_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MoveDir);
       }
-      if (MoveY != 0F) {
-        size += 1 + 4;
-      }
-      if (MoveZ != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerX != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerY != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerZ != 0F) {
-        size += 1 + 4;
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
       }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
-      moveX_ = 0f;
-      moveY_ = 0f;
-      moveZ_ = 0f;
-      eulerX_ = 0f;
-      eulerY_ = 0f;
-      eulerZ_ = 0f;
+      if (moveDir_ != null) MessagePool.Instance.Recycle(moveDir_); moveDir_ = null;
+      frame_ = 0;
       rpcId_ = 0;
       actorId_ = 0;
       id_ = 0;
@@ -1250,28 +1303,15 @@ namespace ETModel {
           default:
             input.SkipLastField();
             break;
-          case 13: {
-            MoveX = input.ReadFloat();
+          case 10: {
+            if (moveDir_ == null) {
+              moveDir_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(moveDir_);
             break;
           }
-          case 21: {
-            MoveY = input.ReadFloat();
-            break;
-          }
-          case 29: {
-            MoveZ = input.ReadFloat();
-            break;
-          }
-          case 37: {
-            EulerX = input.ReadFloat();
-            break;
-          }
-          case 45: {
-            EulerY = input.ReadFloat();
-            break;
-          }
-          case 53: {
-            EulerZ = input.ReadFloat();
+          case 16: {
+            Frame = input.ReadInt32();
             break;
           }
           case 720: {
@@ -1292,147 +1332,67 @@ namespace ETModel {
 
   }
 
-  public partial class Unit_PosAngle : pb::IMessage {
-    private static readonly pb::MessageParser<Unit_PosAngle> _parser = new pb::MessageParser<Unit_PosAngle>(() => (Unit_PosAngle)MessagePool.Instance.Fetch(typeof(Unit_PosAngle)));
-    public static pb::MessageParser<Unit_PosAngle> Parser { get { return _parser; } }
+  public partial class Vector3Info : pb::IMessage {
+    private static readonly pb::MessageParser<Vector3Info> _parser = new pb::MessageParser<Vector3Info>(() => (Vector3Info)MessagePool.Instance.Fetch(typeof(Vector3Info)));
+    public static pb::MessageParser<Vector3Info> Parser { get { return _parser; } }
 
-    private long actorId_;
-    public long ActorId {
-      get { return actorId_; }
+    private float x_;
+    public float X {
+      get { return x_; }
       set {
-        actorId_ = value;
+        x_ = value;
       }
     }
 
-    private long id_;
-    public long Id {
-      get { return id_; }
+    private float y_;
+    public float Y {
+      get { return y_; }
       set {
-        id_ = value;
+        y_ = value;
       }
     }
 
-    private float moveX_;
-    public float MoveX {
-      get { return moveX_; }
+    private float z_;
+    public float Z {
+      get { return z_; }
       set {
-        moveX_ = value;
-      }
-    }
-
-    private float moveY_;
-    public float MoveY {
-      get { return moveY_; }
-      set {
-        moveY_ = value;
-      }
-    }
-
-    private float moveZ_;
-    public float MoveZ {
-      get { return moveZ_; }
-      set {
-        moveZ_ = value;
-      }
-    }
-
-    private float eulerX_;
-    public float EulerX {
-      get { return eulerX_; }
-      set {
-        eulerX_ = value;
-      }
-    }
-
-    private float eulerY_;
-    public float EulerY {
-      get { return eulerY_; }
-      set {
-        eulerY_ = value;
-      }
-    }
-
-    private float eulerZ_;
-    public float EulerZ {
-      get { return eulerZ_; }
-      set {
-        eulerZ_ = value;
+        z_ = value;
       }
     }
 
     public void WriteTo(pb::CodedOutputStream output) {
-      if (MoveX != 0F) {
+      if (X != 0F) {
         output.WriteRawTag(13);
-        output.WriteFloat(MoveX);
+        output.WriteFloat(X);
       }
-      if (MoveY != 0F) {
+      if (Y != 0F) {
         output.WriteRawTag(21);
-        output.WriteFloat(MoveY);
+        output.WriteFloat(Y);
       }
-      if (MoveZ != 0F) {
+      if (Z != 0F) {
         output.WriteRawTag(29);
-        output.WriteFloat(MoveZ);
-      }
-      if (EulerX != 0F) {
-        output.WriteRawTag(37);
-        output.WriteFloat(EulerX);
-      }
-      if (EulerY != 0F) {
-        output.WriteRawTag(45);
-        output.WriteFloat(EulerY);
-      }
-      if (EulerZ != 0F) {
-        output.WriteRawTag(53);
-        output.WriteFloat(EulerZ);
-      }
-      if (ActorId != 0L) {
-        output.WriteRawTag(232, 5);
-        output.WriteInt64(ActorId);
-      }
-      if (Id != 0L) {
-        output.WriteRawTag(240, 5);
-        output.WriteInt64(Id);
+        output.WriteFloat(Z);
       }
     }
 
     public int CalculateSize() {
       int size = 0;
-      if (ActorId != 0L) {
-        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
-      }
-      if (Id != 0L) {
-        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
-      }
-      if (MoveX != 0F) {
+      if (X != 0F) {
         size += 1 + 4;
       }
-      if (MoveY != 0F) {
+      if (Y != 0F) {
         size += 1 + 4;
       }
-      if (MoveZ != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerX != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerY != 0F) {
-        size += 1 + 4;
-      }
-      if (EulerZ != 0F) {
+      if (Z != 0F) {
         size += 1 + 4;
       }
       return size;
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
-      moveX_ = 0f;
-      moveY_ = 0f;
-      moveZ_ = 0f;
-      eulerX_ = 0f;
-      eulerY_ = 0f;
-      eulerZ_ = 0f;
-      actorId_ = 0;
-      id_ = 0;
+      x_ = 0f;
+      y_ = 0f;
+      z_ = 0f;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -1440,35 +1400,15 @@ namespace ETModel {
             input.SkipLastField();
             break;
           case 13: {
-            MoveX = input.ReadFloat();
+            X = input.ReadFloat();
             break;
           }
           case 21: {
-            MoveY = input.ReadFloat();
+            Y = input.ReadFloat();
             break;
           }
           case 29: {
-            MoveZ = input.ReadFloat();
-            break;
-          }
-          case 37: {
-            EulerX = input.ReadFloat();
-            break;
-          }
-          case 45: {
-            EulerY = input.ReadFloat();
-            break;
-          }
-          case 53: {
-            EulerZ = input.ReadFloat();
-            break;
-          }
-          case 744: {
-            ActorId = input.ReadInt64();
-            break;
-          }
-          case 752: {
-            Id = input.ReadInt64();
+            Z = input.ReadFloat();
             break;
           }
         }

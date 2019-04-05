@@ -266,7 +266,7 @@ namespace ETModel
 				else
 #endif
 				{
-					Log.Msg(message);
+					//Log.Msg(message);
 				}
 			}
 

@@ -5,7 +5,7 @@ using System.Reflection;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Enviorment;
-using ILRuntime.Runtime.Generated;
+//using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
 
@@ -29,7 +29,7 @@ namespace ETModel
 			appdomain.DelegateManager.RegisterFunctionDelegate<Google.Protobuf.Adapt_IMessage.Adaptor>();
 			appdomain.DelegateManager.RegisterMethodDelegate<Google.Protobuf.Adapt_IMessage.Adaptor>();
 
-			CLRBindings.Initialize(appdomain);
+			//CLRBindings.Initialize(appdomain);
 
 			// 注册适配器
 			Assembly assembly = typeof(Init).Assembly;

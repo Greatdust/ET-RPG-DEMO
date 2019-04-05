@@ -32,11 +32,8 @@ namespace ETModel
         public CharacterController characterController;//一定要和角色根节点绑在一次
 
         private bool canMove;
-        public float moveSpeed =5;
         public Vector3 moveTarget;
         public Vector3 moveDir;
-
-        public float verticalSpeed = -5;
 
         public AnimatorComponent animatorComponent;
 
@@ -44,13 +41,16 @@ namespace ETModel
 
         private Transform transform;
 
-        public readonly Unit_Move unit_MoveMsg = new Unit_Move();
-
         public bool isInPlayerCtr;
 
         public float sendMsgInterval = 0.2f;
         public float timing;
 
+        private CommandInput_Move input_Move;
+
+        private NumericComponent numericComponent;
+
+        private float moveSpeed = 0;
 
         public void Awake()
         {
@@ -58,27 +58,37 @@ namespace ETModel
             transform = GetParent<Unit>().GameObject.transform;
             animatorComponent = GetParent<Unit>().GetComponent<AnimatorComponent>();
             timing = sendMsgInterval;
+            input_Move = new CommandInput_Move();
+            numericComponent = GetParent<Unit>().GetComponent<NumericComponent>();
         }
 
         public void MoveTo(Vector3 aim)
         {
-            if (isInPlayerCtr) return;
+            if (Vector3.Distance(moveTarget, aim) < 0.2f)
+            {
+                return;
+            }
             moveTarget = aim;
-            moveDir = (moveTarget - transform.position).normalized;
-            transform.forward = moveDir;
+            Vector3 distance = new Vector3(moveTarget.x - transform.position.x, 0, moveTarget.z - transform.position.z);
+            moveDir = distance.normalized;
+            Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
+            //位置差距小于0.1f ,角度很接近,那就不同步了
+            if (distance.magnitude < 0.1f && Mathf.Abs(Quaternion.Angle(transform.rotation, quaDir)) < 10)
+            {
+                return;
+            }
+            //transform.forward = moveDir;
             canMove = true;
         }
 
 
         public void Update()
         {
+            Vector3 motion = Vector3.zero;
             if (!characterController.isGrounded)
             {
-                Vector3 motion = transform.up * verticalSpeed * Time.deltaTime;
-                characterController.Move(motion);
+                motion -= transform.up * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
             }
-
-
             if (isInPlayerCtr)
             {
                 float moveLeft = Input.GetAxisRaw("Horizontal");
@@ -87,60 +97,53 @@ namespace ETModel
                 if (moveLeft != 0 || moveForward != 0)
                 {
 
-                    animatorComponent.SetFloatValue("MoveSpeed", 1f);
-
                     Vector3 targetDirection = new Vector3(moveLeft, 0, moveForward);
                     float y = Camera.main.transform.rotation.eulerAngles.y;
-                    targetDirection = Quaternion.Euler(0, y, 0) * targetDirection;
+                    targetDirection = (Quaternion.Euler(0, y, 0) * targetDirection).normalized;
+                    input_Move.moveDir = targetDirection; // 暂时不发送Y轴可能产生的移动信息
+                    GetParent<Unit>().GetComponent<CommandComponent>().CollectCommandInput(input_Move);
+                    canMove = true;
 
+                    moveDir = targetDirection;
 
-                    Vector3 motion = targetDirection * moveSpeed * Time.deltaTime;
+                    //transform.forward = moveDir;
 
-                    transform.forward = motion;
-                    characterController.Move(motion);
+                    //characterController.Move(moveDir * GetParent<Unit>().GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed) * Time.deltaTime);
                 }
                 else
                 {
-                    animatorComponent.SetFloatValue("MoveSpeed", 0f);
-                }
-                timing += Time.deltaTime;
-                if (timing >= sendMsgInterval)
-                {
-                    timing = 0;
-                    unit_MoveMsg.MoveX = transform.position.x;
-                    unit_MoveMsg.MoveY = transform.position.y;
-                    unit_MoveMsg.MoveZ = transform.position.z;
+                    canMove = false;
 
-                    unit_MoveMsg.EulerX = transform.forward.x;
-                    unit_MoveMsg.EulerY = transform.forward.y;
-                    unit_MoveMsg.EulerZ = transform.forward.z;
-
-                    SessionComponent.Instance.Session.Send(unit_MoveMsg);
                 }
 
-         
+            }
 
+            if (!canMove)
+            {
+                moveSpeed = 0.5f;
+                animatorComponent.SetFloatValue("MoveSpeed", 0);
+                return;
             }
             else
             {
-                if (!canMove)
-                {
-                    return;
-                }
-                if (Vector3.Distance(transform.position, moveTarget) < 0.1f || Vector3.Dot(moveDir,moveTarget - transform.position)<0)
+                Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5);
+                moveSpeed = Mathf.Clamp(moveSpeed += Time.deltaTime * 10, 0.5f, 1f);
+                animatorComponent.SetFloatValue("MoveSpeed", moveSpeed);
+            }
+            if (!isInPlayerCtr)
+                if (Vector3.Distance(transform.position, moveTarget) < 0.1f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
                 {
                     canMove = false;
-                    transform.position = moveTarget;
-                    animatorComponent.SetFloatValue("MoveSpeed", 0f);
                     return;
                 }
-                animatorComponent.SetFloatValue("MoveSpeed", 1f);
-                Vector3 motion = moveDir * moveSpeed * Time.deltaTime;
-                characterController.Move(motion);
-            }
+            motion += moveDir * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
+            characterController.Move(motion);
 
 
         }
+
+        
 
     }
 }

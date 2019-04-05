@@ -32,7 +32,7 @@ namespace ETHotfix
                         UnitComponent.Instance.MyUnit = v;
                         v.GetComponent<CharacterCtrComponent>().isInPlayerCtr = true;
                         v.GetComponent<CharacterCtrComponent>().cameraComponent = v.AddComponent<CameraComponent>();
-                        
+                        v.AddComponent<CommandComponent>();
                         break;
                     }
 
