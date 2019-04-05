@@ -95,10 +95,6 @@ namespace ETModel
                     targetDirection = (Quaternion.Euler(0, y, 0) * targetDirection).normalized;
                     input_Move.moveDir = targetDirection; // 暂时不发送Y轴可能产生的移动信息
                     GetParent<Unit>().GetComponent<CommandComponent>().CollectCommandInput(input_Move);
-                    canMove = true;
-
-                    moveDir = targetDirection;
-
                     //transform.forward = moveDir;
 
                     //characterController.Move(moveDir * GetParent<Unit>().GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed) * Time.deltaTime);

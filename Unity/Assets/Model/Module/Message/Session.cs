@@ -145,10 +145,10 @@ namespace ETModel
 				object instance = opcodeTypeComponent.GetInstance(opcode);
 				message = this.Network.MessagePacker.DeserializeFrom(instance, memoryStream);
 				
-				if (OpcodeHelper.IsNeedDebugLogMessage(opcode))
-				{
-					Log.Msg(message);
-				}
+				//if (OpcodeHelper.IsNeedDebugLogMessage(opcode))
+				//{
+				//	Log.Msg(message);
+				//}
 			}
 			catch (Exception e)
 			{
@@ -257,18 +257,18 @@ namespace ETModel
 				throw new Exception("session已经被Dispose了");
 			}
 			
-			if (OpcodeHelper.IsNeedDebugLogMessage(opcode) )
-			{
-#if !SERVER
-				if (OpcodeHelper.IsClientHotfixMessage(opcode))
-				{
-				}
-				else
-#endif
-				{
-					//Log.Msg(message);
-				}
-			}
+//			if (OpcodeHelper.IsNeedDebugLogMessage(opcode) )
+//			{
+//#if !SERVER
+//				if (OpcodeHelper.IsClientHotfixMessage(opcode))
+//				{
+//				}
+//				else
+//#endif
+//				{
+//					//Log.Msg(message);
+//				}
+//			}
 
 			MemoryStream stream = this.Stream;
 			

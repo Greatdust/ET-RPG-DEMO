@@ -79,11 +79,10 @@ namespace ETModel
                             inputInfo_Move.Frame = currFrame;
                             inputInfo_Move.MoveDir = new Vector3Info() { X = input_Move.moveDir.x, Y = input_Move.moveDir.y, Z = input_Move.moveDir.z };
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
-
-                            Log.Info(string.Format("frame {0} : 客户端预测位置信息 {1}", currFrame, result_Move.postion));
                             //再预测这一帧的结果
                             Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
                             property_Position.Set(result_Move.postion);
+                            Log.Debug(currFrame+   " 本地预测的当前位置" + result_Move.postion.ToString());
                             unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
                             break;
                     }
@@ -96,7 +95,6 @@ namespace ETModel
 
         public void CollectCommandInput(ICommandInput input)
         {
-            if (currFrame - preActualFrame > maxDiffFrame) return;
             collectedNewInput = true;
             Command command = CommandGCHelper.GetCommand();
             command.commandInput = input;
@@ -106,6 +104,21 @@ namespace ETModel
 
         public void GetCommandResult(UnitStateDelta unitStateDelta)
         {
+            if (currFrame - preActualFrame > maxDiffFrame)
+            {
+                //拉扯回来
+                foreach (var v in unitStateDelta.commandResults.Values)
+                {
+                    switch (v)
+                    {
+                        case CommandResult_Move result:
+                            unit.Position = result.postion;
+                            continue;
+                    }
+                }
+                preActualFrame = currFrame;
+                return;
+            }
             if (preActualFrame != unitStateDelta.frame)
             {
                 //移除上一次的确定帧和接收到的这一帧之间的缓存指令
@@ -129,14 +142,15 @@ namespace ETModel
                     {
                         case CommandResult_Move simulateMove:
                             CommandResult_Move actualMove = unitStateDelta.commandResults[v.commandResult.GetType()] as CommandResult_Move;
-                            if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 0.1f)
+                            Log.Debug("frame  " + unitStateDelta.frame + " 服务器发来的目标位置  " + actualMove.postion.ToString());
+                            Log.Debug("本地计算的当前位置" + simulateMove.postion.ToString());
+                            if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 0.05f)
                             {
                                 continue;
                             }
                             else
                             {
-                                Log.Debug("frame  "+ unitStateDelta.frame + " 服务器发来的目标位置  " + actualMove.postion.ToString());
-                                Log.Debug("本地计算的当前位置" + simulateMove.ToString());
+                              
                                 simulateMove.postion = actualMove.postion;
                                 needRecal = true;
                             }

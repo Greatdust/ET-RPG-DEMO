@@ -23,11 +23,9 @@ namespace ETHotfix
             if (!unitStateComponent.haveInited) return;
             if (unitStateComponent.unitStatesDic.Count == 0) return;
 
-
             //每间隔3帧发一次数据
             if (unitStateComponent.currFrame - unitStateComponent.preSendMsgFrame < sendMsgDelta)
             {
-                
                 unitStateComponent.currFrame++;
                 return;
             }
@@ -54,6 +52,7 @@ namespace ETHotfix
                         commandResultInfo_Move.Pos.Y = postionPro.Get().y;
                         commandResultInfo_Move.Pos.Z = postionPro.Get().z;
                         commandResultInfo_Move.Id = unitStateComponent.unit.Id;
+                        Log.Info("广播角色单位信息");
                         MessageHelper.Broadcast(commandResultInfo_Move);
                         continue;
                 }
