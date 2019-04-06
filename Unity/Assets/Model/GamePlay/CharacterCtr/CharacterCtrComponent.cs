@@ -63,6 +63,7 @@ namespace ETModel
         {
             if (Vector3.Distance(moveTarget, aim) < 0.05f)
             {
+                transform.position = moveTarget;
                 return;
             }
             moveTarget = aim;
@@ -72,6 +73,7 @@ namespace ETModel
             //位置差距小于0.1f ,角度很接近,那就不同步了
             if (distance.magnitude < 0.05f && Mathf.Abs(Quaternion.Angle(transform.rotation, quaDir)) < 10)
             {
+                transform.position = moveTarget;
                 return;
             }
             //transform.forward = moveDir;
@@ -124,6 +126,7 @@ namespace ETModel
                 if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
                 {
                     canMove = false;
+                    transform.position = moveTarget;
                     return;
                 }
             motion += moveDir * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
