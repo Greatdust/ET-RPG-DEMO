@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
 
-namespace BulletSharp {
+namespace BulletSharp
+{
     public class InvalidDataException : Exception {
 
     }

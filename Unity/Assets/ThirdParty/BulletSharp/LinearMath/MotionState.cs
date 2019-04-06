@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 using BulletSharp.Math;
 using AOT;
-using UnityEngine;
 
 namespace BulletSharp
 {
@@ -45,12 +44,11 @@ namespace BulletSharp
             ms.GetWorldTransform(out worldTrans);
         }
 
-		// [MonoPInvokeCallback(typeof(SetWorldTransformUnmanagedDelegate))]
+		[MonoPInvokeCallback(typeof(SetWorldTransformUnmanagedDelegate))]
         static void SetWorldTransformUnmanaged(IntPtr msPtr, ref Matrix worldTrans)
         {
 			//UnityEngine.Debug.Log("Set" + msPtr.ToInt64());
 			MotionState ms = GCHandle.FromIntPtr(msPtr).Target as MotionState;
-			Debug.Log("555555");
             ms.SetWorldTransform(ref worldTrans);
         }
 
@@ -65,10 +63,7 @@ namespace BulletSharp
                 GetWorldTransform(out transform);
                 return transform;
             }
-            set
-            {
-	            SetWorldTransform(ref value);
-            }
+            set { SetWorldTransform(ref value); }
         }
 
 		public void Dispose()

@@ -43,11 +43,7 @@ namespace BulletSharp
 			MotionState ms = GCHandle.FromIntPtr(msPtr).Target as MotionState;
             ms.GetWorldTransform(out worldTrans);
         }
-		/// <summary>
-		/// 位置的更新就是在这里刷新的。
-		/// </summary>
-		/// <param name="msPtr"></param>
-		/// <param name="worldTrans"></param>
+
 		[MonoPInvokeCallback(typeof(SetWorldTransformUnmanagedDelegate))]
         static void SetWorldTransformUnmanaged(IntPtr msPtr, ref Matrix worldTrans)
         {

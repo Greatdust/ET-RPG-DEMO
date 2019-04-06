@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace BulletSharp.Math
@@ -327,7 +326,7 @@ namespace BulletSharp.Math
 
                 if (trace > 0.0f)
                 {
-                    float s = MathF.Sqrt(trace + (1.0f));
+                    float s = UnityEngine.Mathf.Sqrt(trace + (1.0f));
                     temp[3] = (s * (0.5f));
                     s = (0.5f) / s;
 
@@ -342,7 +341,8 @@ namespace BulletSharp.Math
                             (M11 < M33 ? 2 : 0);
                     int j = (i + 1) % 3;
                     int k = (i + 2) % 3;
-                    float s = MathF.Sqrt(this[i,i] - this[j,j] - this[k,k] + 1.0f);
+
+                    float s = UnityEngine.Mathf.Sqrt(this[i,i] - this[j,j] - this[k,k] + 1.0f);
                     temp[i] = s * 0.5f;
                     s = 0.5f / s;
 
@@ -355,7 +355,6 @@ namespace BulletSharp.Math
             set
             {
                 float d = value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W;
-                Debug.Assert(d != 0.0f);
                 float s = 2.0f / d;
                 float xs = value.X * s, ys = value.Y * s, zs = value.Z * s;
                 float wx = value.W * xs, wy = value.W * ys, wz = value.W * zs;

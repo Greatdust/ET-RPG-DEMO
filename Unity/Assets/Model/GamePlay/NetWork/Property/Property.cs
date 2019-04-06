@@ -40,8 +40,34 @@ namespace ETModel
 
         public void Set(Vector3 t)
         {
-            Log.Debug("更新新位置记录 " + t.ToString());
             position = t;
+        }
+
+
+    }
+
+    public class Property_Rotation : IProperty<Quaternion>
+    {
+        private Quaternion value;
+
+        public Quaternion Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_Rotation()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(Quaternion t)
+        {
+            value = t;
         }
 
 
