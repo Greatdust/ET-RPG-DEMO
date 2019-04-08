@@ -56,6 +56,7 @@
     <Compile Include="..\..\Unity\Assets\Model\Base\ProcessHelper.cs">
       <Link>Base/ProcessHelper.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\Bullet\Config\BulletConfigData.cs" Link="Module\Demo\BulletConfigData.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Component\Config\StartConfig.cs">
       <Link>Component\Config\StartConfig.cs</Link>
     </Compile>
@@ -342,6 +343,7 @@
     <Folder Include="Module\Message\Network\TCP\" />
     <Folder Include="Module\Message\MessagePool\" />
     <Folder Include="Module\Numeric\" />
+    <Folder Include="Module\Bullet\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced, Version=1.9.1.9000, Culture=neutral, PublicKeyToken=null">

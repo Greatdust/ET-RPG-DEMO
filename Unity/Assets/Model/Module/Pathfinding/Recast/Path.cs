@@ -345,7 +345,7 @@ namespace PF {
 		 * Allows for very easy scripting.
 		 * \code
 		 * IEnumerator Start () {
-		 *  var path = seeker.StartPath(transform.position, transform.position + transform.forward*10, null);
+		 *  var path = seeker.StartPath(GetParent<Unit>().Position, GetParent<Unit>().Position + transform.forward*10, null);
 		 *  yield return StartCoroutine(path.WaitForPath());
 		 *  // The path is calculated now
 		 * }

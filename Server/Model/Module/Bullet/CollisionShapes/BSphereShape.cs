@@ -5,23 +5,26 @@ using BulletSharp;
 using ETModel;
 
 namespace BulletUnity {
-    public class BBoxShape : BCollisionShape {
 
-        protected Vector3 extents = Vector3.one;
-        public Vector3 Extents
+    public class BSphereShape : BCollisionShape {
+
+        protected float radius = 1f;
+        public float Radius
         {
-            get { return extents; }
+            get { return radius; }
             set
             {
-                if (collisionShapePtr != null && value != extents)
+                if (collisionShapePtr != null && value != radius)
                 {
-                    Log.Error("Cannot change the extents after the bullet shape has been created. Extents is only the initial value " +
+                    Log.Error("Cannot change the radius after the bullet shape has been created. Radius is only the initial value " +
                                     "Use LocalScaling to change the shape of a bullet shape.");
-                } else {
-                    extents = value;
+                }
+                else {
+                    radius = value;
                 }
             }
         }
+
 
         protected Vector3 m_localScaling = Vector3.one;
         public Vector3 LocalScaling
@@ -32,22 +35,23 @@ namespace BulletUnity {
                 m_localScaling = value;
                 if (collisionShapePtr != null)
                 {
-                    ((BoxShape)collisionShapePtr).LocalScaling = value.ToBullet();
+                    ((SphereShape)collisionShapePtr).LocalScaling = value.ToBullet();
                 }
             }
         }
 
+
         public override CollisionShape CopyCollisionShape()
         {
-            BoxShape bs = new BoxShape(extents.ToBullet());
-            bs.LocalScaling = m_localScaling.ToBullet();
-            return bs;
+            SphereShape ss = new SphereShape(radius);
+            ss.LocalScaling = m_localScaling.ToBullet();
+            return ss;
         }
 
         public override CollisionShape GetCollisionShape() {
             if (collisionShapePtr == null) {
-                collisionShapePtr = new BoxShape(extents.ToBullet());
-                ((BoxShape)collisionShapePtr).LocalScaling = m_localScaling.ToBullet();
+                collisionShapePtr = new SphereShape(radius);
+                ((SphereShape)collisionShapePtr).LocalScaling = m_localScaling.ToBullet();
             }
             return collisionShapePtr;
         }

@@ -25,8 +25,8 @@ namespace ETHotfix
                 unit.AddComponent<NumericComponent>();
 
                 Dictionary<Type, IProperty> unitProperty = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position();
-                property_Position.Set(new Vector3(-10, 0, -10));              
+                Property_Position property_Position = new Property_Position(unit);
+                property_Position.Set(new Vector3(-10, 1.2f, -10));              
                 unitProperty.Add(typeof(Property_Position), property_Position);
 
                  unit.AddComponent<UnitStateComponent>().Init(unitProperty);

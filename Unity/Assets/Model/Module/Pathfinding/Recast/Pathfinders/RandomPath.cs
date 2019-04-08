@@ -14,7 +14,7 @@ namespace PF {
 	 * int theGScoreToStopAt = 50000;
 	 *
 	 * // Create a path object
-	 * RandomPath path = RandomPath.Construct(transform.position, theGScoreToStopAt);
+	 * RandomPath path = RandomPath.Construct(GetParent<Unit>().Position, theGScoreToStopAt);
 	 * // Determines the variation in path length that is allowed
 	 * path.spread = 5000;
 	 *

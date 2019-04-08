@@ -86,6 +86,7 @@ namespace BulletUnity
         HashSet<CollisionObject> objsCurrentlyInContactWith = new HashSet<CollisionObject>();
         void FixedUpdate()
         {
+            Debug.Log(1111);
             CollisionWorld collisionWorld = BPhysicsWorld.Get().world;
             collisionWorld.Dispatcher.DispatchAllCollisionPairs(m_ghostObject.OverlappingPairCache, collisionWorld.DispatchInfo, collisionWorld.Dispatcher);
 

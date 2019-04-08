@@ -4,16 +4,11 @@ using System.Collections;
 using BulletSharp;
 using ETModel;
 
-namespace BulletUnity {
+namespace BulletUnity
+{
 
-
-    public class BCapsuleShape : BCollisionShape {
-        public enum CapsuleAxis
-        {
-            x,
-            y,
-            z
-        }
+    public class BConeShape : BCollisionShape
+    {
 
         protected float radius = 1f;
         public float Radius
@@ -31,6 +26,7 @@ namespace BulletUnity {
                 }
             }
         }
+
 
         protected float height = 2f;
         public float Height
@@ -50,23 +46,6 @@ namespace BulletUnity {
         }
 
 
-        protected CapsuleAxis upAxis = CapsuleAxis.y;
-        public CapsuleAxis UpAxis
-        {
-            get { return upAxis; }
-            set
-            {
-                if (collisionShapePtr != null && value != upAxis)
-                {
-                    Log.Error("Cannot change the upAxis after the bullet shape has been created. upAxis is only the initial value " +
-                                    "Use LocalScaling to change the shape of a bullet shape.");
-                }
-                else {
-                    upAxis = value;
-                }
-            }
-        }
-
         protected Vector3 m_localScaling = Vector3.one;
         public Vector3 LocalScaling
         {
@@ -76,42 +55,25 @@ namespace BulletUnity {
                 m_localScaling = value;
                 if (collisionShapePtr != null)
                 {
-                    ((CapsuleShape)collisionShapePtr).LocalScaling = value.ToBullet();
+                    ((ConeShape)collisionShapePtr).LocalScaling = value.ToBullet();
                 }
             }
         }
 
-        CapsuleShape _CreateCapsuleShape()
+
+        public override CollisionShape CopyCollisionShape()
         {
-            CapsuleShape cs = null;
-            if (upAxis == CapsuleAxis.x)
-            {
-                cs = new CapsuleShapeX(radius, height);
-            }
-            else if (upAxis == CapsuleAxis.y)
-            {
-                cs = new CapsuleShape(radius, height);
-            }
-            else if (upAxis == CapsuleAxis.z)
-            {
-                cs = new CapsuleShapeZ(radius, height);
-            }
-            else
-            {
-                Log.Error("invalid axis value");
-            }
+            ConeShape cs = new ConeShape(radius, height);
             cs.LocalScaling = m_localScaling.ToBullet();
             return cs;
         }
 
-        public override CollisionShape CopyCollisionShape()
+        public override CollisionShape GetCollisionShape()
         {
-            return _CreateCapsuleShape();
-        }
-
-        public override CollisionShape GetCollisionShape() {
-            if (collisionShapePtr == null) {
-                collisionShapePtr = _CreateCapsuleShape();
+            if (collisionShapePtr == null)
+            {
+                collisionShapePtr = new ConeShape(radius, height);
+                ((ConeShape)collisionShapePtr).LocalScaling = m_localScaling.ToBullet();
             }
             return collisionShapePtr;
         }

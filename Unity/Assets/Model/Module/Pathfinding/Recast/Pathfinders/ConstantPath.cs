@@ -11,7 +11,7 @@ namespace PF {
 	 * The path can be called like:
 	 * \code
 	 * // Here you create a new path and set how far it should search. Null is for the callback, but the seeker will handle that
-	 * ConstantPath cpath = ConstantPath.Construct(transform.position, 2000, null);
+	 * ConstantPath cpath = ConstantPath.Construct(GetParent<Unit>().Position, 2000, null);
 	 * // Set the seeker to search for the path (where mySeeker is a variable referencing a Seeker component)
 	 * mySeeker.StartPath(cpath, myCallbackFunction);
 	 * \endcode

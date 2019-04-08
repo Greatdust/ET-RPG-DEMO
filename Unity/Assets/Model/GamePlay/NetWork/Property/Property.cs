@@ -21,26 +21,28 @@ namespace ETModel
 
     public class Property_Position :IProperty<Vector3>
     {
-        private Vector3 position;
+        public Unit unit;
+
+        public Property_Position(Unit unit)
+        {
+            this.unit = unit;
+        }
 
         public Vector3 Get()
         {
-            return position;
+            return unit.Position;
         }
         
 
         public IProperty GetCopy()
         {
-            return new Property_Position()
-            {
-                position = this.position
-            };
-            
+            return new Property_Position(unit);
+
         }
 
         public void Set(Vector3 t)
         {
-            position = t;
+            unit.Position = t;
         }
 
 

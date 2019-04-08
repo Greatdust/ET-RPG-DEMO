@@ -120,6 +120,7 @@ namespace App
                         // 配置管理
                         Game.Scene.AddComponent<ConfigComponent>();
 
+                        Game.Scene.AddComponent<PhysicWorldComponent, int>(1001);
                         // recast寻路组件
                         Game.Scene.AddComponent<PathfindingComponent>();
 

@@ -21,52 +21,10 @@ namespace ETModel
 	public sealed class Unit: Entity
 	{
 		public UnitType UnitType { get; private set; }
-
-        private Property_Position property_Position;
-        private Property_Rotation property_Rotation;
 		
-		public Vector3 Position {
-            get
-            {
-                if (property_Position == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                }
-                return property_Position.Get();
-            }
-            set
-            {
-                if (property_Position == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                }
-                property_Position.Set(value);
-            }
-        }
+		public Vector3 Position {get;set;}
 
-        public Quaternion Quaternion
-        {
-            get 
-            {
-                if (property_Rotation == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Rotation = unitState.unitProperty[typeof(Property_Rotation)] as Property_Rotation;
-                }
-                return property_Rotation.Get();
-            }
-            set
-            {
-                if (property_Rotation == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Rotation = unitState.unitProperty[typeof(Property_Rotation)] as Property_Rotation;
-                }
-                property_Rotation.Set(value);
-            }
-        }
+        public Quaternion Rotation { get; set; }
 
 		public void Awake(UnitType unitType)
 		{

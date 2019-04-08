@@ -1,30 +1,29 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.IO;
 using System.Collections;
 using System.Reflection;
-using PF;
-using UnityEngine;
 
-namespace ETModel {
+namespace BulletUnity {
     public static class BSExtensionMethods2 {
 
-        public static BulletSharp.Math.Quaternion ToBullet(this Quaternion v) {
+        public static BulletSharp.Math.Quaternion ToBullet(this UnityEngine.Quaternion v) {
             return new BulletSharp.Math.Quaternion(v.x, v.y, v.z, v.w);
         }
 
-        public static Quaternion ToUnity(this BulletSharp.Math.Quaternion v) {
-            return new Quaternion(v.X, v.Y, v.Z, v.W);
+        public static UnityEngine.Quaternion ToUnity(this BulletSharp.Math.Quaternion v) {
+            return new UnityEngine.Quaternion(v.X, v.Y, v.Z, v.W);
         }
 
-        public static BulletSharp.Math.Vector3 ToBullet(this Vector3 v) {
+        public static BulletSharp.Math.Vector3 ToBullet(this UnityEngine.Vector3 v) {
             return new BulletSharp.Math.Vector3(v.x, v.y, v.z);
         }
 
-        public static Vector3 ToUnity(this BulletSharp.Math.Vector3 v) {
-            return new Vector3(v.X, v.Y, v.Z);
+        public static UnityEngine.Vector3 ToUnity(this BulletSharp.Math.Vector3 v) {
+            return new UnityEngine.Vector3(v.X, v.Y, v.Z);
         }
 
-        public static Matrix4x4 ToUnity(this BulletSharp.Math.Matrix bm) {
+        public static UnityEngine.Matrix4x4 ToUnity(this BulletSharp.Math.Matrix bm) {
             Matrix4x4 um = new Matrix4x4();
             um[0, 0] = bm[0, 0];
             um[0, 1] = bm[1, 0];
@@ -58,7 +57,7 @@ namespace ETModel {
 
                 if (trace > 0.0f)
                 {
-                    float s = Mathf.Sqrt(trace + (1.0f));
+                    float s = UnityEngine.Mathf.Sqrt(trace + (1.0f));
                     temp[3] = (s * (0.5f));
                     s = (0.5f) / s;
 
@@ -78,7 +77,7 @@ namespace ETModel {
                     int j = (i + 1) % 3;
                     int k = (i + 2) % 3;
 
-                    float s = Mathf.Sqrt(this[i,i] - this[j,j] - this[k,k] + 1.0f);
+                    float s = UnityEngine.Mathf.Sqrt(this[i,i] - this[j,j] - this[k,k] + 1.0f);
                     temp[i] = s * 0.5f;
                     s = 0.5f / s;
 
@@ -116,7 +115,7 @@ namespace ETModel {
                 BulletSharp.Math.Quaternion result = new BulletSharp.Math.Quaternion();
                 if (trace > 0.0f)
                 {
-                    sqrt = (float)Mathf.Sqrt(trace + 1.0f);
+                    sqrt = (float)UnityEngine.Mathf.Sqrt(trace + 1.0f);
                     result.W = sqrt * 0.5f;
                     sqrt = 0.5f / sqrt;
 
@@ -126,7 +125,7 @@ namespace ETModel {
                 }
                 else if ((mm11 >= mm22) && (mm11 >= mm33))
                 {
-                    sqrt = (float)Mathf.Sqrt(1.0f + mm11 - mm22 - mm33);
+                    sqrt = (float)UnityEngine.Mathf.Sqrt(1.0f + mm11 - mm22 - mm33);
                     half = 0.5f / sqrt;
 
                     result.X = 0.5f * sqrt;
@@ -136,7 +135,7 @@ namespace ETModel {
                 }
                 else if (mm22 > mm33)
                 {
-                    sqrt = (float)Mathf.Sqrt(1.0f + mm22 - mm11 - mm33);
+                    sqrt = (float)UnityEngine.Mathf.Sqrt(1.0f + mm22 - mm11 - mm33);
                     half = 0.5f / sqrt;
 
                     result.X = (mm21 + mm12) * half;
@@ -146,7 +145,7 @@ namespace ETModel {
                 }
                 else
                 {
-                    sqrt = (float)Mathf.Sqrt(1.0f + mm33 - mm11 - mm22);
+                    sqrt = (float)UnityEngine.Mathf.Sqrt(1.0f + mm33 - mm11 - mm22);
                     half = 0.5f / sqrt;
 
                     result.X = (mm31 + mm13) * half;
@@ -164,7 +163,7 @@ namespace ETModel {
         {
                 /*
                 float d = value.X * value.X + value.Y * value.Y + value.Z * value.Z + value.W * value.W;
-                Debug.Assert(d != 0.0f);
+                UnityEngine.Debug.Assert(d != 0.0f);
                 float s = 2.0f / d;
                 float xs = value.X * s, ys = value.Y * s, zs = value.Z * s;
                 float wx = value.W * xs, wy = value.W * ys, wz = value.W * zs;
@@ -195,13 +194,13 @@ namespace ETModel {
                 bm.M33 = 1.0f - (2.0f * (yy + xx));
         }
 
-        public static BulletSharp.Math.Matrix ToBullet(this Matrix4x4 um) {
+        public static BulletSharp.Math.Matrix ToBullet(this UnityEngine.Matrix4x4 um) {
             BulletSharp.Math.Matrix bm = new BulletSharp.Math.Matrix();
             um.ToBullet(ref bm);
             return bm;
         }
 
-        public static void ToBullet(this Matrix4x4 um, ref BulletSharp.Math.Matrix bm) {
+        public static void ToBullet(this UnityEngine.Matrix4x4 um, ref BulletSharp.Math.Matrix bm) {
             bm[0, 0] = um[0, 0];
             bm[0, 1] = um[1, 0];
             bm[0, 2] = um[2, 0];
@@ -223,13 +222,6 @@ namespace ETModel {
             bm[3, 3] = um[3, 3];
         }
 
-        // public static void SetTransformationFromBulletMatrix(this Transform transform, BulletSharp.Math.Matrix bm) 
-        // {
-        //     Matrix4x4 matrix = bm.ToUnity();  //creates new Unity Matrix4x4
-        //     transform.localPosition = ExtractTranslationFromMatrix(ref matrix);
-        //     transform.localRotation = ExtractRotationFromMatrix(ref matrix);
-        //     transform.localScale = ExtractScaleFromMatrix(ref matrix);
-        // }
 
         /// <summary>
         /// Extract translation from transform matrix.
@@ -299,8 +291,7 @@ namespace ETModel {
         /// <returns>
         /// Scale vector.
         /// </returns>
-        public static Vector3 ExtractScaleFromMatrix(ref Matrix4x4 matrix) 
-        {
+        public static Vector3 ExtractScaleFromMatrix(ref Matrix4x4 matrix) {
             Vector3 scale;
             scale.x = new Vector4(matrix.m00, matrix.m10, matrix.m20, matrix.m30).magnitude;
             scale.y = new Vector4(matrix.m01, matrix.m11, matrix.m21, matrix.m31).magnitude;
@@ -308,8 +299,7 @@ namespace ETModel {
             return scale;
         }
 
-        public static Vector3 ExtractScaleFromMatrix(ref BulletSharp.Math.Matrix matrix) 
-        {
+        public static Vector3 ExtractScaleFromMatrix(ref BulletSharp.Math.Matrix matrix) {
             Vector3 scale;
             scale.x = new Vector4(matrix.M11, matrix.M12, matrix.M13, matrix.M14).magnitude;
             scale.y = new Vector4(matrix.M21, matrix.M22, matrix.M23, matrix.M24).magnitude;
@@ -329,19 +319,6 @@ namespace ETModel {
             localPosition = ExtractTranslationFromMatrix(ref matrix);
             localRotation = ExtractRotationFromMatrix(ref matrix);
             localScale = ExtractScaleFromMatrix(ref matrix);
-        }
-
-        /// <summary>
-        /// Set transform component from TRS matrix.
-        /// </summary>
-        /// <param name="transform">Transform component.</param>
-        /// <param name="matrix">Transform matrix. This parameter is passed by reference
-        /// to improve performance; no changes will be made to it.</param>
-        public static void SetTransformFromMatrix(GraphTransform transform, ref Matrix4x4 matrix) 
-        {
-            // transform.localPosition = ExtractTranslationFromMatrix(ref matrix);
-            // transform.localRotation = ExtractRotationFromMatrix(ref matrix);
-            // transform.localScale = ExtractScaleFromMatrix(ref matrix);
         }
 
 
@@ -369,8 +346,7 @@ namespace ETModel {
         /// <returns>
         /// The translation transform matrix.
         /// </returns>
-        public static Matrix4x4 TranslationMatrix(Vector3 offset) 
-        {
+        public static Matrix4x4 TranslationMatrix(Vector3 offset) {
             Matrix4x4 matrix = IdentityMatrix;
             matrix.m03 = offset.x;
             matrix.m13 = offset.y;

@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using BulletSharp;
+using ETModel;
 
-namespace ETModel
+namespace BulletUnity
 {
+    
+
 
     public class BPairCachingGhostObject : BGhostObject
     {
@@ -17,7 +20,7 @@ namespace ETModel
 
         internal override bool _BuildCollisionObject()
         {
-            BPhysicsWorld world = BPhysicsWorld.Get;
+            BPhysicsWorld world = BPhysicsWorld.Get();
             if (m_collisionObject != null)
             {
                 if (isInWorld && world != null)
@@ -26,19 +29,7 @@ namespace ETModel
                 }
             }
 
-            // if (transform.localScale != UnityEngine.Vector3.one)
-            // {
-            //     Log.Error("The local scale on this collision shape is not one. Bullet physics does not support scaling on a rigid body world transform. Instead alter the dimensions of the CollisionShape.");
-            // }
-
-            m_collisionShape =this.GetParent<Unit>().GetComponent<BCollisionShape>();
-            if (m_collisionShape == null)
-            {
-                Log.Error("There was no collision shape component attached to this BRigidBody. " );
-                return false;
-            }
-
-            CollisionShape cs = m_collisionShape.GetCollisionShape;
+            CollisionShape cs = m_collisionShape.GetCollisionShape();
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
 
 
@@ -47,9 +38,9 @@ namespace ETModel
                 m_collisionObject = new BulletSharp.PairCachingGhostObject();
                 m_collisionObject.CollisionShape = cs;
                 BulletSharp.Math.Matrix worldTrans;
-                BulletSharp.Math.Quaternion q = this.GetParent<Unit>().Quaternion.ToBullet();
+                BulletSharp.Math.Quaternion q = GetParent<Unit>().Rotation.ToBullet();
                 BulletSharp.Math.Matrix.RotationQuaternion(ref q, out worldTrans);
-                worldTrans.Origin = this.GetParent<Unit>().Position.ToBullet();
+                worldTrans.Origin = GetParent<Unit>().Position.ToBullet();
                 m_collisionObject.WorldTransform = worldTrans;
                 m_collisionObject.UserObject = this;
                 m_collisionObject.CollisionFlags = m_collisionObject.CollisionFlags | BulletSharp.CollisionFlags.KinematicObject;
@@ -57,9 +48,9 @@ namespace ETModel
             }
             else {
                 BulletSharp.Math.Matrix worldTrans;
-                BulletSharp.Math.Quaternion q = this.GetParent<Unit>().Quaternion.ToBullet();
+                BulletSharp.Math.Quaternion q = GetParent<Unit>().Rotation.ToBullet();
                 BulletSharp.Math.Matrix.RotationQuaternion(ref q, out worldTrans);
-                worldTrans.Origin = this.GetParent<Unit>().Position.ToBullet();
+                worldTrans.Origin = GetParent<Unit>().Position.ToBullet();
                 m_collisionObject.WorldTransform = worldTrans;
                 m_collisionObject.CollisionShape = cs;
                 m_collisionObject.CollisionFlags = m_collisionObject.CollisionFlags | BulletSharp.CollisionFlags.KinematicObject;
@@ -78,7 +69,6 @@ namespace ETModel
             if ((flags & BulletSharp.CollisionFlags.KinematicObject) == BulletSharp.CollisionFlags.KinematicObject) s += " kinematic,";
             if ((flags & BulletSharp.CollisionFlags.NoContactResponse) == BulletSharp.CollisionFlags.NoContactResponse) s += " NoContactResponse,";
             if ((flags & BulletSharp.CollisionFlags.StaticObject) == BulletSharp.CollisionFlags.StaticObject) s += " staticObj,";
-            Log.Debug(s);
 
         }
 
@@ -86,7 +76,7 @@ namespace ETModel
         HashSet<CollisionObject> objsCurrentlyInContactWith = new HashSet<CollisionObject>();
         void FixedUpdate()
         {
-            CollisionWorld collisionWorld = BPhysicsWorld.Get.world;
+            CollisionWorld collisionWorld = BPhysicsWorld.Get().world;
             collisionWorld.Dispatcher.DispatchAllCollisionPairs(m_ghostObject.OverlappingPairCache, collisionWorld.DispatchInfo, collisionWorld.Dispatcher);
 
             //m_currentPosition = m_ghostObject.WorldTransform.Origin;
@@ -153,17 +143,17 @@ namespace ETModel
          
         public override void BOnTriggerEnter(CollisionObject other, AlignedManifoldArray manifoldArray)
         {
-            Log.Debug("Enter with " + other.UserObject + " fixedFrame " + BPhysicsWorld.Get.frameCount);
+       
         }
 
         public override void BOnTriggerStay(CollisionObject other, AlignedManifoldArray manifoldArray)
         {
-            Log.Debug("Stay with " + other.UserObject + " fixedFrame " + BPhysicsWorld.Get.frameCount);
+     
         }
 
         public override void BOnTriggerExit(CollisionObject other)
         {
-            Log.Debug("Exit with " + other.UserObject + " fixedFrame " + BPhysicsWorld.Get.frameCount);
+      
         }
         //============
     }

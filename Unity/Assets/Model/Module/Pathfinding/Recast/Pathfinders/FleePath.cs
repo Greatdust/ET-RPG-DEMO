@@ -15,7 +15,7 @@ namespace PF {
 	 * int theGScoreToStopAt = 10000;
 	 *
 	 * // Create a path object
-	 * FleePath path = FleePath.Construct (transform.position, thePointToFleeFrom, theGScoreToStopAt);
+	 * FleePath path = FleePath.Construct (GetParent<Unit>().Position, thePointToFleeFrom, theGScoreToStopAt);
 	 * // This is how strongly it will try to flee, if you set it to 0 it will behave like a RandomPath
 	 * path.aimStrength = 1;
 	 * // Determines the variation in path length that is allowed

@@ -25,7 +25,7 @@ namespace ETHotfix
                 unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);
 
                 Dictionary<Type, IProperty> unitStateList = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position();
+                Property_Position property_Position = new Property_Position(unit);
                 property_Position.Set(unit.Position);
                 unitStateList.Add(typeof(Property_Position), property_Position);
                 unit.GetComponent<UnitStateComponent>().Init(unitStateList);

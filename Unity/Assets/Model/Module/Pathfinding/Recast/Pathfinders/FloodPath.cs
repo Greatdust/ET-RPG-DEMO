@@ -28,9 +28,9 @@ namespace PF {
 	 * }
 	 * \endcode
 	 *
-	 * When searching for a new path to \a someTargetPosition from let's say \a transform.position, you do
+	 * When searching for a new path to \a someTargetPosition from let's say \a GetParent<Unit>().Position, you do
 	 * \code
-	 * FloodPathTracer fpathTrace = FloodPathTracer.Construct (transform.position,fpath,null);
+	 * FloodPathTracer fpathTrace = FloodPathTracer.Construct (GetParent<Unit>().Position,fpath,null);
 	 * seeker.StartPath (fpathTrace,OnPathComplete);
 	 * \endcode
 	 * Where OnPathComplete is your callback function.
