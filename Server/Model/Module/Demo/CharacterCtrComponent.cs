@@ -70,6 +70,7 @@ namespace ETModel
 
             moveTarget = aim;
             Vector3 distance = moveTarget - transform.Position;
+            //Vector3 distance = new Vector3(moveTarget.x - transform.Position.x, 0, moveTarget.z - transform.Position.z);
             moveDir = distance.normalized;
             //transform.forward = moveDir;
             canMove = true;

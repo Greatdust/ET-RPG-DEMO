@@ -18,7 +18,7 @@ namespace ETModel
 		public void Awake()
 		{
             // 这里初始化base值
-            Set(NumericType.SpeedBase, 5.0f);
+            Set(NumericType.SpeedBase, 7.0f);
 		}
 
 		public float GetAsFloat(NumericType numericType)

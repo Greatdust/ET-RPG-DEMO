@@ -21,12 +21,12 @@ namespace ETHotfix
 				}
 				Unit unit = UnitFactory.Create(unitInfo.UnitId);
 
-				unit.Position = new Vector3(unitInfo.Position.X,unitInfo.Position.Y,unitInfo.Position.Z);
+                Vector3 postion = new Vector3(unitInfo.Position.X, unitInfo.Position.Y, unitInfo.Position.Z);
                 unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);
-
+                unit.Position = postion + new Vector3(0, 0.5f, 0);// 防止掉下去
                 Dictionary<Type, IProperty> unitStateList = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position(unit);
-                property_Position.Set(unit.Position);
+                Property_Position property_Position = new Property_Position();
+                property_Position.Set(postion );// 防止掉下去
                 unitStateList.Add(typeof(Property_Position), property_Position);
                 unit.GetComponent<UnitStateComponent>().Init(unitStateList);
                 

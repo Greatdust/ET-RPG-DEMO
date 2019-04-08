@@ -26,9 +26,12 @@ namespace ETHotfix
                 unit.AddComponent<NumericComponent>();
 
                 Dictionary<Type, IProperty> unitProperty = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position(unit);
+                Property_Position property_Position = new Property_Position();
                 property_Position.Set(new Vector3(-10, 2f, -10));
+                Property_Rotation property_Rotation = new Property_Rotation();
+                property_Rotation.Set(Quaternion.identity);
                 unitProperty.Add(typeof(Property_Position), property_Position);
+                unitProperty.Add(typeof(Property_Rotation), property_Rotation);
 
                 UnitStateComponent stateCom = unit.AddComponent<UnitStateComponent>();
                 stateCom.Init(unitProperty);

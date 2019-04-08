@@ -36,8 +36,10 @@ public static class BulletDataLoadTool
         for (int i = 0; i < boxShapeConfigs.Count; i++)
         {
             Unit unit = ComponentFactory.CreateWithId<Unit>(IdGenerater.GenerateId());
+            unit.AddComponent<UnitStateComponent>(); // 因为是静态物体,所以不加入全局的UnitStateMgrComponent中
             BBoxShape bBoxShape = unit.AddComponent<BBoxShape>();
             unit.Position = new Vector3((float)boxShapeConfigs[i].postion_x, (float)boxShapeConfigs[i].postion_y, (float)boxShapeConfigs[i].postion_z);
+            unit.Rotation = Quaternion.identity;
             bBoxShape.Extents = new Vector3((float)boxShapeConfigs[i].extents_x, (float)boxShapeConfigs[i].extents_y, (float)boxShapeConfigs[i].extents_z);
             BCollisionObject bCollisionObject = unit.AddComponent<BCollisionObject,BCollisionShape>(bBoxShape);
             bCollisionObject.collisionFlags = CollisionFlags.StaticObject;

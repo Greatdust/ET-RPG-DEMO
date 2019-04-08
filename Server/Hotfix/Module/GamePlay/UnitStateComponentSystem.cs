@@ -103,6 +103,8 @@ namespace ETHotfix
         {
             try
             {
+
+                CommandInput_Move commandInput_Move = commandInput as CommandInput_Move;
                 unitStateComponent.collectInput = true;
                 if (unitStateComponent.currGetInputFrame < frame)
                     unitStateComponent.currGetInputFrame = frame;

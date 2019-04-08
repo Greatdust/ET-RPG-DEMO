@@ -52,7 +52,7 @@ namespace ETModel
         private NumericComponent numericComponent;
 
         private float moveSpeed = 0;
-
+        public UnitStateComponent unitState;
         public void Awake()
         {
             transform = GetParent<Unit>().GameObject.transform;
@@ -61,18 +61,18 @@ namespace ETModel
             input_Move = new CommandInput_Move();
             numericComponent = GetParent<Unit>().GetComponent<NumericComponent>();
             bCharacterController = GetParent<Unit>().GameObject.GetComponent<BCharacterController>();
+            unitState = GetParent<Unit>().GetComponent<UnitStateComponent>();
         }
 
         public void MoveTo(Vector3 aim)
         {
-            if (Vector3.Distance(transform.position, aim) < 0.05f)
+            moveTarget = aim;
+            Vector3 distance = new Vector3(moveTarget.x - transform.position.x, 0, moveTarget.z - transform.position.z);
+            if (distance.magnitude < 0.05f)
             {
                 bCharacterController.SetPosition(aim);
                 return;
             }
-
-            moveTarget = aim;
-            Vector3 distance = moveTarget - transform.position;
             moveDir = distance.normalized;
             //transform.forward = moveDir;
             canMove = true;
@@ -93,7 +93,7 @@ namespace ETModel
                     Vector3 targetDirection = new Vector3(moveLeft, 0, moveForward);
                     float y = Camera.main.transform.rotation.eulerAngles.y;
                     targetDirection = (Quaternion.Euler(0, y, 0) * targetDirection).normalized;
-                    input_Move.moveDir = targetDirection; // 暂时不发送Y轴可能产生的移动信息
+                    input_Move.moveDir = new Vector3(targetDirection.x, 0, targetDirection.z); // 暂时不发送Y轴可能产生的移动信息
                     GetParent<Unit>().GetComponent<CommandComponent>().CollectCommandInput(input_Move);
                     //transform.forward = moveDir;
 
@@ -112,18 +112,22 @@ namespace ETModel
             {
                 animatorComponent.SetFloatValue("MoveSpeed", 1);
             }
+            //Log.Debug("移动方向"+ moveDir.ToString());
             Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
-            bCharacterController.ChangeRotation(Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5));
+            bCharacterController.ChangeRotation(quaDir);
+           // bCharacterController.ChangeRotation(Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5));
             if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
             {
                 canMove = false;
                 bCharacterController.SetPosition(moveTarget);
                 return;
             };
-            bCharacterController.Move(moveDir * Time.fixedDeltaTime * numericComponent.GetAsFloat(NumericType.Speed));
 
+            //因为未知的原因,Bullet的角色移动,速度比正常情况下要慢一倍,所以这里要额外*2 .这个速度不影响最终位置
+            bCharacterController.Move(moveDir * EventSystem.FixedUpdateTime * numericComponent.GetAsFloat(NumericType.Speed) );
 
         }
+
 
         
 

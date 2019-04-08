@@ -17,8 +17,8 @@ namespace ETModel
 
             unit.AddComponent<NumericComponent>();
             unit.AddComponent<AnimatorComponent>();
-            unit.AddComponent<CharacterCtrComponent>();
             unit.AddComponent<UnitStateComponent>();
+            unit.AddComponent<CharacterCtrComponent>();
             unit.AddComponent<TurnComponent>();
 
             unitComponent.Add(unit);

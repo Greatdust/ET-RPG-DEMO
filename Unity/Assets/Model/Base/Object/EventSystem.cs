@@ -20,7 +20,7 @@ namespace ETModel
             get
             {
 #if !SERVER
-                return UnityEngine.Time.fixedDeltaTime;
+                return fixedUpdateTimeDelta;
 #else
                 return fixedUpdateTimeDelta;
 #endif

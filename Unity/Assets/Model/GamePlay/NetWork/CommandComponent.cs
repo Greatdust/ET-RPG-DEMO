@@ -58,6 +58,7 @@ namespace ETModel
 
         public void FixedUpdate()
         {
+            //TODO; 和上一次服务器确认帧相差多少之后,提示网络有问题
             simulateFrame++;
             //先上传这一帧的操作,同时缓存操作,然后客户端自己模拟操作的结果
             if (collectedNewInput)
@@ -75,13 +76,12 @@ namespace ETModel
 
                             CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
                             v.commandResult = result_Move;
-
                             //每秒最多发送60次
                             inputInfo_Move.Frame = simulateFrame;
                             inputInfo_Move.MoveDir = new Vector3Info() { X = input_Move.moveDir.x, Y = input_Move.moveDir.y, Z = input_Move.moveDir.z };
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
 
-                            Log.Debug(string.Format("预测位置{3}:   {0},{1},{2}", result_Move.postion.x, result_Move.postion.y, result_Move.postion.z, simulateFrame));
+      
                             //再预测这一帧的结果
                             //Log.Debug("frame : " + simulateFrame + " 预测位置:" + result_Move.postion);
                             //unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
@@ -110,22 +110,44 @@ namespace ETModel
                 switch (v)
                 {
                     case CommandResult_Move result:
-                        Log.Debug(string.Format("服务器发送过来的位置{3}:   {0},{1},{2}", result.postion.x, result.postion.y, result.postion.z, unitStateDelta.frame));
+                        Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+                        property_Position.Set(result.postion);
                         unit.GetComponent<CharacterCtrComponent>().MoveTo(result.postion);
                         continue;
                 }
             }
-            return;
-            //延迟太高了,迟迟收不到服务器发过来的确认消息
-            if (simulateFrame - preActualFrame > maxDiffFrame)
+
+            if (preActualFrame == 0)
             {
-                simulateFrame = preActualFrame;
+                //考虑到初始位置需要经过一段时间降落在地
+                foreach (var v in unitStateDelta.commandResults.Values)
+                {
+                    switch (v)
+                    {
+                        case CommandResult_Move result:
+                            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+                            property_Position.Set(result.postion);
+                            unit.Position = result.postion;
+                            continue;
+                    }
+                }
+
+            }
+
+            //延迟太高了,迟迟收不到服务器发过来的确认消息
+            if (simulateFrame - unitStateDelta.frame > maxDiffFrame)
+            {
+                Log.Debug("拉扯回来");
+                simulateFrame = unitStateDelta.frame;
+                preActualFrame = simulateFrame;
                 //拉扯回来
                 foreach (var v in unitStateDelta.commandResults.Values)
                 {
                     switch (v)
                     {
                         case CommandResult_Move result:
+                            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+                            property_Position.Set(result.postion);
                             unit.Position = result.postion;
                             continue;
                     }
@@ -155,18 +177,18 @@ namespace ETModel
                     {
                         case CommandResult_Move simulateMove:
                             CommandResult_Move actualMove = unitStateDelta.commandResults[v.commandResult.GetType()] as CommandResult_Move;
-                            Log.Debug("frame  " + unitStateDelta.frame + " 服务器发来的目标位置  " + actualMove.postion.ToString());
-                            Log.Debug("本地计算的当前位置" + simulateMove.postion.ToString());
-                            if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 0.05f)
+                            //Log.Debug("frame : " + simulateFrame + " 服务器确认位置:" + actualMove.postion);
+                            if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 1f)
                             {
                                 continue;
                             }
                             else
                             {
-                              
+
                                 simulateMove.postion = actualMove.postion;
                                 needRecal = true;
-                                unit.Position = actualMove.postion;
+                                Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+                                property_Position.Set(actualMove.postion);
                             }
                             break;
                     }
@@ -193,13 +215,17 @@ namespace ETModel
                         switch (v.commandInput)
                         {
                             case CommandInput_Move input_Move:
+
                                 CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
                                 v.commandResult = result_Move;
-                                unit.Position = result_Move.postion;
+                                //直接拉扯
                                 break;
                         }
                     }
             }
+            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+            //直接拉扯
+            unit.Position = property_Position.Get();
 
 
         }

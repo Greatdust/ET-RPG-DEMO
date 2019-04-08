@@ -7,13 +7,13 @@ public class MoveCharacterController : MonoBehaviour {
     public BCharacterController go;
 
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 	    if (Input.GetKey(KeyCode.UpArrow))
         {
-            go.Move(go.transform.forward * .1f);
+            go.Move(go.transform.forward * Time.fixedDeltaTime * 5);
         } else if (Input.GetKey(KeyCode.DownArrow))
         {
-            go.Move(-go.transform.forward * .1f);
+            go.Move(-go.transform.forward * Time.fixedDeltaTime * 5);
         } else
         {
             go.Move(Vector3.zero);
