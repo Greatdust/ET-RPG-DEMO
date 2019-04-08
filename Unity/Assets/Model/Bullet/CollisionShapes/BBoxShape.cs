@@ -39,6 +39,10 @@ namespace BulletUnity {
                 }
             }
         }
+        private void Reset()
+        {
+            this.Extents = transform.localScale * 0.5f;
+        }
 
         public override void OnDrawGizmosSelected() {
             if (drawGizmo == false)

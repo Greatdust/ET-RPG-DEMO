@@ -19,6 +19,8 @@ namespace BulletUnity
         List<PersistentManifoldList> newContacts = new List<PersistentManifoldList>();
         List<CollisionObject> objectsToRemove = new List<CollisionObject>();
 
+
+
         public override void Start()
         {
 

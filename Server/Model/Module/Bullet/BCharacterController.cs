@@ -15,6 +15,15 @@ namespace BulletUnity
     }
 
     [ObjectSystem]
+    public class BCharacterControllerStartSystem : StartSystem<BCharacterController>
+    {
+        public override void Start(BCharacterController self)
+        {
+            self.Start();
+        }
+    }
+
+    [ObjectSystem]
     public class BCharacterControllerFixedUpdateSystem : FixedUpdateSystem<BCharacterController>
     {
         public override void FixedUpdate(BCharacterController self)
@@ -89,6 +98,7 @@ namespace BulletUnity
 
         public void Move(Vector3 displacement)
         {
+            if (m_characterController == null) return;
             m_characterController.SetWalkDirection(displacement.ToBullet());
         }
 

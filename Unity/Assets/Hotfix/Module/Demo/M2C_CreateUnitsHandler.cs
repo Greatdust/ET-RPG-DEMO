@@ -29,7 +29,7 @@ namespace ETHotfix
                 property_Position.Set(unit.Position);
                 unitStateList.Add(typeof(Property_Position), property_Position);
                 unit.GetComponent<UnitStateComponent>().Init(unitStateList);
-
+                
             }
 		}
 	}

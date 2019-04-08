@@ -203,6 +203,7 @@ namespace BulletUnity
                 m_startHasBeenCalled = true;
                 AddObjectToBulletWorld();
             }
+            OnEnable();
         }
 
         //OnEnable and OnDisable are called when a game object is Activated and Deactivated. 
@@ -238,6 +239,7 @@ namespace BulletUnity
         {
             if (IsDisposed)
                 return;
+            OnDisable();
             base.Dispose();
             Dispose(true);
             GC.SuppressFinalize(this);

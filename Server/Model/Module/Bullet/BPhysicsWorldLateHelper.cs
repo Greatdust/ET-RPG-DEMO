@@ -43,14 +43,14 @@ namespace BulletUnity
         internal DiscreteDynamicsWorld m_ddWorld;
         internal CollisionWorld m_world;
         internal int m__frameCount = 0;
-        internal float m_lastInterpolationTime = 0;
-        internal float m_elapsedBetweenFixedFrames = 0;
-        internal float m_fixedTimeStep;
+        internal long m_lastInterpolationTime = 0;
+        internal long m_elapsedBetweenFixedFrames = 0;
+        internal long m_fixedTimeStep;
 
         public void Awake()
         {
-            m_fixedTimeStep = EventSystem.FixedUpdateTime;
-            m_lastInterpolationTime = TimeHelper.ClientNowSeconds();
+            m_fixedTimeStep =(long) (EventSystem.FixedUpdateTime*1000);
+            m_lastInterpolationTime = TimeHelper.ClientNow();
             m_elapsedBetweenFixedFrames = 0;
         }
 
@@ -63,12 +63,12 @@ namespace BulletUnity
                     in order to keep the simulation real-time, the maximum number of substeps can be clamped to 'maxSubSteps'.
                     You can disable subdividing the timestep/substepping by passing maxSubSteps=0 as second argument to stepSimulation, but in that case you have to keep the timeStep constant. */
 
-                float deltaTime = m_fixedTimeStep - m_elapsedBetweenFixedFrames;
-                int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep);
+                long deltaTime = m_fixedTimeStep - m_elapsedBetweenFixedFrames;
+                int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep / 1000.0f);
          
                 m__frameCount += numSteps;
-                m_lastInterpolationTime = TimeHelper.ClientNowSeconds();
-                m_elapsedBetweenFixedFrames = 0f;
+                m_lastInterpolationTime = TimeHelper.ClientNow();
+                m_elapsedBetweenFixedFrames = 0;
                 numUpdates = 0;
             }
 
@@ -79,14 +79,14 @@ namespace BulletUnity
             }
             //This is needed for rigidBody interpolation. The motion states will update the positions of the rigidbodies
             {
-                float deltaTime = TimeHelper.ClientNowSeconds() - m_lastInterpolationTime;
+                long deltaTime = TimeHelper.ClientNow() - m_lastInterpolationTime;
 
                 // We want to ensure that each bullet sim step corresponds to exactly one Unity FixedUpdate timestep
                 if (deltaTime > 0f && (m_elapsedBetweenFixedFrames + deltaTime) < m_fixedTimeStep)
                 {
                     m_elapsedBetweenFixedFrames += deltaTime;
-                    int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep);
-                    m_lastInterpolationTime = TimeHelper.ClientNowSeconds();
+                    int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep / 1000.0f);
+                    m_lastInterpolationTime = TimeHelper.ClientNow();
                     numUpdates++;
                 }
             }

@@ -12,7 +12,6 @@ namespace ETHotfix
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
             CommandResult_Move commandResult_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
             commandResult_Move.postion = new Vector3(message.Pos.X, message.Pos.Y, message.Pos.Z);
-            Log.Debug("收到广播消息了");
             unitStateComponent.ReceivedPacket(message.Frame, commandResult_Move);
 
 		}

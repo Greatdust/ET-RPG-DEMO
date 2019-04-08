@@ -5,12 +5,14 @@ using BulletUnity;
 using UnityEditor.SceneManagement;
 
 [CustomEditor(typeof(BBoxShape))]
+[CanEditMultipleObjects]
 public class BBoxShapeEditor : Editor {
 
 	BBoxShape script;
 	//SerializedProperty extents;
     //SerializedProperty localScaling;
 
+    
     void OnEnable() {
 		script = (BBoxShape)target;
 		//GetSerializedProperties();

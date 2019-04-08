@@ -164,7 +164,7 @@ namespace ETModel
             //等待上一帧的所有信息全收到了,再发上一帧的数据
             if (unit.GetComponent<CommandComponent>() != null)
             {
-                GetParent<Unit>().GetComponent<CommandComponent>().currFrame = remoteActualFrame;
+                GetParent<Unit>().GetComponent<CommandComponent>().simulateFrame = remoteActualFrame;
                 unit.GetComponent<CommandComponent>().GetCommandResult(unitState);
             }
         }

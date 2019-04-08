@@ -36,11 +36,12 @@ namespace ETModel
 
         private CommandInputInfo_Move inputInfo_Move = new CommandInputInfo_Move();
 
-        public int currFrame;
+        public int simulateFrame;//预测帧
+
 
         public int preActualFrame; //上一次收到服务器发来的确定帧
 
-        private const int maxDiffFrame = 30;//当前帧和上一次服务器发来的帧之间差距超过多少,就不模拟了
+        private const int maxDiffFrame = 60;//当前帧和上一次服务器发来的帧之间差距超过多少,就不模拟了
 
 
         public UnitStateComponent unitState;
@@ -57,15 +58,15 @@ namespace ETModel
 
         public void FixedUpdate()
         {
+            simulateFrame++;
             //先上传这一帧的操作,同时缓存操作,然后客户端自己模拟操作的结果
             if (collectedNewInput)
             {
-                currFrame++;
                 collectedNewInput = false;
-                cacheCommands[currFrame] = new List<Command>();
-                cacheCommands[currFrame].AddRange(currCommands.Values);
+                cacheCommands[simulateFrame] = new List<Command>();
+                cacheCommands[simulateFrame].AddRange(currCommands.Values);
                 currCommands.Clear();
-                foreach (var v in cacheCommands[currFrame])
+                foreach (var v in cacheCommands[simulateFrame])
                 {
 
                     switch (v.commandInput)
@@ -76,14 +77,14 @@ namespace ETModel
                             v.commandResult = result_Move;
 
                             //每秒最多发送60次
-                            inputInfo_Move.Frame = currFrame;
+                            inputInfo_Move.Frame = simulateFrame;
                             inputInfo_Move.MoveDir = new Vector3Info() { X = input_Move.moveDir.x, Y = input_Move.moveDir.y, Z = input_Move.moveDir.z };
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
+
+                            Log.Debug(string.Format("预测位置{3}:   {0},{1},{2}", result_Move.postion.x, result_Move.postion.y, result_Move.postion.z, simulateFrame));
                             //再预测这一帧的结果
-                            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                            property_Position.Set(result_Move.postion);
-                            Log.Debug(currFrame+   " 本地预测的当前位置" + result_Move.postion.ToString());
-                            unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
+                            //Log.Debug("frame : " + simulateFrame + " 预测位置:" + result_Move.postion);
+                            //unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
                             break;
                     }
                 }
@@ -104,8 +105,21 @@ namespace ETModel
 
         public void GetCommandResult(UnitStateDelta unitStateDelta)
         {
-            if (currFrame - preActualFrame > maxDiffFrame)
+            foreach (var v in unitStateDelta.commandResults.Values)
             {
+                switch (v)
+                {
+                    case CommandResult_Move result:
+                        Log.Debug(string.Format("服务器发送过来的位置{3}:   {0},{1},{2}", result.postion.x, result.postion.y, result.postion.z, unitStateDelta.frame));
+                        unit.GetComponent<CharacterCtrComponent>().MoveTo(result.postion);
+                        continue;
+                }
+            }
+            return;
+            //延迟太高了,迟迟收不到服务器发过来的确认消息
+            if (simulateFrame - preActualFrame > maxDiffFrame)
+            {
+                simulateFrame = preActualFrame;
                 //拉扯回来
                 foreach (var v in unitStateDelta.commandResults.Values)
                 {
@@ -116,7 +130,6 @@ namespace ETModel
                             continue;
                     }
                 }
-                preActualFrame = currFrame;
                 return;
             }
             if (preActualFrame != unitStateDelta.frame)
@@ -153,6 +166,7 @@ namespace ETModel
                               
                                 simulateMove.postion = actualMove.postion;
                                 needRecal = true;
+                                unit.Position = actualMove.postion;
                             }
                             break;
                     }
@@ -169,11 +183,8 @@ namespace ETModel
         //从哪一帧开始重新计算
         public void ReCal(int startFrame)
         {
-            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
 
-            bool init = false;
-
-            for (int i = startFrame; i <= currFrame; i++)
+            for (int i = startFrame; i <= simulateFrame; i++)
             {
                 if (cacheCommands.ContainsKey(i))
                     foreach (var v in cacheCommands[i])
@@ -182,25 +193,14 @@ namespace ETModel
                         switch (v.commandInput)
                         {
                             case CommandInput_Move input_Move:
-                                if (!init)
-                                {
-                                    CommandResult_Move commandResult = v.commandResult as CommandResult_Move;
-                                    property_Position.Set(commandResult.postion);
-                                }
-                                else
-                                {
-                                    CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
-                                    property_Position.Set(result_Move.postion);
-                                }
+                                CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
+                                v.commandResult = result_Move;
+                                unit.Position = result_Move.postion;
                                 break;
                         }
                     }
             }
 
-            //应用模拟到现在的结果
-            Vector3 aimPos = property_Position.Get();
-            //Vector3 moveDelta = aimPos - unit.Position;
-            unit.GetComponent<CharacterCtrComponent>().MoveTo(aimPos);
 
         }
 

@@ -51,6 +51,8 @@ message G2C_EnterMap // IResponse
 	int64 UnitId = 1;
 	// 所有的unit
 	repeated UnitInfo Units = 2;
+	int32 frame = 3;
+	
 }
 
 message C2R_HeartBeat //IRequest

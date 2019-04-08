@@ -35,11 +35,7 @@ namespace BulletUnity
                     world.RemoveCollisionObject(this);
                 }
             }
-
-            if (transform.localScale != UnityEngine.Vector3.one)
-            {
-                Debug.LogError("The local scale on this collision shape is not one. Bullet physics does not support scaling on a rigid body world transform. Instead alter the dimensions of the CollisionShape.");
-            }
+            Debug.Log("Test");
 
             m_collisionShape = GetComponent<BCollisionShape>();
             if (m_collisionShape == null)
@@ -89,6 +85,7 @@ namespace BulletUnity
 
         public void Move(Vector3 displacement)
         {
+            if (m_characterController == null) return;
             m_characterController.SetWalkDirection(displacement.ToBullet());
         }
 
@@ -107,6 +104,17 @@ namespace BulletUnity
             orn *= BulletSharp.Math.Matrix.RotationAxis(upDir, turnAmount);
             orn.Row4 = new BulletSharp.Math.Vector4(pos.X, pos.Y, pos.Z, 1);
             m_collisionObject.WorldTransform = orn;
+        }
+
+        public void ChangeRotation(Quaternion quaternion)
+        {
+            BulletSharp.Math.Matrix newTrans = m_collisionObject.WorldTransform;
+            BulletSharp.Math.Vector3 pos = newTrans.Origin;
+            BulletSharp.Math.Quaternion q = quaternion.ToBullet();
+            BulletSharp.Math.Matrix.RotationQuaternion(ref q, out newTrans);
+            newTrans.Row4 = new BulletSharp.Math.Vector4(pos.X, pos.Y, pos.Z, 1);
+            m_collisionObject.WorldTransform = newTrans;
+            transform.rotation = quaternion;
         }
 
         public void FixedUpdate()

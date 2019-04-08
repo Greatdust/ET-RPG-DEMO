@@ -549,12 +549,24 @@ namespace ETModel {
       set { units_ = value; }
     }
 
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (UnitId != 0L) {
         output.WriteRawTag(8);
         output.WriteInt64(UnitId);
       }
       units_.WriteTo(output, _repeated_units_codec);
+      if (Frame != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Frame);
+      }
       if (RpcId != 0) {
         output.WriteRawTag(208, 5);
         output.WriteInt32(RpcId);
@@ -584,6 +596,9 @@ namespace ETModel {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(UnitId);
       }
       size += units_.CalculateSize(_repeated_units_codec);
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
       return size;
     }
 
@@ -591,6 +606,7 @@ namespace ETModel {
       unitId_ = 0;
       for (int i = 0; i < units_.Count; i++) { MessagePool.Instance.Recycle(units_[i]); }
       units_.Clear();
+      frame_ = 0;
       rpcId_ = 0;
       error_ = 0;
       message_ = "";
@@ -606,6 +622,10 @@ namespace ETModel {
           }
           case 18: {
             units_.AddEntriesFrom(input, _repeated_units_codec);
+            break;
+          }
+          case 24: {
+            Frame = input.ReadInt32();
             break;
           }
           case 720: {

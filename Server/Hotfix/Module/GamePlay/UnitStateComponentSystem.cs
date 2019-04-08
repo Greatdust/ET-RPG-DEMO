@@ -1,41 +1,47 @@
-﻿using ETModel;
+﻿using BulletUnity;
+using ETModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace ETHotfix
 {
-    [ObjectSystem]
-    public class UnitStateComponentFixedUpdateSystem : FixedUpdateSystem<UnitStateComponent>
-    {
-        public override void FixedUpdate(UnitStateComponent self)
-        {
-            self.FixedUpdate();
-        }
-    }
 
-    public static class UnitStateHelper
+    public static class UnitStateComponentSystem
     {
-        private const int sendMsgDelta = 3; 
-
         public static void FixedUpdate(this UnitStateComponent unitStateComponent)
         {
+
             if (!unitStateComponent.haveInited) return;
             if (unitStateComponent.unitStatesDic.Count == 0) return;
-
+            UnitStateMgrComponent mgr = Game.Scene.GetComponent<UnitStateMgrComponent>();
+            Log.Info(string.Format("frame {0} : 玩家位置信息 {1}", mgr.currFrame, unitStateComponent.unit.Position));
             //每间隔3帧发一次数据
-            if (unitStateComponent.currFrame - unitStateComponent.preSendMsgFrame < sendMsgDelta)
+            if (mgr.currFrame - unitStateComponent.preSendMsgFrame < UnitStateMgrComponent.sendMsgDelta)
             {
-                unitStateComponent.currFrame++;
                 return;
             }
-            unitStateComponent.preSendMsgFrame = unitStateComponent.currFrame;
+            unitStateComponent.preSendMsgFrame = mgr.currFrame;
 
-            if (unitStateComponent.preGetInputFrame == unitStateComponent.currGetInputFrame)
+            if (!unitStateComponent.collectInput)
             {
                 return;
             }
-            //每次发送都发最新的一次输入所产生的结果
+
+            //TODO : 这里有大量GC,需要处理
+            if (unitStateComponent.currGetInputFrame - unitStateComponent.preClearInputFrame >= UnitStateComponent.maxFrameCount_SaveStateDelta)
+            {
+                for (int i = unitStateComponent.preClearInputFrame; i < unitStateComponent.currGetInputFrame - UnitStateComponent.maxFrameCount_SaveStateDelta; i++)
+                {
+                    if (unitStateComponent.unitStatesDic.ContainsKey(i))
+                    {
+                        unitStateComponent.unitStatesDic.Remove(i);
+                    }
+                }
+            }
+
+            //每次发送都发最新的的结果
             var state = unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame];
 
             foreach (var v in state.commandResults)
@@ -57,7 +63,7 @@ namespace ETHotfix
                         continue;
                 }
             }
-            unitStateComponent.preGetInputFrame = unitStateComponent.currGetInputFrame;
+            unitStateComponent.collectInput = false;
 
 
         }
@@ -90,7 +96,6 @@ namespace ETHotfix
         {
             unitStateComponent.unitProperty = unitProperty;
             unitStateComponent.haveInited = true;
-            unitStateComponent.currFrame = 0;
             unitStateComponent.preSendMsgFrame = -3;
         }
 
@@ -98,32 +103,25 @@ namespace ETHotfix
         {
             try
             {
-
-                if (unitStateComponent.unitStatesDic.ContainsKey(unitStateComponent.preGetInputFrame))
-                    unitStateComponent.unitStatesDic.Remove(unitStateComponent.preGetInputFrame);
-
-                unitStateComponent.preGetInputFrame = unitStateComponent.currGetInputFrame;
-                unitStateComponent.currGetInputFrame = frame;
+                unitStateComponent.collectInput = true;
+                if (unitStateComponent.currGetInputFrame < frame)
+                    unitStateComponent.currGetInputFrame = frame;
                 UnitStateDelta unitStateDelta = new UnitStateDelta();
                 unitStateDelta.frame = frame;
-
                 var result = unitStateComponent.simulaterComponent.commandSimulaters[commandInput.GetType()].Simulate(commandInput, unitStateComponent.unit);
                 switch (result)
                 {
                     case CommandResult_Move result_Move:
-                        Property_Position postionPro = unitStateComponent.unitProperty[typeof(Property_Position)] as Property_Position;
-                        postionPro.Set(result_Move.postion);
-                        Log.Info(string.Format("frame {0} : 服务器位置信息 {1}" ,frame, result_Move.postion));
+                        unitStateComponent.unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
                         break;
                 }
                 unitStateDelta.commandResults.Add(result.GetType(), result);
-
                 unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame] = unitStateDelta;
             }
             catch (Exception e)
             {
                 Log.Error(e.ToString());
-               
+
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BulletUnity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +19,11 @@ namespace ETModel
     }
 
     [ObjectSystem]
-    public class CharacterCtrComponentUpdateSystem : UpdateSystem<CharacterCtrComponent>
+    public class CharacterCtrComponentUpdateSystem : FixedUpdateSystem<CharacterCtrComponent>
     {
-        public override void Update(CharacterCtrComponent self)
+        public override void FixedUpdate(CharacterCtrComponent self)
         {
-            self.Update();
+            self.FixedUpdate();
         }
     }
 
@@ -32,6 +33,8 @@ namespace ETModel
         private bool canMove;
         public Vector3 moveTarget;
         public Vector3 moveDir;
+
+        public BCharacterController bCharacterController;
 
         public AnimatorComponent animatorComponent;
 
@@ -57,31 +60,26 @@ namespace ETModel
             timing = sendMsgInterval;
             input_Move = new CommandInput_Move();
             numericComponent = GetParent<Unit>().GetComponent<NumericComponent>();
+            bCharacterController = GetParent<Unit>().GameObject.GetComponent<BCharacterController>();
         }
 
         public void MoveTo(Vector3 aim)
         {
-            if (Vector3.Distance(moveTarget, aim) < 0.05f)
+            if (Vector3.Distance(transform.position, aim) < 0.05f)
             {
-                transform.position = moveTarget;
+                bCharacterController.SetPosition(aim);
                 return;
             }
+
             moveTarget = aim;
-            Vector3 distance = new Vector3(moveTarget.x - transform.position.x, 0, moveTarget.z - transform.position.z);
+            Vector3 distance = moveTarget - transform.position;
             moveDir = distance.normalized;
-            Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
-            //位置差距小于0.1f ,角度很接近,那就不同步了
-            if (distance.magnitude < 0.05f && Mathf.Abs(Quaternion.Angle(transform.rotation, quaDir)) < 10)
-            {
-                transform.position = moveTarget;
-                return;
-            }
             //transform.forward = moveDir;
             canMove = true;
         }
 
 
-        public void Update()
+        public void FixedUpdate()
         {
             Vector3 motion = Vector3.zero;
             if (isInPlayerCtr)
@@ -101,36 +99,28 @@ namespace ETModel
 
                     //characterController.Move(moveDir * GetParent<Unit>().GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed) * Time.deltaTime);
                 }
-                else
-                {
-                    canMove = false;
-
-                }
 
             }
 
             if (!canMove)
             {
-                moveSpeed = 0.5f;
+                bCharacterController.Move(Vector3.zero);
                 animatorComponent.SetFloatValue("MoveSpeed", 0);
                 return;
             }
             else
             {
-                Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5);
-                moveSpeed = Mathf.Clamp(moveSpeed += Time.deltaTime * 10, 0.5f, 1f);
-                animatorComponent.SetFloatValue("MoveSpeed", moveSpeed);
+                animatorComponent.SetFloatValue("MoveSpeed", 1);
             }
-            if (!isInPlayerCtr)
-                if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
-                {
-                    canMove = false;
-                    transform.position = moveTarget;
-                    return;
-                }
-            motion += moveDir * numericComponent.GetAsFloat(NumericType.Speed) * Time.deltaTime;
-            transform.position += motion;
+            Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
+            bCharacterController.ChangeRotation(Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5));
+            if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
+            {
+                canMove = false;
+                bCharacterController.SetPosition(moveTarget);
+                return;
+            };
+            bCharacterController.Move(moveDir * Time.fixedDeltaTime * numericComponent.GetAsFloat(NumericType.Speed));
 
 
         }

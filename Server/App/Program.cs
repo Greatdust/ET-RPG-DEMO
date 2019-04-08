@@ -120,6 +120,9 @@ namespace App
                         // 配置管理
                         Game.Scene.AddComponent<ConfigComponent>();
 
+                        Log.Debug("添加UnitStateMgrComponent");
+                        Game.Scene.AddComponent<UnitStateMgrComponent>();
+
                         Game.Scene.AddComponent<PhysicWorldComponent, int>(1001);
                         // recast寻路组件
                         Game.Scene.AddComponent<PathfindingComponent>();
@@ -147,8 +150,8 @@ namespace App
                         throw new Exception($"命令行参数没有设置正确的AppType: {startConfig.AppType}");
                 }
 
-                float fixedUpdateInterval = EventSystem.FixedUpdateTime;
-                float timing = TimeHelper.ClientNowSeconds() - fixedUpdateInterval;
+                long fixedUpdateInterval = (long)(EventSystem.FixedUpdateTime * 1000);
+                long timing = TimeHelper.ClientNow();
                 while (true)
                 {
                     try
@@ -156,8 +159,7 @@ namespace App
                         Thread.Sleep(1);
                         OneThreadSynchronizationContext.Instance.Update();
                         Game.EventSystem.Update();
-                        float now = TimeHelper.ClientNowSeconds();
-                        if (now - timing >= fixedUpdateInterval)
+                        if (TimeHelper.ClientNow() - timing >= fixedUpdateInterval)
                         {
                             timing += fixedUpdateInterval;
                             Game.EventSystem.FixedUpdate();

@@ -159,7 +159,7 @@ namespace BulletUnity
             {
                 if (lateUpdateHelper != null)
                 {
-                    lateUpdateHelper.m_fixedTimeStep = value;
+                    lateUpdateHelper.m_fixedTimeStep = (long)(value * 1000);
                 }
                 m_fixedTimeStep = value;
             }

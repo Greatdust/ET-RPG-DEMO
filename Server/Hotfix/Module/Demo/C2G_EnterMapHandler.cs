@@ -24,7 +24,9 @@ namespace ETHotfix
 				M2G_CreateUnit createUnit = (M2G_CreateUnit)await mapSession.Call(new G2M_CreateUnit() { PlayerId = player.Id, GateSessionId = session.InstanceId });
 				player.UnitId = createUnit.UnitId;
 				response.UnitId = createUnit.UnitId;
-				reply(response);
+                response.Frame = Game.Scene.GetComponent<UnitStateMgrComponent>().currFrame;
+
+                reply(response);
 			}
 			catch (Exception e)
 			{
