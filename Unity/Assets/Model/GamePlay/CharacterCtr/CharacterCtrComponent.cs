@@ -34,7 +34,7 @@ namespace ETModel
         public Vector3 moveTarget;
         public Vector3 moveDir;
 
-        public BCharacterController bCharacterController;
+        public CharacterController bCharacterController;
 
         public AnimatorComponent animatorComponent;
 
@@ -60,7 +60,7 @@ namespace ETModel
             timing = sendMsgInterval;
             input_Move = new CommandInput_Move();
             numericComponent = GetParent<Unit>().GetComponent<NumericComponent>();
-            bCharacterController = GetParent<Unit>().GameObject.GetComponent<BCharacterController>();
+            bCharacterController = GetParent<Unit>().GameObject.GetComponent<CharacterController>();
             unitState = GetParent<Unit>().GetComponent<UnitStateComponent>();
         }
 
@@ -68,11 +68,14 @@ namespace ETModel
         {
             moveTarget = aim;
             Vector3 distance = new Vector3(moveTarget.x - transform.position.x, 0, moveTarget.z - transform.position.z);
-            if (distance.magnitude < 0.05f)
+            float length = distance.magnitude;
+            if (length < 0.05f)
             {
-                bCharacterController.SetPosition(aim);
+                // bCharacterController.SetPosition(aim);
+                transform.position = aim;
                 return;
             }
+            moveSpeed = length / EventSystem.FixedUpdateTime;
             moveDir = distance.normalized;
             //transform.forward = moveDir;
             canMove = true;
@@ -114,17 +117,19 @@ namespace ETModel
             }
             //Log.Debug("移动方向"+ moveDir.ToString());
             Quaternion quaDir = Quaternion.LookRotation(moveDir, Vector3.up);
-            bCharacterController.ChangeRotation(quaDir);
+            //bCharacterController.ChangeRotation(quaDir);
+            transform.rotation = quaDir;
            // bCharacterController.ChangeRotation(Quaternion.Slerp(transform.rotation, quaDir, Time.deltaTime * 5));
             if (Vector3.Distance(transform.position, moveTarget) < 0.05f || Vector3.Dot(moveDir, moveTarget - transform.position) < 0)
             {
                 canMove = false;
-                bCharacterController.SetPosition(moveTarget);
+                //bCharacterController.SetPosition(moveTarget);
+                transform.position = moveTarget;
                 return;
             };
 
-            //因为未知的原因,Bullet的角色移动,速度比正常情况下要慢一倍,所以这里要额外*2 .这个速度不影响最终位置
-            bCharacterController.Move(moveDir * EventSystem.FixedUpdateTime * numericComponent.GetAsFloat(NumericType.Speed) );
+            //因为未知的原因,Bullet的角色移动,速度比正常情况下要慢 .这个速度不影响最终位置
+            bCharacterController.Move(moveDir * EventSystem.FixedUpdateTime * moveSpeed );
 
         }
 

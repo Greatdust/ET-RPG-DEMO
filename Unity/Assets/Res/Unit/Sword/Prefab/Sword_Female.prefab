@@ -3006,7 +3006,7 @@ GameObject:
   - component: {fileID: 2359825692195789308}
   - component: {fileID: 5690695053500290991}
   - component: {fileID: 531758580826940432}
-  - component: {fileID: 4689238627412319551}
+  - component: {fileID: 5036727040487828743}
   m_Layer: 0
   m_Name: Sword_Female
   m_TagString: Untagged
@@ -3057,23 +3057,24 @@ MonoBehaviour:
   drawGizmo: 1
   extents: {x: 0.2, y: 0.9, z: 0.2}
   m_localScaling: {x: 1, y: 1, z: 1}
---- !u!114 &4689238627412319551
-MonoBehaviour:
+--- !u!143 &5036727040487828743
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2359825692195816924}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3b2370620fcd284086bd1d013be3ad3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_collisionFlags: 16
-  m_groupsIBelongTo: 1
-  m_collisionMask: -1
-  stepHeight: 1
-  upAxis: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.06, z: 0}
 --- !u!1 &2359825692195816926
 GameObject:
   m_ObjectHideFlags: 0

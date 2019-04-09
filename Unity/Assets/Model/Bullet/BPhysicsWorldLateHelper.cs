@@ -58,23 +58,21 @@ namespace BulletUnity
             {
                 m_collisionEventHandler.OnPhysicsStep(m_world);
             }
+            //This is needed for rigidBody interpolation. The motion states will update the positions of the rigidbodies
+            {
+                float deltaTime = Time.time - m_lastInterpolationTime;
+
+                // We want to ensure that each bullet sim step corresponds to exactly one Unity FixedUpdate timestep
+                if (deltaTime > 0f && (m_elapsedBetweenFixedFrames + deltaTime) < m_fixedTimeStep)
+                {
+                    m_elapsedBetweenFixedFrames += deltaTime;
+                    int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep);
+                    m_lastInterpolationTime = Time.time;
+                    numUpdates++;
+                }
+            }
         }
 
         int numUpdates = 0;
-
-        //This is needed for rigidBody interpolation. The motion states will update the positions of the rigidbodies
-        protected virtual void Update()
-        {
-            float deltaTime = Time.time - m_lastInterpolationTime;
-            
-            // We want to ensure that each bullet sim step corresponds to exactly one Unity FixedUpdate timestep
-            if (deltaTime > 0f && (m_elapsedBetweenFixedFrames + deltaTime) < m_fixedTimeStep)
-            {
-                m_elapsedBetweenFixedFrames += deltaTime;
-                int numSteps = m_ddWorld.StepSimulation(deltaTime, 1, m_fixedTimeStep);
-                m_lastInterpolationTime = Time.time;
-                numUpdates++;
-            }
-        }
     }
 }

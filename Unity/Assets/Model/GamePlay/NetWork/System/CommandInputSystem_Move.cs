@@ -22,7 +22,7 @@ namespace ETModel
             float moveSpeed = numericComponent.GetAsFloat(NumericType.Speed);
 
             Vector3 moveDelta =  (input_Move.moveDir.normalized) * moveSpeed * EventSystem.FixedUpdateTime;
-            Log.Debug(string.Format("计算的移动位移 {0}{1}{2}" , moveDelta.x, moveDelta.y, moveDelta.z));
+            //Log.Debug(string.Format("计算的移动位移 {0}{1}{2}" , moveDelta.x, moveDelta.y, moveDelta.z));
             CommandResult_Move result_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
 
             result_Move.postion = moveDelta + property_Position.Get();

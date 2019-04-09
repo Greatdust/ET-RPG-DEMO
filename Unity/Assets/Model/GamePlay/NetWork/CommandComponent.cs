@@ -83,8 +83,8 @@ namespace ETModel
 
       
                             //再预测这一帧的结果
-                            //Log.Debug("frame : " + simulateFrame + " 预测位置:" + result_Move.postion);
-                            //unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
+                            Log.Debug("frame : " + simulateFrame + " 预测位置:" + result_Move.postion);
+                            unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
                             break;
                     }
                 }
@@ -105,17 +105,6 @@ namespace ETModel
 
         public void GetCommandResult(UnitStateDelta unitStateDelta)
         {
-            foreach (var v in unitStateDelta.commandResults.Values)
-            {
-                switch (v)
-                {
-                    case CommandResult_Move result:
-                        Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                        property_Position.Set(result.postion);
-                        unit.GetComponent<CharacterCtrComponent>().MoveTo(result.postion);
-                        continue;
-                }
-            }
 
             if (preActualFrame == 0)
             {
@@ -177,19 +166,19 @@ namespace ETModel
                     {
                         case CommandResult_Move simulateMove:
                             CommandResult_Move actualMove = unitStateDelta.commandResults[v.commandResult.GetType()] as CommandResult_Move;
-                            //Log.Debug("frame : " + simulateFrame + " 服务器确认位置:" + actualMove.postion);
-                            if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 1f)
-                            {
-                                continue;
-                            }
-                            else
-                            {
+                            Log.Debug("frame : " + simulateFrame + " 服务器确认位置:" + actualMove.postion);
+                            //if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 1f)
+                            //{
+                            //    continue;
+                            //}
+                            //else
+                            //{
 
-                                simulateMove.postion = actualMove.postion;
-                                needRecal = true;
-                                Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                                property_Position.Set(actualMove.postion);
-                            }
+                            //    simulateMove.postion = actualMove.postion;
+                            //    needRecal = true;
+                            //    Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
+                            //    property_Position.Set(actualMove.postion);
+                            //}
                             break;
                     }
                 }
