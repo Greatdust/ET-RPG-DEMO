@@ -1,24 +1,128 @@
 ﻿namespace ETModel
 {
+    public enum NumericRealtionType
+    {
+        大于,
+        小于,
+        等于,
+        不等于,
+        大于等于,
+        小于等于
+    }
+
     public enum NumericType
     {
-		Max = 10000,
+        Max = 10000,
+        #region 数值基本类型定义
+        //一般一个属性最多有以下几部分组成,以Property为例
+        //Property代表玩家当前属性.计算公式为x=(x_base+x_add)*(1+x_Pct)
+        //PropertyBase代表玩家这个属性的基础值
+        //PropertyAdd代表玩家这个属性的直接增加值
+        //PropertyPct代表玩家这个属性的百分比增加值
+        等级 = 1000,
+        等级Max = 1001,
 
-		Speed = 1000,
-		SpeedBase = Speed * 10 + 1,
-	    SpeedAdd = Speed * 10 + 2,
-	    SpeedPct = Speed * 10 + 3,
-	    SpeedFinalAdd = Speed * 10 + 4,
-	    SpeedFinalPct = Speed * 10 + 5,
 
-	    Hp = 1001,
-	    HpBase = Hp * 10 + 1,
+        经验 = 1002,
+        经验Max = 1003,
 
-	    MaxHp = 1002,
-	    MaxHpBase = MaxHp * 10 + 1,
-	    MaxHpAdd = MaxHp * 10 + 2,
-	    MaxHpPct = MaxHp * 10 + 3,
-	    MaxHpFinalAdd = MaxHp * 10 + 4,
-		MaxHpFinalPct = MaxHp * 10 + 5,
-	}
+        金灵根 = 1004,
+        金灵根Max = 1005,
+        木灵根 = 1006,
+        木灵根Max = 1007,
+        水灵根 = 1008,
+        水灵根Max = 1009,
+        火灵根 = 1010,
+        火灵根Max = 1011,
+        土灵根 = 1012,
+        土灵根Max = 1013,
+
+        金属性亲和 = 1014,
+        木属性亲和 = 1015,
+        水属性亲和 = 1016,
+        火属性亲和 = 1017,
+        土属性亲和 = 1018,
+
+        五行抗性 = 1019,
+        福缘 = 1020,
+
+        命中率 = 1021,
+        闪避率 = 1022,
+        Speed = 1023,
+        暴击率 = 1024,
+        暴击伤害 = 1025,
+        封印率 = 1026,
+        抗封率 = 1027,
+        气血吸取率 = 1028,//造成伤害的百分之多少,转化为自身气血
+        法力吸取率 = 1029,//造成伤害的百分之多少,转化为自身法力
+        伤害反弹率 = 1030,//受到伤害的百分之多少,直接反弹回去,作为无属性伤害.
+        气血每秒回复 = 1031,
+        法力每秒回复 = 1032,
+
+        金属性伤害附加率 = 1033,//计算最后的伤害加成率之前,造成伤害的百分之多少,给予额外的金属性伤害
+        木属性伤害附加率 = 1034,
+        水属性伤害附加率 = 1035,
+        火属性伤害附加率 = 1036,
+        土属性伤害附加率 = 1037,
+
+        受到恢复效果加成率 = 1038,
+        治疗效果加成率 = 1039,
+        最终伤害减免率 = 1040,
+        最终伤害加成率 = 1041,
+
+        宠物经验获得率 = 1042,
+
+
+
+
+
+        #endregion
+        #region 数值附加类型定义
+
+
+        HP = 5001,
+        气血MaxFinal = 5002,
+        气血MaxBase = 气血MaxFinal * 10 + 1,
+        气血MaxAdd,
+        气血MaxPct,
+        气血减少值,//气血减少值
+        气血减少百分比,//气血减少百分比
+        气血剩余百分比,//气血剩余百分比
+
+        MP = 5003,
+        法力MaxFinal = 5004,
+        法力MaxBase = 法力MaxFinal * 10 + 1,
+        法力MaxAdd,
+        法力MaxPct,
+        法力减少值,//法力减少值
+        法力减少百分比,//法力减少百分比
+        法力剩余百分比,//法力剩余百分比
+
+        体质Final = 5005,
+        体质Base = 体质Final * 10 + 1,
+        体质Add,
+        体质Pct,
+
+        灵巧Final = 5006,
+        灵巧Base = 灵巧Final * 10 + 1,
+        灵巧Add,
+        灵巧Pct,
+
+        灵力Final = 5007,
+        灵力Base = 灵力Final * 10 + 1,
+        灵力Add,
+        灵力Pct,
+
+        韧性Final = 5008,
+        韧性Base = 韧性Final * 10 + 1,
+        韧性Add,
+        韧性Pct,
+
+        护体Final = 5009,
+        护体Base = 护体Final * 10 + 1,
+        护体Add,
+        护体Pct,
+
+        #endregion
+    }
 }

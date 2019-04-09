@@ -10,7 +10,17 @@ namespace ETModel
 		public ETTaskCompletionSource tcs;
 	}
 
-	[ObjectSystem]
+
+    [ObjectSystem]
+    public class TimerComponentAwakeSystem : AwakeSystem<TimerComponent>
+    {
+        public override void Awake(TimerComponent self)
+        {
+            self.Awake();
+        }
+    }
+
+    [ObjectSystem]
 	public class TimerComponentUpdateSystem : UpdateSystem<TimerComponent>
 	{
 		public override void Update(TimerComponent self)
@@ -34,6 +44,13 @@ namespace ETModel
 
 		// 记录最小时间，不用每次都去MultiMap取第一个值
 		private long minTime;
+
+        public static TimerComponent Instance;
+
+        public void Awake()
+        {
+            Instance = this;
+        }
 
 		public void Update()
 		{
@@ -141,5 +158,10 @@ namespace ETModel
 			}
 			return tcs.Task;
 		}
-	}
+
+        public ETTask WaitAsync(float time)
+        {
+            return WaitAsync((long)(time * 1000));
+        }
+    }
 }

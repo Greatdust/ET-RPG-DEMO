@@ -167,6 +167,14 @@ namespace ETModel
 			this.allEvents[eventId].Add(e);
 		}
 
+        public void RemoveEvent(string eventId,IEvent e)
+        {
+            if (this.allEvents.ContainsKey(eventId))
+            {
+                this.allEvents[eventId].Remove(e);
+            }
+        }
+
 		public Assembly Get(DLLType dllType)
 		{
 			return this.assemblies[dllType];

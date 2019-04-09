@@ -22,5 +22,46 @@
 		public const string LoadingFinish = "LoadingFinish";
 		public const string TestHotfixSubscribMonoEvent = "TestHotfixSubscribMonoEvent";
 		public const string MaxModelEvent = "MaxModelEvent";
-	}
+
+        //以下被region包裹的,个人推荐分文件的做法,但是这里是DEMO.那就无所谓了~
+        #region 数值相关
+        
+        public const string HPChanged = "HPChanged";
+        public const string MPChanged = "MPChanged";
+
+        public const string UnitLvUp = "UnitLvUp";
+
+        #endregion
+
+        #region 战斗相关
+        public const string CalDamage = "CalDamage";
+        public const string AttackMissing = "AttackMissing";
+        public const string GiveDamage = "GiveDamage";
+        public const string GiveHealth = "GiveHealth";
+        public const string GiveMp = "GiveMp";
+        #endregion
+
+        #region 奖励相关
+        public const string GiveItem = "GiveItem";
+        public const string GiveEquip = "GiveEquip";
+        public const string GiveExp = "GiveExp";
+        #endregion
+
+        #region 游戏流程相关
+        public const string LoadAssets = "LoadAssets";
+        #endregion
+
+        #region 玩家相关
+        public const string EquipUpdated = "EquipUpdated";
+        public const string EquipInventoryIsFull = "EquipInventoryIsFull";
+        public const string EquipInventoryUpdated = "EquipInventoryUpdated";
+
+        public const string ItemInventoryUpdated = "ItemInventoryUpdated";
+        public const string ItemInventoryIsFull = "ItemInventoryIsFull";
+        #endregion
+
+        #region 场景交互相关
+        public const string ClickSceneObject = "ClickSceneObject";
+        #endregion
+    }
 }

@@ -14,7 +14,10 @@
 		public static GlobalConfigComponent Instance;
 		public GlobalProto GlobalProto;
 
-		public void Awake()
+        public GameGlobalConfig globalConfig;
+
+
+        public void Awake()
 		{
 			Instance = this;
 			string configStr = ConfigHelper.GetGlobal();
