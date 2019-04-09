@@ -30,14 +30,14 @@ namespace ETHotfix
                     if (v.Id == PlayerComponent.Instance.MyPlayer.UnitId)
                     {
                         UnitComponent.Instance.MyUnit = v;
-                        v.GetComponent<CharacterCtrComponent>().isInPlayerCtr = true;
-                        v.GetComponent<CharacterCtrComponent>().cameraComponent = v.AddComponent<CameraComponent>();
+                        v.AddComponent<CameraComponent>();
                         v.AddComponent<CommandComponent>().simulateFrame = g2CEnterMap.Frame;
                         Log.Debug("收到的当前帧为" + g2CEnterMap.Frame);
                         break;
                     }
 
                 }
+                ETModel.Game.Scene.AddComponent<PathfindingComponent>();
 
                 //Game.Scene.AddComponent<OperaComponent>();
 

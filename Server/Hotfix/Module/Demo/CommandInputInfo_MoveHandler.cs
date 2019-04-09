@@ -12,7 +12,7 @@ namespace ETHotfix
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
             
             CommandInput_Move commandInput_Move = new CommandInput_Move();
-            commandInput_Move.moveDir = new Vector3(message.MoveDir.X, message.MoveDir.Y, message.MoveDir.Z);
+            commandInput_Move.clickPos = new Vector3(message.AimPos.X, message.AimPos.Y, message.AimPos.Z);
             unitStateComponent.GetInput(message.Frame, commandInput_Move);
 
 

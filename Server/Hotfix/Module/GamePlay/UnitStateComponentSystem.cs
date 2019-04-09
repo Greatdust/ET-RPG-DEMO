@@ -30,64 +30,35 @@ namespace ETHotfix
             }
 
             //TODO : 这里有大量GC,需要处理
-            if (unitStateComponent.currGetInputFrame - unitStateComponent.preClearInputFrame >= UnitStateComponent.maxFrameCount_SaveStateDelta)
-            {
-                for (int i = unitStateComponent.preClearInputFrame; i < unitStateComponent.currGetInputFrame - UnitStateComponent.maxFrameCount_SaveStateDelta; i++)
-                {
-                    if (unitStateComponent.unitStatesDic.ContainsKey(i))
-                    {
-                        unitStateComponent.unitStatesDic.Remove(i);
-                    }
-                }
-            }
+            //if (unitStateComponent.currGetInputFrame - unitStateComponent.preClearInputFrame >= UnitStateComponent.maxFrameCount_SaveStateDelta)
+            //{
+            //    for (int i = unitStateComponent.preClearInputFrame; i < unitStateComponent.currGetInputFrame - UnitStateComponent.maxFrameCount_SaveStateDelta; i++)
+            //    {
+            //        if (unitStateComponent.unitStatesDic.ContainsKey(i))
+            //        {
+            //            unitStateComponent.unitStatesDic.Remove(i);
+            //        }
+            //    }
+            //}
 
             //每次发送都发最新的的结果
-            var state = unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame];
+            //var state = unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame];
 
-            foreach (var v in state.commandResults)
-            {
-                CommandResultInfo_Move commandResultInfo_Move = new CommandResultInfo_Move();
-                commandResultInfo_Move.Frame = state.frame;
+            //foreach (var v in state.commandResults)
+            //{
+            //    CommandResultInfo_Move commandResultInfo_Move = new CommandResultInfo_Move();
+            //    commandResultInfo_Move.Frame = state.frame;
 
-                switch (v.Value)
-                {
-                    case CommandResult_Move result_Move:
-                        commandResultInfo_Move.Pos = new Vector3Info();
-                        Property_Position postionPro = unitStateComponent.unitProperty[typeof(Property_Position)] as Property_Position;
-                        commandResultInfo_Move.Pos.X = postionPro.Get().x;
-                        commandResultInfo_Move.Pos.Y = postionPro.Get().y;
-                        commandResultInfo_Move.Pos.Z = postionPro.Get().z;
-                        commandResultInfo_Move.Id = unitStateComponent.unit.Id;
-                        Log.Info("广播角色单位信息");
-                        MessageHelper.Broadcast(commandResultInfo_Move);
-                        continue;
-                }
-            }
+            //    switch (v.Value)
+            //    {
+            //        case CommandResult_Move result_Move:
+                        
+            //            continue;
+            //    }
+            //}
             unitStateComponent.collectInput = false;
 
 
-        }
-
-        public static void Add(UnitStateDelta a, UnitStateDelta b)
-        {
-
-            foreach (var v in b.commandResults)
-            {
-                if (a.commandResults.ContainsKey(v.Key))
-                {
-                    switch (a.commandResults[v.Key])
-                    {
-                        case CommandResult_Move result_Move:
-                            CommandResult_Move value = v.Value as CommandResult_Move;
-                            result_Move.postion = value.postion;
-                            continue;
-                    }
-                }
-                else
-                {
-                    a.commandResults[v.Key] = v.Value;
-                }
-            }
         }
 
 
@@ -110,11 +81,23 @@ namespace ETHotfix
                     unitStateComponent.currGetInputFrame = frame;
                 UnitStateDelta unitStateDelta = new UnitStateDelta();
                 unitStateDelta.frame = frame;
-                var result = unitStateComponent.simulaterComponent.commandSimulaters[commandInput.GetType()].Simulate(commandInput, unitStateComponent.unit);
+
+                var result = Game.Scene.GetComponent<CommandSimulaterComponent>().commandSimulaters[typeof(CommandInput_Move)].Simulate(commandInput_Move, unitStateComponent.unit);
                 switch (result)
                 {
                     case CommandResult_Move result_Move:
-                        unitStateComponent.unit.GetComponent<CharacterCtrComponent>().MoveTo(result_Move.postion);
+                        unitStateComponent.unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
+                        CommandResultInfo_Move commandResultInfo_Move = new CommandResultInfo_Move();
+                        commandResultInfo_Move.Frame = frame;
+                        commandResultInfo_Move.Id = unitStateComponent.unit.Id;
+                        commandResultInfo_Move.PathList = new Google.Protobuf.Collections.RepeatedField<Vector3Info>();
+                        for (int i = 0; i < result_Move.Path.Count; i++)
+                        {
+                            commandResultInfo_Move.PathList.Add(new Vector3Info() {
+                                X = result_Move.Path[i].x, Y = result_Move.Path[i].y,  Z = result_Move.Path[i].z
+                            });
+                        }
+                        MessageHelper.Broadcast(commandResultInfo_Move);
                         break;
                 }
                 unitStateDelta.commandResults.Add(result.GetType(), result);
@@ -126,5 +109,6 @@ namespace ETHotfix
 
             }
         }
+
     }
 }

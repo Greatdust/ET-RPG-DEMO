@@ -39,6 +39,8 @@ namespace ETModel
         public int currGetInputFrame;//最新的接收输入的是哪一帧,发送的时候就发送这一帧的数据
         public int preClearInputFrame;//最近一次清理输入数据的是哪一帧
 
+        public ETCancellationTokenSource cancelToken;
+
         public void Awake()
         {
             unitStatesDic = new Dictionary<int, UnitStateDelta>();

@@ -99,11 +99,9 @@ message CommandResultInfo_Move // IActorMessage
 	int64 ActorId = 93;
 	int64 Id = 94;
 	
-	Vector3Info pos = 1;
+	repeated Vector3Info pathList = 1;
 	
-	Vector3Info dir = 2;
-	
-	int32 frame = 3;
+	int32 frame = 2;
 }
 
 message CommandInputInfo_Move // IActorLocationMessage
@@ -112,7 +110,7 @@ message CommandInputInfo_Move // IActorLocationMessage
 	int64 ActorId = 93;
 	int64 Id = 94;
 	
-	Vector3Info moveDir = 1; 
+	Vector3Info aimPos = 1; 
 	int32 frame = 2;
 }
 

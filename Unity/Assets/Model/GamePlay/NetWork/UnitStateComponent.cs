@@ -51,6 +51,8 @@ namespace ETModel
 
         private bool haveInited;
 
+        public ETCancellationTokenSource moveCancelTokenSource;
+
         public void Awake()
         {
             unitStatesDic = new Dictionary<int, UnitStateDelta>();
@@ -78,22 +80,16 @@ namespace ETModel
 
         public void FixedUpdate()
         {
-            if (!haveInited) return;
-            if (unitStatesDic.Count == 0) return;
             if (unit == UnitComponent.Instance.MyUnit) return;//本机直接走预测/回滚路线
 
-            int delta = remoteEstimatedFrame - remoteActualFrame;
-            if (delta <= largeDiffFrame)
-            {
-                remoteEstimatedFrame += 2; // 落后极大,加倍追赶
-            }
-            else if (delta < 0)
-            {
-                remoteEstimatedFrame++; // 正常向前模拟
-            }
-            AdjustRemoteEstimatedFrame();
+            if (!haveInited) return;
+            if (unitStatesDic.Count == 0) return;
 
-            float applyProgress = Mathf.Clamp01((float)(remoteEstimatedFrame - preActualFrame) / (remoteActualFrame - preActualFrame));//应用的进度,上一次实际帧和这一次实际帧之间
+            if (remoteEstimatedFrame > remoteActualFrame) return;
+
+            //AdjustRemoteEstimatedFrame();
+
+            //float applyProgress = Mathf.Clamp01((float)(remoteEstimatedFrame - preActualFrame) / (remoteActualFrame - preActualFrame));//应用的进度,上一次实际帧和这一次实际帧之间
             
             //应用模拟的结果
             foreach (var v in unitStatesDic[remoteActualFrame].commandResults.Values)
@@ -101,13 +97,13 @@ namespace ETModel
                 switch (v)
                 {
                     case CommandResult_Move result_Move:
-                        Vector3 prePos = ((Property_Position)pre_unitProperty[typeof(Property_Position)]).Get();
-                        Vector3 aimPos = Vector3.Lerp(prePos, result_Move.postion, applyProgress);
-                        unit.GetComponent<CharacterCtrComponent>().MoveTo(aimPos);
+                        unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
                         continue;
                 }
             }
-            
+            remoteEstimatedFrame++;
+
+
 
         }
 
@@ -158,7 +154,7 @@ namespace ETModel
 
                 packetsReceived++;
                 preActualFrame = remoteActualFrame;
-                remoteActualFrame = unitState.frame;
+                remoteEstimatedFrame = remoteActualFrame = unitState.frame;
                 unitStatesDic[remoteActualFrame] = unitState;
             }
             //等待上一帧的所有信息全收到了,再发上一帧的数据

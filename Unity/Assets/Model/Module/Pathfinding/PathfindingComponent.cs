@@ -1,4 +1,5 @@
 using PF;
+using UnityEngine;
 
 namespace ETModel
 {
@@ -13,10 +14,8 @@ namespace ETModel
             // 读取寻路配置
             self.AStarConfig = new AStarConfig(); //MongoHelper.FromJson<AStarConfig>(File.ReadAllText("./pathfinding.config"));
             self.AStarConfig.pathProcessor = self.PathProcessor;
-            
-            // 读取地图数据
-            self.AStarConfig.graphs = DeserializeHelper.Load("../Config/graph.bytes");
-            Log.Debug("地图寻路节点长度"+ self.AStarConfig.graphs.Length.ToString());
+            //测试
+            self.AStarConfig.graphs = DeserializeHelper.Load(Application.dataPath+ "/graph.bytes");
         }
     }
     

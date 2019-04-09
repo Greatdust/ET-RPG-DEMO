@@ -10,6 +10,6 @@ namespace ETModel
 
     public class CommandInput_Move : ICommandInput
     {
-        public Vector3 moveDir; //移动输入的方向
+        public Vector3 clickPos; //移动时点击的点,也是移动的目标位置
     }
 }

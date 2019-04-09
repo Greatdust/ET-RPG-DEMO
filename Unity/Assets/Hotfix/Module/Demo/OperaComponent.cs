@@ -14,11 +14,11 @@ namespace ETHotfix
     }
 
 	[ObjectSystem]
-	public class OperaComponentUpdateSystem : UpdateSystem<OperaComponent>
+	public class OperaComponentFixedUpdateSystem : FixedUpdateSystem<OperaComponent>
 	{
-		public override void Update(OperaComponent self)
+		public override void FixedUpdate(OperaComponent self)
 		{
-			self.Update();
+			self.FixedUpdate();
 		}
 	}
 
@@ -35,7 +35,7 @@ namespace ETHotfix
 
 	    private readonly Frame_ClickMap frameClickMap = new Frame_ClickMap();
 
-        public void Update()
+        public void FixedUpdate()
         {
             if (Input.GetMouseButtonDown(1))
             {

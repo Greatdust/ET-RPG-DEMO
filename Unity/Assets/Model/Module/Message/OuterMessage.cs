@@ -1113,20 +1113,12 @@ namespace ETModel {
       }
     }
 
-    private global::ETModel.Vector3Info pos_;
-    public global::ETModel.Vector3Info Pos {
-      get { return pos_; }
-      set {
-        pos_ = value;
-      }
-    }
-
-    private global::ETModel.Vector3Info dir_;
-    public global::ETModel.Vector3Info Dir {
-      get { return dir_; }
-      set {
-        dir_ = value;
-      }
+    private static readonly pb::FieldCodec<global::ETModel.Vector3Info> _repeated_pathList_codec
+        = pb::FieldCodec.ForMessage(10, global::ETModel.Vector3Info.Parser);
+    private pbc::RepeatedField<global::ETModel.Vector3Info> pathList_ = new pbc::RepeatedField<global::ETModel.Vector3Info>();
+    public pbc::RepeatedField<global::ETModel.Vector3Info> PathList {
+      get { return pathList_; }
+      set { pathList_ = value; }
     }
 
     private int frame_;
@@ -1138,16 +1130,9 @@ namespace ETModel {
     }
 
     public void WriteTo(pb::CodedOutputStream output) {
-      if (pos_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Pos);
-      }
-      if (dir_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Dir);
-      }
+      pathList_.WriteTo(output, _repeated_pathList_codec);
       if (Frame != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteInt32(Frame);
       }
       if (ActorId != 0L) {
@@ -1168,12 +1153,7 @@ namespace ETModel {
       if (Id != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
       }
-      if (pos_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pos);
-      }
-      if (dir_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Dir);
-      }
+      size += pathList_.CalculateSize(_repeated_pathList_codec);
       if (Frame != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
       }
@@ -1181,8 +1161,8 @@ namespace ETModel {
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
-      if (pos_ != null) MessagePool.Instance.Recycle(pos_); pos_ = null;
-      if (dir_ != null) MessagePool.Instance.Recycle(dir_); dir_ = null;
+      for (int i = 0; i < pathList_.Count; i++) { MessagePool.Instance.Recycle(pathList_[i]); }
+      pathList_.Clear();
       frame_ = 0;
       actorId_ = 0;
       id_ = 0;
@@ -1193,20 +1173,10 @@ namespace ETModel {
             input.SkipLastField();
             break;
           case 10: {
-            if (pos_ == null) {
-              pos_ = new global::ETModel.Vector3Info();
-            }
-            input.ReadMessage(pos_);
+            pathList_.AddEntriesFrom(input, _repeated_pathList_codec);
             break;
           }
-          case 18: {
-            if (dir_ == null) {
-              dir_ = new global::ETModel.Vector3Info();
-            }
-            input.ReadMessage(dir_);
-            break;
-          }
-          case 24: {
+          case 16: {
             Frame = input.ReadInt32();
             break;
           }
@@ -1252,11 +1222,11 @@ namespace ETModel {
       }
     }
 
-    private global::ETModel.Vector3Info moveDir_;
-    public global::ETModel.Vector3Info MoveDir {
-      get { return moveDir_; }
+    private global::ETModel.Vector3Info aimPos_;
+    public global::ETModel.Vector3Info AimPos {
+      get { return aimPos_; }
       set {
-        moveDir_ = value;
+        aimPos_ = value;
       }
     }
 
@@ -1269,9 +1239,9 @@ namespace ETModel {
     }
 
     public void WriteTo(pb::CodedOutputStream output) {
-      if (moveDir_ != null) {
+      if (aimPos_ != null) {
         output.WriteRawTag(10);
-        output.WriteMessage(MoveDir);
+        output.WriteMessage(AimPos);
       }
       if (Frame != 0) {
         output.WriteRawTag(16);
@@ -1302,8 +1272,8 @@ namespace ETModel {
       if (Id != 0L) {
         size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
       }
-      if (moveDir_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MoveDir);
+      if (aimPos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AimPos);
       }
       if (Frame != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
@@ -1312,7 +1282,7 @@ namespace ETModel {
     }
 
     public void MergeFrom(pb::CodedInputStream input) {
-      if (moveDir_ != null) MessagePool.Instance.Recycle(moveDir_); moveDir_ = null;
+      if (aimPos_ != null) MessagePool.Instance.Recycle(aimPos_); aimPos_ = null;
       frame_ = 0;
       rpcId_ = 0;
       actorId_ = 0;
@@ -1324,10 +1294,10 @@ namespace ETModel {
             input.SkipLastField();
             break;
           case 10: {
-            if (moveDir_ == null) {
-              moveDir_ = new global::ETModel.Vector3Info();
+            if (aimPos_ == null) {
+              aimPos_ = new global::ETModel.Vector3Info();
             }
-            input.ReadMessage(moveDir_);
+            input.ReadMessage(aimPos_);
             break;
           }
           case 16: {

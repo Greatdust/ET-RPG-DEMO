@@ -15,20 +15,15 @@ namespace ETModel
         public ICommandResult Simulate(ICommandInput commandInput, Unit unit)
         {
             CommandInput_Move input_Move = commandInput as CommandInput_Move;
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
-            Property_Position property_Position = unitStateComponent.unitProperty[typeof(Property_Position)] as Property_Position;
+            UnitPathComponent unitPathComponent = unit.GetComponent<UnitPathComponent>();
 
-            float moveSpeed = numericComponent.GetAsFloat(NumericType.Speed);
+            PathfindingComponent pathfindingComponent = Game.Scene.GetComponent<PathfindingComponent>();
+            unitPathComponent.ABPath = ComponentFactory.Create<ABPathWrap, Vector3, Vector3>(unit.Position, input_Move.clickPos);
+            pathfindingComponent.Search(unitPathComponent.ABPath);
 
-            Vector3 moveDelta =  (input_Move.moveDir.normalized) * moveSpeed * EventSystem.FixedUpdateTime;
-            //Log.Debug(string.Format("计算的移动位移 {0}{1}{2}" , moveDelta.x, moveDelta.y, moveDelta.z));
             CommandResult_Move result_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
 
-            result_Move.postion = moveDelta + property_Position.Get();
-#if !SERVER
-            property_Position.Set(result_Move.postion);
-#endif
+            result_Move.Path = unitPathComponent.ABPath.Result;
             // result_Move.dir = input_Move.moveDir;// 暂时就以输入的方向作为角色的方向
             return result_Move;
 

@@ -1,4 +1,5 @@
 ﻿using ETModel;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ETHotfix
@@ -11,7 +12,11 @@ namespace ETHotfix
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
             CommandResult_Move commandResult_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
-            commandResult_Move.postion = new Vector3(message.Pos.X, message.Pos.Y, message.Pos.Z);
+            commandResult_Move.Path = new List<Vector3>();
+            for (int i = 0; i < message.PathList.Count; i++)
+            {
+                commandResult_Move.Path.Add(new Vector3(message.PathList[i].X, message.PathList[i].Y, message.PathList[i].Z));
+            }
             unitStateComponent.ReceivedPacket(message.Frame, commandResult_Move);
 
 		}

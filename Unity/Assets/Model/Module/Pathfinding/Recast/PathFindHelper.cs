@@ -73,17 +73,17 @@ namespace PF
     
     public static class PathFindHelper
     {
-#if !SERVER
-        public static AstarPath GetConfig()
-        {
-            return AstarPath.active;
-        }
-#else
+//#if !SERVER
+//        public static AstarPath GetConfig()
+//        {
+//            return AstarPath.active;
+//        }
+//#else
         public static AStarConfig GetConfig()
         {
             return AStarConfig.Instance;
         }
-#endif
+//#endif
         
         /**
        * Returns the nearest node to a position using the specified NNConstraint.

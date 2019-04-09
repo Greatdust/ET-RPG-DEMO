@@ -27,7 +27,7 @@ namespace ETHotfix
 
                 Dictionary<Type, IProperty> unitProperty = new Dictionary<Type, IProperty>();
                 Property_Position property_Position = new Property_Position();
-                property_Position.Set(new Vector3(-10, 2f, -10));
+                property_Position.Set(new Vector3(-10, 0.5f, -10));
                 Property_Rotation property_Rotation = new Property_Rotation();
                 property_Rotation.Set(Quaternion.identity);
                 unitProperty.Add(typeof(Property_Position), property_Position);
@@ -37,10 +37,11 @@ namespace ETHotfix
                 stateCom.Init(unitProperty);
                 Game.Scene.GetComponent<UnitStateMgrComponent>().Add(stateCom);
 
-                BBoxShape bBoxShape = unit.AddComponent<BBoxShape>();
-                bBoxShape.Extents = new Vector3(0.2f, 0.9f, 0.2f);
-                unit.AddComponent<BCharacterController,BCollisionShape>(bBoxShape);
-                unit.AddComponent<CharacterCtrComponent>();
+                //BBoxShape bBoxShape = unit.AddComponent<BBoxShape>();
+                //bBoxShape.Extents = new Vector3(0.2f, 0.9f, 0.2f);
+                //unit.AddComponent<BCharacterController,BCollisionShape>(bBoxShape);
+                unit.AddComponent<CharacterMoveComponent>();
+                unit.AddComponent<UnitPathComponent>();
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
                 response.UnitId = unit.Id;
 
