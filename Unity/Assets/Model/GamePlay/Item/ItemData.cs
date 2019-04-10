@@ -57,7 +57,7 @@ public class ItemUseCondition_LevelLimit : IItemUseCondition
     {
         //TODO: 玩家等级达到要求
         NumericComponent numericComponent = UnitComponent.Instance.MyUnit.GetComponent<NumericComponent>();
-        if (numericComponent.GetAsInt(NumericType.等级) >= limitLevel)
+        if (numericComponent.GetAsInt(NumericType.Level) >= limitLevel)
 
             return true;
         else

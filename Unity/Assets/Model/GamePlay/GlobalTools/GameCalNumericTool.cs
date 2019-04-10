@@ -20,14 +20,10 @@ public static class GameCalNumericTool
 {
     public enum DamageType
     {
-        无属性伤害,
-        金属性伤害,
-        木属性伤害,
-        水属性伤害,
-        火属性伤害,
-        土属性伤害
+        physic,
+        magic
     }
-    public class DamageData
+    public struct DamageData
     {
         public DamageType damageType;
         public int damageValue;//伤害值
@@ -55,14 +51,21 @@ public static class GameCalNumericTool
     {
         try
         {
-            UnitActionData unitActionData = BattleMgrComponent.Instance.unitActionDataDic[destUnitId];
-            if (unitActionData.die) return;
+            UnitStateComponent unitState = UnitComponent.Instance.Get(destUnitId).GetComponent<UnitStateComponent>();
+            Property_Die property_Die = unitState.GetCurrState<Property_Die>();
+            if (property_Die.Get()) return;
+            Property_Invicible property_Invicible = unitState.GetCurrState<Property_Invicible>();
+            if (property_Invicible.Get())
+            {
+                //TODO: 提示无敌状态
+                return;
+            }
 
             NumericComponent sourceUnitNumericCom = UnitComponent.Instance.Get(sourceUnitId).GetComponent<NumericComponent>();
             NumericComponent destUnitNumericCom = UnitComponent.Instance.Get(destUnitId).GetComponent<NumericComponent>();
             int rateCharge = 0;
             //命中判定
-            float hitRate = sourceUnitNumericCom.GetAsFloat(NumericType.命中率) - destUnitNumericCom.GetAsFloat(NumericType.闪避率);
+            float hitRate = sourceUnitNumericCom.GetAsFloat(NumericType.HitRate) - destUnitNumericCom.GetAsFloat(NumericType.DodgeRate);
             rateCharge = RandomHelper.RandomNumber(0, 100);
             if (rateCharge / 100.0f > hitRate)
             {
@@ -71,114 +74,40 @@ public static class GameCalNumericTool
             }
 
             //暴击判定
-            float criticalRate = sourceUnitNumericCom.GetAsFloat(NumericType.暴击率);
+            float criticalRate = sourceUnitNumericCom.GetAsFloat(NumericType.CritRate);
             rateCharge = RandomHelper.RandomNumber(0, 100);
             if (rateCharge / 100.0f <= criticalRate)
             {
                 //暴击判定通过
                 skillDamageValue.isCritical = true;
-                skillDamageValue.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * sourceUnitNumericCom.GetAsFloat(NumericType.暴击伤害));
+                skillDamageValue.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * sourceUnitNumericCom.GetAsFloat(NumericType.CritDamagePct));
             }
 
-            //计算属性亲和/抗性后的伤害
-            if (skillDamageValue.damageType != DamageType.无属性伤害)
+            NumericType resistType  = NumericType.ArmorResist;
+
+            if (skillDamageValue.damageType != DamageType.physic)
             {
-                NumericType qinHe = NumericType.金属性亲和;
-                NumericType kangXing = NumericType.五行抗性;
-                switch (skillDamageValue.damageType)
-                {
-                    case DamageType.金属性伤害:
-                        qinHe = NumericType.金属性亲和;
-                        break;
-                    case DamageType.木属性伤害:
-                        qinHe = NumericType.木属性亲和;
-                        break;
-                    case DamageType.水属性伤害:
-                        qinHe = NumericType.水属性亲和;
-                        break;
-                    case DamageType.火属性伤害:
-                        qinHe = NumericType.火属性亲和;
-                        break;
-                    case DamageType.土属性伤害:
-                        qinHe = NumericType.土属性亲和;
-                        break;
-                }
-                skillDamageValue.damageValue = Mathf.RoundToInt(
-                    (skillDamageValue.damageValue * (1 + sourceUnitNumericCom.GetAsInt(qinHe)))
-                    * (1 - 100 / (destUnitNumericCom.GetAsFloat(kangXing) + 100))
-                    );
+                resistType = NumericType.MagicResist;
+
             }
 
-            //计算护体,各属性伤害附加率后的伤害
-            skillDamageValue.damageValue -= destUnitNumericCom.GetAsInt(NumericType.护体Final);
+            skillDamageValue.damageValue = Mathf.RoundToInt((skillDamageValue.damageValue )* (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
 
+
+            //预防可能要考虑什么白字红字,黑字粉字等乱七八糟的情况,所以专门用一个List
             List<DamageData> damageList = new List<DamageData>();
             damageList.Add(skillDamageValue);
-            if (skillDamageValue.damageType == DamageType.无属性伤害)
-            {
-                float damageAddRate = sourceUnitNumericCom.GetAsFloat(NumericType.金属性伤害附加率);
-                if (damageAddRate > 0)
-                {
-                    DamageData damageData = new DamageData();
-                    damageData.damageType = DamageType.金属性伤害;
-                    damageData.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * damageAddRate);
-                    damageData.isCritical = false;
-                    damageList.Add(damageData);
-                }
-                damageAddRate = sourceUnitNumericCom.GetAsFloat(NumericType.木属性伤害附加率);
-                if (damageAddRate > 0)
-                {
-                    DamageData damageData = new DamageData();
-                    damageData.damageType = DamageType.木属性伤害;
-                    damageData.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * damageAddRate);
-                    damageData.isCritical = false;
-                    damageList.Add(damageData);
-                }
-                damageAddRate = sourceUnitNumericCom.GetAsFloat(NumericType.水属性伤害附加率);
-                if (damageAddRate > 0)
-                {
-                    DamageData damageData = new DamageData();
-                    damageData.damageType = DamageType.水属性伤害;
-                    damageData.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * damageAddRate);
-                    damageData.isCritical = false;
-                    damageList.Add(damageData);
-                }
-                damageAddRate = sourceUnitNumericCom.GetAsFloat(NumericType.火属性伤害附加率);
-                if (damageAddRate > 0)
-                {
-                    DamageData damageData = new DamageData();
-                    damageData.damageType = DamageType.火属性伤害;
-                    damageData.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * damageAddRate);
-                    damageData.isCritical = false;
-                    damageList.Add(damageData);
-                }
-                damageAddRate = sourceUnitNumericCom.GetAsFloat(NumericType.土属性伤害附加率);
-                if (damageAddRate > 0)
-                {
-                    DamageData damageData = new DamageData();
-                    damageData.damageType = DamageType.土属性伤害;
-                    damageData.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * damageAddRate);
-                    damageData.isCritical = false;
-                    damageList.Add(damageData);
-                }
-
-            }
-
-            //判断是否是防御姿态
-            CharacterStateComponent characterStateComponent = UnitComponent.Instance.Get(destUnitId).GetComponent<CharacterStateComponent>();
 
             //计算最终伤害加成,减免
 
             for (int i = 0; i < damageList.Count; i++)
             {
-                damageList[i].damageValue = Mathf.RoundToInt(damageList[i].damageValue *
-                    (1 + sourceUnitNumericCom.GetAsFloat(NumericType.最终伤害加成率) - destUnitNumericCom.GetAsFloat(NumericType.最终伤害减免率)));
-                if (characterStateComponent.DefensiveStance)
-                {
-                    damageList[i].damageValue =Mathf.RoundToInt(0.8f * damageList[i].damageValue);//防御姿态减少20%伤害.
-                }
-                //限定最小伤害1
-                damageList[i].damageValue = Mathf.Clamp(damageList[i].damageValue, 1, int.MaxValue);
+                var damage = damageList[i];
+                damage.damageValue = Mathf.RoundToInt(damageList[i].damageValue *
+                    (1 + sourceUnitNumericCom.GetAsFloat(NumericType.FinalDamage_AddPct) - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
+                //限定最小伤害0
+                damage.damageValue = Mathf.Clamp(damageList[i].damageValue, 0, int.MaxValue);
+                damageList[i] = damage;
             }
 
 
@@ -186,11 +115,10 @@ public static class GameCalNumericTool
             Game.EventSystem.Run(EventIdType.GiveDamage, destUnitId, damageList);
 
             //给予吸血,吸法
-            float xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.气血吸取率);
+            float xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.HP_LeechRate);
             if (xiQu > 0)
-                Game.EventSystem.Run(EventIdType.GiveHealth, sourceUnitId, Mathf.RoundToInt(skillDamageValue.damageValue * xiQu *
-                    (1 + sourceUnitNumericCom.GetAsFloat(NumericType.受到恢复效果加成率))));
-            xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.法力吸取率);
+                Game.EventSystem.Run(EventIdType.GiveHealth, sourceUnitId, Mathf.RoundToInt(skillDamageValue.damageValue * xiQu ));
+            xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.MP_LeechRate);
             if (xiQu > 0)
                 Game.EventSystem.Run(EventIdType.GiveMp, sourceUnitId, skillDamageValue.damageValue * xiQu);
         }
@@ -206,33 +134,34 @@ public static class GameCalNumericTool
         damageData.damageType = dot.damageType;
         damageData.damageValue = dot.damageValue;
         NumericComponent destUnitNumericCom = destUnit.GetComponent<NumericComponent>();
-        if (damageData.damageType != DamageType.无属性伤害)
+        NumericType resistType = NumericType.ArmorResist;
+
+        if (dot.damageType != DamageType.physic)
         {
-            damageData.damageValue = Mathf.RoundToInt(
-                (damageData.damageValue * (1 + dot.qinHe))
-                * (1 - 100 / (destUnitNumericCom.GetAsFloat( NumericType.五行抗性) + 100))
-                );
+            resistType = NumericType.MagicResist;
+
         }
 
-        damageData.damageValue -= destUnitNumericCom.GetAsInt(NumericType.护体Final);
+        damageData.damageValue = Mathf.RoundToInt((dot.damageValue) * (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
         damageData.damageValue = Mathf.RoundToInt(damageData.damageValue *
-               (1 + dot.damageFinalAddPct - destUnitNumericCom.GetAsFloat(NumericType.最终伤害减免率)));
+               (1 + dot.damageFinalAddPct - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
 
         List<DamageData> damageList = new List<DamageData>();
         damageList.Add(damageData);
-        Game.EventSystem.Run(EventIdType.GiveDamage, destUnit.Id, NumericType.HP, damageList);
+        Game.EventSystem.Run(EventIdType.GiveDamage, destUnit.Id, NumericType.HP_Final, damageList);
     }
 
     public static void CalRestore(Unit sourceUnit)
     {
         NumericComponent unitNumericCom = sourceUnit.GetComponent<NumericComponent>();
-        int hp = unitNumericCom.GetAsInt(NumericType.气血每秒回复);
+        int hp = unitNumericCom.GetAsInt(NumericType.HP_Restore);
         if (hp <= 0)
         {
+            //流血等状态不通过这里计算,而是单独用DOT计算. 因为流血和自然恢复可以共存
             return;
         }
-        Game.EventSystem.Run(EventIdType.GiveHealth, sourceUnit.Id, Mathf.RoundToInt( hp * (1 + unitNumericCom.GetAsFloat(NumericType.受到恢复效果加成率))));
-        int mp = unitNumericCom.GetAsInt(NumericType.法力每秒回复);
+        Game.EventSystem.Run(EventIdType.GiveHealth, sourceUnit.Id, Mathf.RoundToInt(hp));
+        int mp = unitNumericCom.GetAsInt(NumericType.MP_Restore);
         if (mp <= 0)
         {
             return;

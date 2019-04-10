@@ -14,12 +14,9 @@ public enum SkillType
 
 public enum ActiveSkillTag
 {
-    单体伤害类,
-    群体伤害类,
-    单体BUFF类,
-    群体BUFF类,
-    单体治疗类,
-    群体治疗类,
+    Damage,//伤害类
+    Buff,//Buff类
+    Restore,//恢复类
 }
 
 

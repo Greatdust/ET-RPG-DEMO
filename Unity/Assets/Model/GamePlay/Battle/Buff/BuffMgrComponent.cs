@@ -16,11 +16,11 @@ public class BuffMgrComponentAwakeSystem : AwakeSystem<BuffMgrComponent>
 }
 
 [ObjectSystem]
-public class BuffMgrComponentUpdateSystem : UpdateSystem<BuffMgrComponent>
+public class BuffMgrComponentUpdateSystem : FixedUpdateSystem<BuffMgrComponent>
 {
-    public override void Update(BuffMgrComponent self)
+    public override void FixedUpdate(BuffMgrComponent self)
     {
-        self.Update();
+        self.FixedUpdate();
     }
 }
 
@@ -37,7 +37,7 @@ public class BuffMgrComponent : ETModel.Component
 
     public RemoveBuffGroupEvent removeBuffGroupEvent;
 
-    private const float calSpan = 1;
+    private const long calSpan = 1000;
 
     public void Awake()
     {
@@ -48,10 +48,8 @@ public class BuffMgrComponent : ETModel.Component
         removeBuffGroupEvent.buffMgr = this;
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
-        if (BattleMgrComponent.Instance == null) return;
-        if (BattleMgrComponent.Instance.Waiting) return;
         if (updateList.Count > 0)
         {
             for (int i = updateList.Count-1; i >=0; i--)
@@ -80,11 +78,10 @@ public class BuffMgrComponent : ETModel.Component
     bool DealWithBuffGroup(BuffGroup buffGroup)
     {
         TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer(buffGroup.GetHashCode());
-        timer.timing += Time.deltaTime;
-        if (timer.timing >= calSpan)
+        long now = TimeHelper.Now();
+        if (now - timer.timing >= calSpan)
         {
-            timer.timing = 0;
-            timer.remainTime -= calSpan;
+            timer.timing = now;
         }
         if (buffGroup.buffList.Count > 0)
         {
@@ -102,7 +99,7 @@ public class BuffMgrComponent : ETModel.Component
             }
         }
 
-        if (timer.remainTime <= 0)
+        if (timer.interval <= 0)
         {
             RemoveGroup(buffGroup.BuffGroupId);
             TimeSpanHelper.Remove(buffGroup.GetHashCode());

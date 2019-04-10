@@ -17,27 +17,27 @@ public class SkillActiveConditionHandler_CheckNumeric : BaseSkillData.IActiveCon
         NumericComponent numericComponent = source.GetComponent<NumericComponent>();
         switch (checkNumeric.realtionType)
         {
-            case NumericRealtionType.大于:
+            case NumericRealtionType.Greater:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) > checkNumeric.aimValue)
                     return true;
                 break;
-            case NumericRealtionType.小于:
+            case NumericRealtionType.Less:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) < checkNumeric.aimValue)
                     return true;
                 break;
-            case NumericRealtionType.等于:
+            case NumericRealtionType.Equal:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) == checkNumeric.aimValue)
                     return true;
                 break;
-            case NumericRealtionType.不等于:
+            case NumericRealtionType.NotEqual:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) != checkNumeric.aimValue)
                     return true;
                 break;
-            case NumericRealtionType.大于等于:
+            case NumericRealtionType.GreaterEqual:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) >= checkNumeric.aimValue)
                     return true;
                 break;
-            case NumericRealtionType.小于等于:
+            case NumericRealtionType.LessEqual:
                 if (numericComponent.GetAsFloat(checkNumeric.numericType) <= checkNumeric.aimValue)
                     return true;
                 break;

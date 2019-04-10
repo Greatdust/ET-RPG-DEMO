@@ -71,7 +71,139 @@ namespace ETModel
             value = t;
         }
 
+    }
+
+    public class Property_InBattleState : IProperty<bool>
+    {
+        public bool value;
+
+        public bool Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_InBattleState()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(bool t)
+        {
+            value = t;
+        }
 
     }
+
+    public class Property_Die : IProperty<bool>
+    {
+        public bool value;
+
+        public bool Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_InBattleState()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(bool t)
+        {
+            value = t;
+        }
+
+    }
+
+    public class Property_UnStoppable : IProperty<bool>
+    {
+        public bool value;
+
+        public bool Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_InBattleState()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(bool t)
+        {
+            value = t;
+        }
+
+    }
+
+
+    public class Property_NotInControl : IProperty<bool>
+    {
+        public bool value;
+
+        public bool Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_InBattleState()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(bool t)
+        {
+            value = t;
+        }
+
+    }
+
+    public class Property_Invicible : IProperty<bool>
+    {
+        public bool value;
+
+        public bool Get()
+        {
+            return value;
+        }
+
+
+        public IProperty GetCopy()
+        {
+            return new Property_InBattleState()
+            {
+                value = this.value
+            };
+
+        }
+
+        public void Set(bool t)
+        {
+            value = t;
+        }
+
+    }
+
+
 
 }

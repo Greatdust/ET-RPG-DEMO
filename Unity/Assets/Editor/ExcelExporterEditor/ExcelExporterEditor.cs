@@ -199,7 +199,7 @@ public class ExcelExporterEditor : EditorWindow
 			this.md5Info.Add(fileName, md5);
 			if (md5 == oldMD5)
 			{
-				continue;
+				//continue;
 			}
 
 			Export(filePath, exportDir);
@@ -279,7 +279,7 @@ public class ExcelExporterEditor : EditorWindow
 				string fieldValue = GetCellString(row, j);
 				if (fieldValue == "")
 				{
-					throw new Exception($"sheet: {sheet.SheetName} 中有空白字段 {i},{j}");
+					//throw new Exception($"sheet: {sheet.SheetName} 中有空白字段 {i},{j}");
 				}
 
 				if (j > 2)

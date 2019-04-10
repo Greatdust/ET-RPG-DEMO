@@ -1,0 +1,17 @@
+using ETModel;
+
+namespace ETHotfix
+{
+	[Config((int)(AppType.Map))]
+	public partial class PhysicWorldsConfigCategory : ACategory<PhysicWorldsConfig>
+	{
+	}
+
+	public class PhysicWorldsConfig: IConfig
+	{
+		public long Id { get; set; }
+		public string TerrainDataPath;
+		public string TerrainConfigPath;
+		public string StaticObjs_Box;
+	}
+}

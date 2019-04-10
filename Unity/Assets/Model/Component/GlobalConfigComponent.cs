@@ -16,6 +16,8 @@
 
         public GameGlobalConfig globalConfig;
 
+        public bool networkPlayMode = true;//联网游戏模式
+
 
         public void Awake()
 		{

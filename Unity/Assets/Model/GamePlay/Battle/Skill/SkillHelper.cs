@@ -136,12 +136,7 @@ public static class SkillHelper
                 {
                     await TimerComponent.Instance.WaitAsync(pipeline_SkillEnd.duration);
                 }
-                CharacterStateComponent characterStateComponent = parentSkillData.SourceUnit.GetComponent<CharacterStateComponent>();
-                if (characterStateComponent.CanDoAction)
-                {
-                    AnimatorComponent animatorComponent = parentSkillData.SourceUnit.GetComponent<AnimatorComponent>();
-                    animatorComponent.SetAnimatorSpeed(1);
-                }
+               
                 break;
             default:
                 break;
@@ -259,22 +254,14 @@ public static class SkillHelper
     #endregion
     #region 自动选择技能
     public static ETTaskCompletionSource<ActiveSkillData> ChooseSkillDataTask;
-    public static async ETTask<ActiveSkillData> GetActiveSkillData(UnitActionData data)
+    public static ActiveSkillData GetActiveSkillData(Unit unit)
     {
         try
         {
-            if (data.mTeam == UnitTeam.Player && !BattleMgrComponent.Instance.AutoCombat)
-            {
-                ChooseSkillDataTask = new ETTaskCompletionSource<ActiveSkillData>();
-                //Game.EventSystem.Run(EventIdType.StartChooseSkill, data.mUnit.Id);
-                return await ChooseSkillDataTask.Task;
-            }
-            else
-            {
-                ActiveSkillData activeSkillData = data.mUnit.GetComponent<AutoChoosedSkillComponent>().GetSkillData(data);
-                Log.Debug(activeSkillData.skillName);
-                return activeSkillData;
-            }
+            ActiveSkillData activeSkillData = unit.GetComponent<AutoChoosedSkillComponent>().GetSkillData(unit);
+            Log.Debug(activeSkillData.skillName);
+            return activeSkillData;
+
         }
         catch (Exception e)
         {

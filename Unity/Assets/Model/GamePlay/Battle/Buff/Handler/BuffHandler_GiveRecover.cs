@@ -20,11 +20,11 @@ public class BuffHandler_GiveRecover : BaseBuffHandler,IBuffActionWithGetInputHa
             NumericComponent numericComponent = target.GetComponent<NumericComponent>();
             if (buff.hpValue > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, target.Id, buff.hpValue);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP_Final, target.Id, buff.hpValue);
             }
             if (buff.hpPct > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, target.Id, numericComponent.GetAsFloat(NumericType.气血MaxFinal) * buff.hpPct);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP_Final, target.Id, numericComponent.GetAsFloat(NumericType.HPMax_Final) * buff.hpPct);
             }
             if (buff.mpValue > 0)
             {
@@ -32,7 +32,7 @@ public class BuffHandler_GiveRecover : BaseBuffHandler,IBuffActionWithGetInputHa
             }
             if (buff.mpPct > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, target.Id, numericComponent.GetAsFloat(NumericType.法力MaxFinal) * buff.mpPct);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, target.Id, numericComponent.GetAsFloat(NumericType.MPMax_Final) * buff.mpPct);
             }
 
         }

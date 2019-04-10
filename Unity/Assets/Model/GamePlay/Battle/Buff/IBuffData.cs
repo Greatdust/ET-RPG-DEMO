@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 public enum BuffTargetType
 {
     自身,
-    对我方单体,
-    对我方全体,
-    对敌方单体,
-    对敌方全体
+    范围内我方角色,
+    范围内敌方角色,
+    敌方单体,
 }
 
 public enum RestrictionType
 {
-    灵封,
-    冰封,
+    击退,
     眩晕,
 }
 

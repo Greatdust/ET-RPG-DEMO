@@ -7,8 +7,8 @@ namespace ETModel
     {
         public class Timer
         {
-            public float remainTime;
-            public float timing;
+            public long interval;
+            public long timing;
         }
         private static Dictionary<int, Timer> timeDatas = new Dictionary<int, Timer>();
 
@@ -24,7 +24,7 @@ namespace ETModel
                 if (caches.Count > 0)
                 {
                     timer = caches.Dequeue();
-                    timer.remainTime = 0;
+                    timer.interval = 0;
                     timer.timing = 0;
                 }
                 else
@@ -36,11 +36,11 @@ namespace ETModel
             return timer;
         }
 
-        public static async void Timing(Timer timer, float timeSpan)
+        public static async void Timing(Timer timer, long timeSpan)
         {
-            timer.remainTime = timeSpan;
+            timer.interval = timeSpan;
             await TimerComponent.Instance.WaitAsync(timeSpan);
-            timer.remainTime = 0;
+            timer.interval = 0;
         }
 
         public static void Remove(int hash)

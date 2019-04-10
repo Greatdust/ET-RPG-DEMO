@@ -5,7 +5,13 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace ETModel
 {
-	[ObjectSystem]
+    public enum UnitTeam
+    {
+        Player,
+        Enemy
+    }
+
+    [ObjectSystem]
 	public class UnitAwakeSystem : AwakeSystem<Unit, GameObject>
 	{
 		public override void Awake(Unit self, GameObject gameObject)
@@ -46,6 +52,11 @@ namespace ETModel
 				GameObject.transform.rotation = value;
 			}
 		}
+
+        public UnitTeam UnitTeam
+        {
+            get;set;
+        }
 
 		public override void Dispose()
 		{

@@ -34,12 +34,12 @@ public class ActiveSkillComponent : ETModel.Component
         activeSkillDic = new Dictionary<string, ActiveSkillData>();
     }
     #region 战斗流程
-    public async ETVoid Excute(UnitActionData data)
+    public async ETVoid Excute()
     {
         hasRequestedSkillTarget = false;
         try
         {
-            var currSkillData = await SkillHelper.GetActiveSkillData(data);
+            var currSkillData = SkillHelper.GetActiveSkillData(GetParent<Unit>());
             Log.Debug(currSkillData.skillName);
 
             await SkillHelper.ExcuteActiveSkill(currSkillData);

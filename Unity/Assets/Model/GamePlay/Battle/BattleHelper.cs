@@ -22,20 +22,20 @@ public static class BattleEventHandler
 {
 
 
-    public static void LoadAssets(BattleData battleData)
+    public static void LoadAssets(DungeonComponent dungeonCom)
     {
         EffectCacheComponent effectCacheComponent = Game.Scene.GetComponent<EffectCacheComponent>();
         AudioCacheComponent audioCacheComponent = Game.Scene.GetComponent<AudioCacheComponent>();
         //加载和缓存特效资源
-        foreach (var unitActionData in battleData.playerTeam)
+        foreach (var unit in dungeonCom.playerTeam)
         {
-            ActiveSkillComponent skillComponent = unitActionData.mUnit.GetComponent<ActiveSkillComponent>();
+            ActiveSkillComponent skillComponent = unit.GetComponent<ActiveSkillComponent>();
             AddEffectCache(effectCacheComponent, audioCacheComponent, skillComponent);
             //TODO: 添加被动技能的
         }
-        foreach (var unitActionData in battleData.enemyTeam)
+        foreach (var unit in dungeonCom.enemyTeam)
         {
-            ActiveSkillComponent skillComponent = unitActionData.mUnit.GetComponent<ActiveSkillComponent>();
+            ActiveSkillComponent skillComponent = unit.GetComponent<ActiveSkillComponent>();
             AddEffectCache(effectCacheComponent,audioCacheComponent, skillComponent);
 
         }
@@ -105,22 +105,22 @@ public static class BattleEventHandler
         }
     }
 
-    static void ReleaseAssets(BattleData battleData)
+    static void ReleaseAssets(DungeonComponent dungeonCom)
     {
         EffectCacheComponent effectCacheComponent = Game.Scene.GetComponent<EffectCacheComponent>();
         effectCacheComponent.Clear();
         AudioCacheComponent audioCacheComponent = Game.Scene.GetComponent<AudioCacheComponent>();
         audioCacheComponent.Clear();
-        foreach (var v in battleData.playerTeam)
+        foreach (var v in dungeonCom.playerTeam)
         {
-            if (v.mUnit.Id == UnitComponent.Instance.MyUnit.Id)
+            if (v.Id == UnitComponent.Instance.MyUnit.Id)
             {
-                v.mUnit.GetComponent<BuffMgrComponent>().ClearBuffGroupOnBattleEnd();             
+                v.GetComponent<BuffMgrComponent>().ClearBuffGroupOnBattleEnd();             
             }
         }
-        foreach (var v in battleData.enemyTeam)
+        foreach (var v in dungeonCom.enemyTeam)
         {
-            UnitComponent.Instance.Remove(v.mUnit.Id);
+            UnitComponent.Instance.Remove(v.Id);
         }
     }
 

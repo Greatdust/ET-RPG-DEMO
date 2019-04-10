@@ -62,6 +62,17 @@ namespace ETModel
             unit = GetParent<Unit>();
         }
 
+        public T GetCurrState<T>() where T : class,IProperty
+        {
+            if (unitProperty.TryGetValue(typeof(T), out var property))
+            {
+                T t = property as T;
+                return t;
+            }
+            return null;
+
+        }
+
         public void AdjustRemoteEstimatedFrame()
         {
             if (packetsReceived == 1)

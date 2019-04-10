@@ -13,17 +13,17 @@ namespace ETModel
             switch (str)
             {
                 case ">":
-                    return NumericRealtionType.大于;
+                    return NumericRealtionType.Greater;
                 case "<":
-                    return NumericRealtionType.小于;
+                    return NumericRealtionType.Less;
                 case ">=":
-                    return NumericRealtionType.大于等于;
+                    return NumericRealtionType.GreaterEqual;
                 case "<=":
-                    return NumericRealtionType.小于等于;
+                    return NumericRealtionType.LessEqual;
                 case "==":
-                    return NumericRealtionType.等于;
+                    return NumericRealtionType.Equal;
                 case "!=":
-                    return NumericRealtionType.不等于;
+                    return NumericRealtionType.NotEqual;
                 default:
                     Log.Error("该字符串无法转换为比较关系");
                     throw new Exception();

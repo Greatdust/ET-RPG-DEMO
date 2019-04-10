@@ -19,19 +19,14 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
         {
             BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
-            BuffMgrComponent buffMgrComponent = target.GetComponent<BuffMgrComponent>();
-            CharacterStateComponent characterStateComponent = target.GetComponent<CharacterStateComponent>();
+            UnitStateComponent unitState = target.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
-                case RestrictionType.灵封:
-                    characterStateComponent.CanUseActiveSkill = false;
-                    break;
-                case RestrictionType.冰封:
-                    characterStateComponent.CanDoAction = false;
-                    break;
+                case RestrictionType.击退:
                 case RestrictionType.眩晕:
-                    characterStateComponent.CanDoAction = false;
+                    Property_NotInControl property_NotInControl = unitState.GetCurrState<Property_NotInControl>();
+                    property_NotInControl.Set(true);
                     break;
             }
 
@@ -47,19 +42,14 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
         {
             BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
-            BuffMgrComponent buffMgrComponent = target.GetComponent<BuffMgrComponent>();
-            CharacterStateComponent characterStateComponent = target.GetComponent<CharacterStateComponent>();
+            UnitStateComponent unitState = target.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
-                case RestrictionType.灵封:
-                    characterStateComponent.CanUseActiveSkill = true;
-                    break;
-                case RestrictionType.冰封:
-                    characterStateComponent.CanDoAction = true;
-                    break;
+                case RestrictionType.击退:
                 case RestrictionType.眩晕:
-                    characterStateComponent.CanDoAction = true;
+                    Property_NotInControl property_NotInControl = unitState.GetCurrState<Property_NotInControl>();
+                    property_NotInControl.Set(false);
                     break;
             }
 

@@ -34,6 +34,8 @@
         #endregion
 
         #region 战斗相关
+        public const string DisplayEnemy = "DisplayEnemy";
+
         public const string CalDamage = "CalDamage";
         public const string AttackMissing = "AttackMissing";
         public const string GiveDamage = "GiveDamage";

@@ -14,8 +14,6 @@ public class Buff_DOT : BaseBuffData
     public GameCalNumericTool.DamageType damageType;
 
     [NonSerialized]
-    public int qinHe;//Buff被附加时,使用方的属性亲和
-    [NonSerialized]
     public float damageFinalAddPct;//Buff被附加时,使用方的最终伤害加成率
     [NonSerialized]
     public int damageValue;//造成的伤害值,无法直接编辑,通过计算

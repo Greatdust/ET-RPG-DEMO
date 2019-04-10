@@ -15,14 +15,13 @@ public class SkillActiveConditionHandler_CheckTiming : BaseSkillData.IActiveCond
     {
         SkillActiveCondition_CheckTiming CheckTiming = data as SkillActiveCondition_CheckTiming;
         TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer(CheckTiming.GetHashCode());
-        if (timer.remainTime == 0 && timer.timing ==0)
+        long now = TimeHelper.Now();
+        if (timer.interval == 0 && timer.timing ==0)
         {
-            timer.remainTime = CheckTiming.timeSpan;
+            timer.interval =(long)(CheckTiming.timeSpan*1000);
+            timer.timing = now;
         }
-        float delta = Time.deltaTime;
-        timer.timing += delta;
-        timer.remainTime -= delta;
-        if (timer.remainTime <= 0)
+        if (now - timer.timing >= timer.interval)
         {
             TimeSpanHelper.Remove(CheckTiming.GetHashCode());
             return true;

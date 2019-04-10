@@ -84,7 +84,6 @@ public class PassiveSkillComponent : ETModel.Component
                         {
                             if (SkillHelper.CheckActiveConditions(v, source))
                             {
-                                UnitActionData unitActionData = BattleMgrComponent.Instance.unitActionDataDic[GetParent<Unit>().Id];
 
                                 SkillHelper.ExcutePassiveSkill(v);
                                 v.apply = true;
@@ -102,8 +101,6 @@ public class PassiveSkillComponent : ETModel.Component
         }
         if (SkillHelper.CheckActiveConditions(v, source))
         {
-            UnitActionData unitActionData = BattleMgrComponent.Instance.unitActionDataDic[GetParent<Unit>().Id];
-
             SkillHelper.ExcutePassiveSkill(v);
             v.apply = true;
         }

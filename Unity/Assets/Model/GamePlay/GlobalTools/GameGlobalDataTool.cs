@@ -88,31 +88,31 @@ public class GameGlobalDataTool
                     if (!globalVariableComponent.globalVars.intVarDic.ContainsKey(v.Key)) continue;
                     switch (v.Value.relationType)
                     {
-                        case NumericRealtionType.大于:
+                        case NumericRealtionType.Greater:
                             if (globalVariableComponent.globalVars.intVarDic[v.Key] <= v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.小于:
+                        case NumericRealtionType.Less:
                             if (globalVariableComponent.globalVars.intVarDic[v.Key] >= v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.等于:
+                        case NumericRealtionType.Equal:
                             if (globalVariableComponent.globalVars.intVarDic[v.Key] != v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.大于等于:
+                        case NumericRealtionType.GreaterEqual:
                             if (globalVariableComponent.globalVars.intVarDic[v.Key] < v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.小于等于:
+                        case NumericRealtionType.LessEqual:
                             if (globalVariableComponent.globalVars.intVarDic[v.Key] > v.Value.value)
                             {
                                 return false;
@@ -128,31 +128,31 @@ public class GameGlobalDataTool
                     if (!globalVariableComponent.globalVars.floatVarDic.ContainsKey(v.Key)) continue;
                     switch (v.Value.relationType)
                     {
-                        case NumericRealtionType.大于:
+                        case NumericRealtionType.Greater:
                             if (globalVariableComponent.globalVars.floatVarDic[v.Key] <= v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.小于:
+                        case NumericRealtionType.Less:
                             if (globalVariableComponent.globalVars.floatVarDic[v.Key] >= v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.等于:
+                        case NumericRealtionType.Equal:
                             if (globalVariableComponent.globalVars.floatVarDic[v.Key] != v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.大于等于:
+                        case NumericRealtionType.GreaterEqual:
                             if (globalVariableComponent.globalVars.floatVarDic[v.Key] < v.Value.value)
                             {
                                 return false;
                             }
                             break;
-                        case NumericRealtionType.小于等于:
+                        case NumericRealtionType.LessEqual:
                             if (globalVariableComponent.globalVars.floatVarDic[v.Key] > v.Value.value)
                             {
                                 return false;
@@ -329,13 +329,13 @@ public class GameGlobalDataTool
             if (pct > 0)
             {
                 Unit unit = UnitComponent.Instance.MyUnit;
-                float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.气血MaxFinal);
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, unitId, maxValue * pct);
+                float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.HPMax_Final);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP_Final, unitId, maxValue * pct);
             }
             if (value > 0)
             {
 
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, unitId, value);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP_Final, unitId, value);
             }
         }
     }
@@ -350,7 +350,7 @@ public class GameGlobalDataTool
             if (pct > 0)
             {
                 Unit unit = UnitComponent.Instance.MyUnit;
-                float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.气血MaxFinal);
+                float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.HPMax_Final);
                 Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, unitId, maxValue * pct);
             }
             if (value > 0)
