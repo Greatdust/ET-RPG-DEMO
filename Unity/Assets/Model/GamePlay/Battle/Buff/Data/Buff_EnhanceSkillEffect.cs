@@ -7,12 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 [Serializable]
-public class Buff_EnhanceSkillEffect : BaseBuffData
+public struct Buff_EnhanceSkillEffect : IBuffData
 {
     public string skillId;
-    public SkillEffectComponent.EffectData effectData = new SkillEffectComponent.EffectData();
+    public SkillEffectComponent.EffectData effectData;
 
-    public override string GetBuffIdType()
+    public float growthCoff;// 系数随技能等级的成长值 
+
+    public string GetBuffIdType()
     {
         return BuffIdType.EnhanceSkillEffect;
     }

@@ -31,16 +31,19 @@
 
         public const string UnitLvUp = "UnitLvUp";
 
+        public const string NumericUpdated = "NumericUpdated";
+
         #endregion
 
         #region 战斗相关
         public const string DisplayEnemy = "DisplayEnemy";
-
         public const string CalDamage = "CalDamage";
         public const string AttackMissing = "AttackMissing";
         public const string GiveDamage = "GiveDamage";
         public const string GiveHealth = "GiveHealth";
         public const string GiveMp = "GiveMp";
+
+        public const string OnUnitDie = "OnUnitDie";
         #endregion
 
         #region 奖励相关

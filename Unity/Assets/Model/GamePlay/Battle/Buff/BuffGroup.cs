@@ -11,18 +11,13 @@ using UnityEngine;
 /// 一组BUFF,用来组成玩家眼中的装备/道具/技能等等附加的持续性效果
 /// </summary>
 [Serializable]
-public class BuffGroup
+public struct BuffGroup
 {
-    [NonSerialized]
-    private static int groupIdValue;
-    public static string GroupIdGenerater()
-    {
-        return (TimeHelper.ClientNowSeconds() << 16 + ++groupIdValue).ToString();
-    }
-    private string buffGroupId;
+    private long buffGroupId;
 
     [HideInInspector]
-    public long sourceUnitId;
+    [NonSerialized]
+    public long sourceUnitId;// 添加到一个Unit的BuffMgr上时,这个用以记录这个buffGroup的来源
 
     [LabelText("Buff组名称")]
     [LabelWidth(150)]
@@ -32,35 +27,23 @@ public class BuffGroup
     public string buffGroupDesc;//描述
     [Header("-1代表持续到BUFF组被解除,0代表瞬间完成.大于0代表持续一段时间")]
     [LabelText("Buff持续时间")]
-    public float duration = -1;
-    [LabelText("战斗结束后是否要剔除")]
     [LabelWidth(150)]
-    public bool removeOnBattleEnd;
+    public float duration ;
 
+    public List<IBuffData> buffList;
 
-    public List<BaseBuffData> buffList = new List<BaseBuffData>();
-
-    public BuffGroup GetMemberwiseClone()
+    public long BuffGroupId
     {
-        return this.MemberwiseClone() as BuffGroup;
-    }
-
-    public string BuffGroupId {
         get
         {
-            if (string.IsNullOrEmpty(buffGroupId))
-                buffGroupId = BuffGroup.GroupIdGenerater();
+            if (buffGroupId == 0)
+                buffGroupId = IdGenerater.GenerateId();
             return buffGroupId;
         }
-            set => buffGroupId = value;
+        set => buffGroupId = value;
     }
 
-    public void SetBuffGroupId(string id)
-    {
-        buffGroupId = id;
-    }
-
-    public void AddBuff(BaseBuffData baseBuffData)
+    public void AddBuff(IBuffData baseBuffData)
     {
         buffList.Add(baseBuffData);
     }
@@ -93,11 +76,11 @@ public class BuffGroup
         }
     }
 
-    void OnBuffAdd(BaseBuffData v, Unit source, Unit target)
+    void OnBuffAdd(IBuffData v, Unit source, Unit target)
     {
         BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.GetBuffIdType());
         IBuffActionWithGetInputHandler buffActionWithGetInputHandler = baseBuffHandler as IBuffActionWithGetInputHandler;
-        buffActionWithGetInputHandler?.ActionHandle(v, source, new List<IBuffReturnedValue>() { new BuffReturnedValue_TargetUnit() { target = target, playSpeedScale =1 } });
+        buffActionWithGetInputHandler?.ActionHandle(v, source, new List<IBufferValue>() { new BufferValue_TargetUnits() { targets = new Unit[1] { target } } });
     }
 
     public void OnBuffGroupRemove(Unit source, Unit target)
@@ -111,30 +94,17 @@ public class BuffGroup
         }
     }
 
-    void Remove(BaseBuffData v,Unit source,Unit target)
+    void Remove(IBuffData v,Unit source,Unit target)
     {
         BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.GetBuffIdType());
         IBuffRemoveHanlder buffRemoveHanlder = baseBuffHandler as IBuffRemoveHanlder;
-        buffRemoveHanlder?.Remove(v, source, new List<IBuffReturnedValue>() { new BuffReturnedValue_TargetUnit() { target = target,playSpeedScale =1 } });
+        buffRemoveHanlder?.Remove(v, source, new List<IBufferValue>() { new BufferValue_TargetUnits() { targets = new Unit[1] { target } } });
     }
 
-    public void OnBuffGroupRefresh(BaseBuffData oldBuff, BaseBuffData newBuff, Unit source, Unit target)
+    public void OnBuffGroupRefresh(IBuffData oldBuff, IBuffData newBuff, Unit source, Unit target)
     {
         Remove(oldBuff, source, target);
         OnBuffAdd(newBuff, source, target);
-    }
-
-}
-
-public static class BuffGroupHelper
-{
-
-    public static BuffGroup GetNewBuffGroup(BuffGroup newBuffGroup)
-    {
-        BuffGroup buffGroup = newBuffGroup.GetMemberwiseClone();
-        buffGroup.SetBuffGroupId(newBuffGroup.BuffGroupId);
-        return buffGroup;
-
     }
 
 }

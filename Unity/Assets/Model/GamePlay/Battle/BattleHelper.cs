@@ -70,7 +70,7 @@ public static class BattleEventHandler
             }
         }
     }
-    static void AddEffectCache(EffectCacheComponent effectCacheComponent, BaseBuffData buff, GameObject skillAssetsPrefabGo)
+    static void AddEffectCache(EffectCacheComponent effectCacheComponent, IBuffData buff, GameObject skillAssetsPrefabGo)
     {
         if (buff.GetBuffIdType() == BuffIdType.EmitEffectInSkill)
         {
@@ -92,7 +92,7 @@ public static class BattleEventHandler
 
         }
     }
-    static void AddAudioCache(AudioCacheComponent audioCacheComponent, BaseBuffData buff, GameObject skillAssetsPrefabGo)
+    static void AddAudioCache(AudioCacheComponent audioCacheComponent, IBuffData buff, GameObject skillAssetsPrefabGo)
     {
         if (buff.GetBuffIdType() == BuffIdType.PlaySound)
         {

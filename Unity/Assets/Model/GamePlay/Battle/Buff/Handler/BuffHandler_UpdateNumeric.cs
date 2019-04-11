@@ -11,7 +11,7 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
 {
 
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
         Buff_UpdateNumeric buff = data as Buff_UpdateNumeric;
         NumericComponent numericComponent = source.GetComponent<NumericComponent>();
@@ -29,19 +29,19 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
         }
         foreach (var v in baseBuffReturnedValues)
         {
-            BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
+            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
             Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, target.Id, buff.updateValue);
         }
     }
 
-    public void Remove(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void Remove(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
         Buff_UpdateNumeric buff = data as Buff_UpdateNumeric;
        
         foreach (var v in baseBuffReturnedValues)
         {
-            BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
+            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
             Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, target.Id, -buff.updateValue);
         }

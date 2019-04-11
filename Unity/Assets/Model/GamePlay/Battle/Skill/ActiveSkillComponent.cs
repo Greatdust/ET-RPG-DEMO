@@ -1,4 +1,5 @@
 ﻿using ETModel;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,33 +17,48 @@ public class SkillComponentAwakeSystem : AwakeSystem<ActiveSkillComponent>
     }
 }
 
+
 /// <summary>
 /// 每个战斗单位身上都会有的一个主动技能组件，用以管理单位身上的主动技能
 /// </summary>
 public class ActiveSkillComponent : ETModel.Component
 {
-    public Dictionary<string, ActiveSkillData> activeSkillDic;//这里不会保存普通攻击技能
 
+    public Dictionary<string, BaseSkill_AppendedData> skillList;
 
-    public ActiveSkillData Skill_NormalAttack ;//记录一下普攻，单独抽出来
+    public string Skill_NormalAttack ;//记录一下普攻，单独抽出来
 
-    private bool hasRequestedSkillTarget;//记录一下是否已经请求过技能目标了
+    //string 是对应的BuffSignal
+    public Dictionary<string, Dictionary<Type,IBufferValue>> buffReturnValues = new Dictionary<string, Dictionary<Type, IBufferValue>>();//存储技能执行过程中产生的中间数据
 
+    public Dictionary<string, Action> collisionEvents = new Dictionary<string, Action>();//存储技能执行过程中产生的碰撞事件,string是对应的BuffSignal
+
+    public ETCancellationTokenSource cancelToken;//用以执行技能中断的
 
     public void Awake()
     {
-        activeSkillDic = new Dictionary<string, ActiveSkillData>();
+        skillList = new Dictionary<string, BaseSkill_AppendedData>();
     }
-    #region 战斗流程
-    public async ETVoid Excute()
+
+    public void AddReturnValue(string buffSignal, IBufferValue buffReturnedValue)
     {
-        hasRequestedSkillTarget = false;
+        if (!buffReturnValues.TryGetValue(buffSignal, out var dic))
+        {
+            dic = new Dictionary<Type, IBufferValue>();
+            buffReturnValues[buffSignal] = dic;
+        }
+        dic[buffReturnedValue.GetType()] = buffReturnedValue;
+    }
+
+    #region 战斗流程
+    public async ETVoid Excute(string skillId)
+    {
         try
         {
-            var currSkillData = SkillHelper.GetActiveSkillData(GetParent<Unit>());
-            Log.Debug(currSkillData.skillName);
-
-            await SkillHelper.ExcuteActiveSkill(currSkillData);
+            if (!skillList.ContainsKey(skillId)) return;
+            ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
+            cancelToken = new ETCancellationTokenSource();
+            await SkillHelper.ExcuteActiveSkill(activeSkillData, cancelToken);
         }
         catch (Exception e)
         {
@@ -56,38 +72,32 @@ public class ActiveSkillComponent : ETModel.Component
     #endregion
     #region 技能添加,删除,获取
 
-    public void AddSkill(ActiveSkillData skillData)
+    public void AddSkill(string skillId)
     {
-        skillData.SourceUnit = GetParent<Unit>();
-        foreach (var v in skillData.AllBuffInSkill.Values)
+        ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
+        if (activeSkillData.isNormalAttack)
         {
-            v.ParentSkillData = skillData;
+            Skill_NormalAttack = skillId;
         }
-
-        if (skillData.isNormalAttack)
+        if (!skillList.ContainsKey(skillId))
         {
-            Skill_NormalAttack = skillData;
+            skillList.Add(skillId, new BaseSkill_AppendedData() { level = 1 });
         }
-
-        skillData.buffReturnValues = new Dictionary<string, List<IBuffReturnedValue>>();
-        activeSkillDic[skillData.skillId] = skillData;
     }
 
     public void RemoveSkill(string skillId)
     {
-        ActiveSkillData skillData = GetSkill(skillId);
-        if (skillData == null || skillData == Skill_NormalAttack) return;
-        activeSkillDic.Remove(skillId);
+        if (!skillList.ContainsKey(skillId)) return;
+        if (skillId == Skill_NormalAttack) return;
+        skillList.Remove(skillId);
     }
 
-    public ActiveSkillData GetSkill(string skillId)
+    public BaseSkill_AppendedData GetSkillAppendedData(string skillId)
     {
-        ActiveSkillData data;
-        if (!activeSkillDic.TryGetValue(skillId, out data))
-        {
+        if (skillList.TryGetValue(skillId, out var data))
+            return data;
+        else
             return null;
-        }
-        return data;
     }
     #endregion
 }

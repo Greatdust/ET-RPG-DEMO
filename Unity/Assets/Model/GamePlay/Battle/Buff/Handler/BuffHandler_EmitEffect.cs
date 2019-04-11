@@ -89,19 +89,19 @@ public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff_emitEffect.emitObjId, effectGo);
     }
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues, Action<long> action)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues, Action<long> action)
     {
         Buff_EmitEffect buff_EmitEffect = data as Buff_EmitEffect;
         foreach (var v in baseBuffReturnedValues)
         {
-            BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
+            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
             ActionHandle(buff_EmitEffect, source, target,buffReturnedValue_TargetUnit.Value.playSpeedScale, action);
         }
 
     }
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
         ActionHandle(data, source, baseBuffReturnedValues, null);
     }

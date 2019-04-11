@@ -11,7 +11,7 @@ using UnityEngine;
 /// 这是播放单个特效的BUFF,如果该BUFF的目标设置为多个了,那么会发射多次
 /// </summary>
 [Serializable]
-public class Buff_EmitEffect : BaseBuffData
+public struct Buff_EmitEffect : IBuffData
 {
     public string emitObjId;//发射时的特效
     public bool lockTarget;//是否是锁定目标的,如果是,发射方向就是计算使用者和第一个目标之前的方向
@@ -21,9 +21,9 @@ public class Buff_EmitEffect : BaseBuffData
     public float emitSpeed;//发射速度
     public float duration;//生命周期
 
-    public List<string> effectParams = new List<string>();
+    public List<string> effectParams ;
 
-    public override string GetBuffIdType()
+    public string GetBuffIdType()
     {
         return BuffIdType.EmitEffectInSkill;
     }

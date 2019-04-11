@@ -7,19 +7,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[LabelText("百分比伤害")]
-[LabelWidth(150)]
+
 [Serializable]
-public class Buff_DamageByNumeric :   BaseBuffData
+public struct Buff_DamageByNumeric :   IBuffData
 {
     public NumericType numericType;
-    public float coefficient;//系数
+    public float baseCoff;//系数
     public GameCalNumericTool.DamageType damageType;
 
+    public float growthCoff;// 系数随技能等级的成长值 
 
 
-
-    public override string GetBuffIdType()
+    public string GetBuffIdType()
     {
         return BuffIdType.DamageByNumeric;
     }

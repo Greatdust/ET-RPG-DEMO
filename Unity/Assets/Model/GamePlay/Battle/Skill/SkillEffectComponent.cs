@@ -13,7 +13,7 @@ public class SkillEffectComponentAwakeSystem : AwakeSystem<SkillEffectComponent>
     }
 }
 
-
+//存储临时的技能效果提升
 public class SkillEffectComponent:ETModel.Component
 {
     [System.Serializable]

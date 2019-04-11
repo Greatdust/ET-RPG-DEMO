@@ -66,7 +66,7 @@ namespace ETModel
         #region 数值附加类型定义
 
 
-        HP_Final = 5001,
+        HP = 5001,
         HPMax_Final = 5002,
         HPMax_Base = HPMax_Final * 10 + 1,
         HPMax_Add,

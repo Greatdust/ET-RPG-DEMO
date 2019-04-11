@@ -30,18 +30,11 @@ public enum BuffStackType
     刷新,
     独立
 }
-
-[Serializable]
-public abstract class BaseBuffData 
+public interface IBuffData
 {
-    public abstract string GetBuffIdType();
-
-}
-
-[Serializable]
-public abstract class BaseBuffHasTarget : BaseBuffData
-{
-
+    //这个string值的意义,是为了可能需要做的,将技能数据层放到热更代码里
+    //这样热更的时候修改数值(平衡性更新,客户端一般只改变描述,实际计算在服务器) 完全不影响技能的执行
+    string GetBuffIdType();
 }
 
 

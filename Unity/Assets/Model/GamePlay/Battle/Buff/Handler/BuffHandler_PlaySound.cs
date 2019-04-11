@@ -12,12 +12,12 @@ public class BuffHandler_PlaySound : BaseBuffHandler,IBuffActionWithGetInputHand
 {
 
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
-        BuffReturnedValue_TargetUnit? target = null;
+        BufferValue_TargetUnits? target = null;
         foreach (var v in baseBuffReturnedValues)
         {
-            target = v as BuffReturnedValue_TargetUnit?;
+            target = v as BufferValue_TargetUnits?;
             if (target != null)
             {
                 break;

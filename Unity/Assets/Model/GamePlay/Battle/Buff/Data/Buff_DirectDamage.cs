@@ -8,16 +8,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[LabelText("固定伤害")]
-[LabelWidth(150)]
+
 [Serializable]
-public class Buff_DirectDamage : BaseBuffData
+public struct Buff_DirectDamage : IBuffData
 {
     public int damageValue;
     public GameCalNumericTool.DamageType damageType;
+    public int growthValue;// 随技能等级的成长值 
 
-
-    public override string GetBuffIdType()
+    public string GetBuffIdType()
     {
         return BuffIdType.DirectDamage;
     }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
+//管理游戏内的全局变量
 public class GameGlobalVariable : SerializedScriptableObject
 {
     public Dictionary<string, int> intVarDic = new Dictionary<string, int>();

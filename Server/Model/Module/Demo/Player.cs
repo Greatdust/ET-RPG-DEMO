@@ -1,4 +1,5 @@
-﻿namespace ETModel
+﻿
+namespace ETModel
 {
 	[ObjectSystem]
 	public class PlayerSystem : AwakeSystem<Player, string>
@@ -12,7 +13,7 @@
 	public sealed class Player : Entity
 	{
 		public string Account { get; private set; }
-		
+	
 		public long UnitId { get; set; }
 
 		public void Awake(string account)

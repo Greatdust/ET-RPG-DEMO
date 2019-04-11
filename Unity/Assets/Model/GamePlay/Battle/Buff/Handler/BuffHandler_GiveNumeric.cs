@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 public class BuffHandler_GiveNumeric : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
         Buff_GiveNumeric buff = data as Buff_GiveNumeric;
 
         foreach (var v in baseBuffReturnedValues)
         {
-            BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
+            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
             Game.EventSystem.Run(EventIdType.NumbericChange, buff.numericType, target.Id, buff.value);
 

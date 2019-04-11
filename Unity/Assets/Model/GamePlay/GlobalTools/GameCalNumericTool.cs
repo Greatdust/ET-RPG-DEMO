@@ -95,24 +95,24 @@ public static class GameCalNumericTool
 
 
             //预防可能要考虑什么白字红字,黑字粉字等乱七八糟的情况,所以专门用一个List
-            List<DamageData> damageList = new List<DamageData>();
-            damageList.Add(skillDamageValue);
+            DamageData[] array = new DamageData[1];
+            array[0] = skillDamageValue;
 
             //计算最终伤害加成,减免
 
-            for (int i = 0; i < damageList.Count; i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                var damage = damageList[i];
-                damage.damageValue = Mathf.RoundToInt(damageList[i].damageValue *
+                var damage = array[i];
+                damage.damageValue = Mathf.RoundToInt(array[i].damageValue *
                     (1 + sourceUnitNumericCom.GetAsFloat(NumericType.FinalDamage_AddPct) - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
                 //限定最小伤害0
-                damage.damageValue = Mathf.Clamp(damageList[i].damageValue, 0, int.MaxValue);
-                damageList[i] = damage;
+                damage.damageValue = Mathf.Clamp(array[i].damageValue, 0, int.MaxValue);
+                array[i] = damage;
             }
 
 
             //给予伤害
-            Game.EventSystem.Run(EventIdType.GiveDamage, destUnitId, damageList);
+            Game.EventSystem.Run(EventIdType.GiveDamage, destUnitId, array);
 
             //给予吸血,吸法
             float xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.HP_LeechRate);
@@ -120,7 +120,7 @@ public static class GameCalNumericTool
                 Game.EventSystem.Run(EventIdType.GiveHealth, sourceUnitId, Mathf.RoundToInt(skillDamageValue.damageValue * xiQu ));
             xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.MP_LeechRate);
             if (xiQu > 0)
-                Game.EventSystem.Run(EventIdType.GiveMp, sourceUnitId, skillDamageValue.damageValue * xiQu);
+                Game.EventSystem.Run(EventIdType.GiveMp, sourceUnitId, Mathf.RoundToInt(skillDamageValue.damageValue * xiQu));
         }
         catch (Exception e)
         {
@@ -144,11 +144,11 @@ public static class GameCalNumericTool
 
         damageData.damageValue = Mathf.RoundToInt((dot.damageValue) * (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
         damageData.damageValue = Mathf.RoundToInt(damageData.damageValue *
-               (1 + dot.damageFinalAddPct - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
+               (1 - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
 
-        List<DamageData> damageList = new List<DamageData>();
-        damageList.Add(damageData);
-        Game.EventSystem.Run(EventIdType.GiveDamage, destUnit.Id, NumericType.HP_Final, damageList);
+        DamageData[] array = new DamageData[1];
+        array[0] = damageData;
+        Game.EventSystem.Run(EventIdType.GiveDamage, destUnit.Id, array);
     }
 
     public static void CalRestore(Unit sourceUnit)
@@ -168,5 +168,7 @@ public static class GameCalNumericTool
         }
         Game.EventSystem.Run(EventIdType.GiveMp, sourceUnit.Id, mp);
     }
+
+
 }
 

@@ -11,17 +11,17 @@ using UnityEngine;
 public class BuffHandler_Move : BaseBuffHandler, IBuffActionWithSetOutputHandler
 {
 
-    public IBuffReturnedValue ActionHandle(BaseBuffData data, Unit source, Unit target)
+    public List<IBufferValue> ActionHandle(IBuffData data, Unit source, Unit target)
     {
         Buff_Move buff_Move = data as Buff_Move;
 
 
 
         Vector3 targetPos = target.Position + Vector3.Normalize(source.Position - target.Position) * buff_Move.targetPosOffset;
-        BuffReturnedValue_MoveData returnedValue = new BuffReturnedValue_MoveData()
+        BufferValue_Pos returnedValue = new BufferValue_Pos()
         {
             startPos = source.Position,
-            endPos = targetPos,
+            aimPos = targetPos,
              startDir = source.Rotation
         };
 
@@ -52,13 +52,15 @@ public class BuffHandler_Move : BaseBuffHandler, IBuffActionWithSetOutputHandler
             //     }
             // }, null).Coroutine();
         }
-        return returnedValue;
+        List<IBufferValue> list = new List<IBufferValue>();
+        list.Add(returnedValue);
+        return list;
     }
 
-    public IBuffReturnedValue ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public List<IBufferValue> ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
 
-           BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = baseBuffReturnedValues[0] as BuffReturnedValue_TargetUnit?;
+           BufferValue_TargetUnits? buffReturnedValue_TargetUnit = baseBuffReturnedValues[0] as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
         return ActionHandle(data, source, target);
     }

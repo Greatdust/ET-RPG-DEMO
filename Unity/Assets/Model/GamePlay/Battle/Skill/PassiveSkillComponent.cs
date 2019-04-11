@@ -30,79 +30,61 @@ public class PassiveSkillComponentAwakeSystem : AwakeSystem<PassiveSkillComponen
 /// </summary>
 public class PassiveSkillComponent : ETModel.Component
 {
-    public Dictionary<string, PassiveSkillData> passiveSkillDic;
+    public Dictionary<string, BaseSkill_AppendedData> skillList;
+    public ETCancellationTokenSource tokenSource;
 
-    private List<Action> applyAction = new List<Action>();
+    public class PassiveSkillBufferData
+    {
+        public bool apply;
+        public AEvent<long> aEvent;
+    }
 
-    private float timeSpan = 0.2f;
-
+    public Dictionary<string, PassiveSkillBufferData> bufferDatas;
 
     public void Awake()
     {
-        passiveSkillDic = new Dictionary<string, PassiveSkillData>();
+        skillList = new Dictionary<string, BaseSkill_AppendedData>();
+        bufferDatas = new Dictionary<string, PassiveSkillBufferData>();
     }
 
-    //public void Update()
-    //{
-    //    TimeSpanHelper.Timer timer= TimeSpanHelper.GetTimer(this.GetHashCode());
-    //    if (timer.remainTime > 0)
-    //    {
-    //        timer.remainTime -= Time.deltaTime;
-    //        return;
-    //    }
-    //    if (BattleMgrComponent.Instance == null) return;
-    //    if (!BattleMgrComponent.Instance.battleStart) return;
-    //    try
-    //    {
-    //        ExcutePassiveSkill();
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        Log.Error(e.ToString());
-    //    }
-    //    if (timer.remainTime <= 0)
-    //    {
-    //        timer.remainTime = timeSpan;
-    //        return;
-    //    }
-    //}
-
-    async void ExcutePassiveSkill(PassiveSkillData v)
+    void ExcutePassiveSkill(PassiveSkillData v)
     {
 
         Unit source = GetParent<Unit>();
-
+        if (!bufferDatas.ContainsKey(v.skillId))
+            bufferDatas[v.skillId] = new PassiveSkillBufferData();
         if (v.listenToEvent)
         {
-            if (!v.apply)
+            if (!bufferDatas[v.skillId].apply)
             {
-                v.apply = true;
-                v.aEvent = new ListenPassiveSkillEvent(
-                    async (unitId) =>
+                bufferDatas[v.skillId].apply = true;
+                bufferDatas[v.skillId].aEvent = new ListenPassiveSkillEvent(
+                  (unitId) =>
                     {
                         if (unitId == source.Id)
                         {
                             if (SkillHelper.CheckActiveConditions(v, source))
                             {
-
-                                SkillHelper.ExcutePassiveSkill(v);
-                                v.apply = true;
+                                tokenSource = new ETCancellationTokenSource();
+                                SkillHelper.ExcutePassiveSkill(v, tokenSource);
+                                bufferDatas[v.skillId].apply = true;
                             }
                         }
                     }
                     );
-                Game.EventSystem.RegisterEvent(v.eventIdType, v.aEvent);
+                Game.EventSystem.RegisterEvent(v.eventIdType, bufferDatas[v.skillId].aEvent);
             }
             return;
         }
         else
         {
-            if (v.apply) return;
+            if (bufferDatas[v.skillId].apply) return;
         }
         if (SkillHelper.CheckActiveConditions(v, source))
         {
-            SkillHelper.ExcutePassiveSkill(v);
-            v.apply = true;
+            tokenSource = new ETCancellationTokenSource();
+            SkillHelper.ExcutePassiveSkill(v, tokenSource);
+            bufferDatas[v.skillId].apply = true;
         }
 
     }
@@ -122,40 +104,55 @@ public class PassiveSkillComponent : ETModel.Component
         }
     }
 
-    public void AddPassiveSkillData(PassiveSkillData passiveSkillData)
+    public void AddPassiveSkillData(string skillId)
     {
-        passiveSkillData.SourceUnit = GetParent<Unit>();
-        passiveSkillDic[passiveSkillData.skillId] = passiveSkillData;
-        ExcutePassiveSkill(passiveSkillData);
-        passiveSkillData.buffReturnValues = new Dictionary<string, List<IBuffReturnedValue>>();
+        if (!skillList.ContainsKey(skillId))
+        {
+            skillList.Add(skillId, new BaseSkill_AppendedData() { level = 1 });
+        }
+        PassiveSkillData data = Game.Scene.GetComponent<SkillConfigComponent>().GetPassiveSkill(skillId);
+        ExcutePassiveSkill(data);
     }
 
     public void RemoveSkill(string skillId)
     {
-        PassiveSkillData passiveSkillData = null;
-        if (passiveSkillDic.TryGetValue(skillId, out passiveSkillData))
+        if (skillList.ContainsKey(skillId))
         {
-            if (passiveSkillData.listenToEvent)
+            PassiveSkillData data = Game.Scene.GetComponent<SkillConfigComponent>().GetPassiveSkill(skillId);
+
+            if (data.listenToEvent)
             {
-                if (passiveSkillData.apply)
+                if (bufferDatas.ContainsKey(data.skillId))
                 {
-                    passiveSkillData.apply = false;
-                    Game.EventSystem.RemoveEvent(passiveSkillData.eventIdType, passiveSkillData.aEvent);
+                    if (bufferDatas[data.skillId].apply)
+                    {
+                        bufferDatas[data.skillId].apply = false;
+                        Game.EventSystem.RemoveEvent(data.eventIdType, bufferDatas[data.skillId].aEvent);
+                    }
                 }
 
             }
-            passiveSkillDic.Remove(skillId);
+            skillList.Remove(skillId);
         }
     }
 
-    public PassiveSkillData GetSkill(string skillId)
+    public BaseSkill_AppendedData GetSkill(string skillId)
     {
-        PassiveSkillData data;
-        if (!passiveSkillDic.TryGetValue(skillId, out data))
+        if (skillList.TryGetValue(skillId,out var data))
         {
-            return null;
+            return data;
         }
-        return data;
+        
+        return null;
+    }
+
+    public override void Dispose()
+    {
+        if (IsDisposed)
+            return;
+        base.Dispose();
+        bufferDatas.Clear();
+        bufferDatas = null;
     }
 
 }

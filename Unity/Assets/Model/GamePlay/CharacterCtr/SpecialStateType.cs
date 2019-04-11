@@ -10,7 +10,7 @@ namespace ETModel
     public enum SpecialStateType
     {
         [LabelText("无法被打断")]
-        UnStoppable,//无法被打断的状态
+        UnStoppable,//无法被打断的状态,比如霸体
         [LabelText("玩家无法控制")]
         NotInControl,//玩家无法操作的状态
         [LabelText("无敌")]

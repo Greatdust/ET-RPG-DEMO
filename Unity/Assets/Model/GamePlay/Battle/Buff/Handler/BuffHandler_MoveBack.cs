@@ -11,13 +11,13 @@ using UnityEngine;
 public class BuffHandler_MoveBack : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValue)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValue)
     {
         
-        BuffReturnedValue_MoveData? returnedValue = baseBuffReturnedValue[0] as BuffReturnedValue_MoveData?;
+        BufferValue_Pos? returnedValue = baseBuffReturnedValue[0] as BufferValue_Pos?;
         foreach (var v in baseBuffReturnedValue)
         {
-            returnedValue = v as BuffReturnedValue_MoveData?;
+            returnedValue = v as BufferValue_Pos?;
             if (returnedValue!=null)
             {
                 break;

@@ -30,22 +30,18 @@ public class BuffMgrComponentUpdateSystem : FixedUpdateSystem<BuffMgrComponent>
 public class BuffMgrComponent : ETModel.Component
 {
 
-    public Dictionary<string, BuffGroup> buffGroupDic;
+    public Dictionary<long, BuffGroup> buffGroupDic;
 
-    public List<BuffGroup> updateList;//保存duration>0的BuffGroup
-    public List<BuffGroup> dontRemoveOnBattleEndBuffGroups;
-
-    public RemoveBuffGroupEvent removeBuffGroupEvent;
+    public List<BuffGroup> updateList;//保存duration>0的BuffGroup,战斗结束后统一移除.
+    //如果是节日,活动等导致的长时间BUFF. 比如新人奖励(等级在50级之前,获得的经验值额外增加50%),或者常驻一个持续一周的副本内属性提升的BUFF
+    //这种类型的,在另外个地方,单独管理即可. (监听进入副本的事件,而后给角色添加BUFF)
 
     private const long calSpan = 1000;
 
     public void Awake()
     {
-        buffGroupDic = new Dictionary<string, BuffGroup>();
+        buffGroupDic = new Dictionary<long, BuffGroup>();
         updateList = new List<BuffGroup>();
-        dontRemoveOnBattleEndBuffGroups = new List<BuffGroup>();
-        removeBuffGroupEvent = new RemoveBuffGroupEvent();
-        removeBuffGroupEvent.buffMgr = this;
     }
 
     public void FixedUpdate()
@@ -58,17 +54,6 @@ public class BuffMgrComponent : ETModel.Component
                 if (!DealWithBuffGroup(updateList[i]))
                 {
                     updateList.RemoveAt(i);
-                }
-            }
-        }
-        if (dontRemoveOnBattleEndBuffGroups.Count > 0)
-        {
-            for (int i = dontRemoveOnBattleEndBuffGroups.Count - 1; i >= 0; i--)
-            {
-
-                if (!DealWithBuffGroup(dontRemoveOnBattleEndBuffGroups[i]))
-                {
-                    dontRemoveOnBattleEndBuffGroups.RemoveAt(i);
                 }
             }
         }
@@ -112,7 +97,7 @@ public class BuffMgrComponent : ETModel.Component
     }
 
 
-    public async void AddBuffGroup(string groupId, BuffGroup group)
+    public async void AddBuffGroup(long groupId, BuffGroup group)
     {
         try
         {
@@ -127,8 +112,8 @@ public class BuffMgrComponent : ETModel.Component
                 await TimerComponent.Instance.WaitAsync(0.1F);//延迟一下防止卡顿
             }
 
-            BuffGroup newGroup = BuffGroupHelper.GetNewBuffGroup(group);
-            newGroup.SetBuffGroupId(group.BuffGroupId);
+            BuffGroup newGroup = group;
+            newGroup.BuffGroupId = group.BuffGroupId;
             buffGroupDic[groupId] = newGroup;
             Unit target = Parent as Unit;
             Unit source = null;
@@ -140,10 +125,7 @@ public class BuffMgrComponent : ETModel.Component
             newGroup.OnBuffGroupAdd(source, target);
             if (newGroup.duration > 0)
             {
-                if (newGroup.removeOnBattleEnd)
                     updateList.Add(newGroup);
-                else
-                    dontRemoveOnBattleEndBuffGroups.Add(newGroup);
             }
         }
         catch (Exception e)
@@ -151,7 +133,7 @@ public class BuffMgrComponent : ETModel.Component
             Log.Error(e.ToString());
         }
     }
-    public void RemoveGroup(string groupId)
+    public void RemoveGroup(long groupId)
     {
       
         BuffGroup group;
@@ -193,24 +175,8 @@ public class BuffMgrComponent : ETModel.Component
             return;
         base.Dispose();
         updateList.Clear();
-        dontRemoveOnBattleEndBuffGroups.Clear();
         buffGroupDic.Clear();
     }
 
-}
-
-public class RemoveBuffGroupEvent : AEvent<string>
-{
-    public BuffMgrComponent buffMgr;
-    public override void Run(string groupId)
-    {
-        if (buffMgr != null)
-        {
-            if (buffMgr.buffGroupDic.ContainsKey(groupId))
-            {
-                buffMgr.RemoveGroup(groupId);
-            }
-        }
-    }
 }
 

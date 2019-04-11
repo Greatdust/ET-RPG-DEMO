@@ -10,7 +10,7 @@ using PF;
 [BuffType(BuffIdType.HitEffect)]
 public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHandler
 {
-    public async void ActionHandle(BaseBuffData data, Unit source, Unit target)
+    public async void ActionHandle(IBuffData data, Unit source, Unit target)
     {
 
         Buff_HitEffect buff_HitEffect = data as Buff_HitEffect;
@@ -29,11 +29,11 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff_HitEffect.hitObjId, effectGo);
     }
 
-    public void ActionHandle(BaseBuffData data, Unit source, List<IBuffReturnedValue> baseBuffReturnedValues)
+    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
     {
         foreach (var v in baseBuffReturnedValues)
         {
-            BuffReturnedValue_TargetUnit? buffReturnedValue_TargetUnit = v as BuffReturnedValue_TargetUnit?;
+            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
             ActionHandle(data, source, target);
         }
