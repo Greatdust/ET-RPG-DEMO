@@ -10,18 +10,44 @@ using System.Threading.Tasks;
 public class BuffHandler_AddBuff : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_AddBuff buff = data as Buff_AddBuff;
-        if (buff.buffGroup == null) return;
-        buff.buffGroup.sourceUnitId = source.Id;
-        foreach (var v in baseBuffReturnedValues)
+        Buff_AddBuff addBuff = (Buff_AddBuff)buffHandlerVar.data;
+        addBuff.buffGroup.sourceUnitId = buffHandlerVar.source.Id;
+        //添加BUFF时执行一下对应的Action
+        foreach (var buff in addBuff.buffGroup.buffList)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            BuffMgrComponent buffMgr = target.GetComponent<BuffMgrComponent>();
-            buffMgr.AddBuffGroup(buff.buffGroup.BuffGroupId, buff.buffGroup);
+
+            BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(buff.GetBuffIdType());
+            IBuffActionWithGetInputHandler buffActionWithGetInputHandler = baseBuffHandler as IBuffActionWithGetInputHandler;
+            if (buffActionWithGetInputHandler != null)
+            {
+                BuffHandlerVar var1 = new BuffHandlerVar();
+                if (buffHandlerVar.bufferValues != null)
+                {
+                    var1.bufferValues = new Dictionary<Type, IBufferValue>();
+
+                    foreach (var v in buffHandlerVar.bufferValues)
+                    {
+                        var1.bufferValues.Add(v.Key, v.Value);
+                    }
+                }
+
+                var1.source = buffHandlerVar.source;
+                var1.skillLevel = buffHandlerVar.skillLevel;
+                var1.playSpeed = 1;// 这个应该从角色属性计算得出,不过这里就先恒定为1好了.
+                var1.data = buff;
+
+                buffActionWithGetInputHandler.ActionHandle(var1);
+            }
+        }
+
+        BufferValue_TargetUnits value_TargetUnits = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+
+        foreach (var v in value_TargetUnits.targets)
+        {
+            BuffMgrComponent buffMgr = v.GetComponent<BuffMgrComponent>();
+            buffMgr.AddBuffGroup(addBuff.buffGroup.BuffGroupId, addBuff.buffGroup);
         }
     }
 }

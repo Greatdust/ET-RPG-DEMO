@@ -32,10 +32,17 @@ public struct BufferValue_Speed : IBufferValue
     public float speed;
 }
 
-//充能/蓄力 导致的伤害加成
-public struct BufferValue_ChargeTime : IBufferValue
+//伤害加成
+public struct BufferValue_DamageAddPct : IBufferValue
 {
     public float damageAddPct;
 }
+
+//一定暴击
+public struct BufferValue_Crit : IBufferValue
+{
+    public bool isCrit;
+}
+
 
 //上述提供的基础类型可能不够用,如果要实现什么特殊效果,需要特殊的数据,就再添加好了.

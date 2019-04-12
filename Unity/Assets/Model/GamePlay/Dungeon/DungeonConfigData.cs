@@ -17,7 +17,7 @@ namespace ETModel
         public List<LevelConfigData> levels = new List<LevelConfigData>();
 #if UNITY_EDITOR
         [Button("保存该副本信息至文件")]
-        public void SaveAsFile(ItemCollection itemCollection)
+        public void SaveToFile()
         {
             using (FileStream file = File.Create(Application.dataPath + "../../../Config/DungeonConfig/" + this.name + ".bytes")) 
             {                

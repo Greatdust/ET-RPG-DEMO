@@ -115,17 +115,9 @@ public class BuffMgrComponent : ETModel.Component
             BuffGroup newGroup = group;
             newGroup.BuffGroupId = group.BuffGroupId;
             buffGroupDic[groupId] = newGroup;
-            Unit target = Parent as Unit;
-            Unit source = null;
-
-            if (newGroup.sourceUnitId != 0)
-                source = UnitComponent.Instance.Get(newGroup.sourceUnitId);
-            else
-                source = target;
-            newGroup.OnBuffGroupAdd(source, target);
             if (newGroup.duration > 0)
             {
-                    updateList.Add(newGroup);
+                updateList.Add(newGroup);
             }
         }
         catch (Exception e)

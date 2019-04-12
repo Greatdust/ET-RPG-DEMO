@@ -24,7 +24,7 @@ public static class BuffIdType
     public const string GiveNumeric = "永久提升属性";
     public const string EnhanceSkillEffect = "提升技能效果";
     public const string CostHPMP = "消费HP_MP";
-    public const string CollisionDetection = "范围目标检测";
+    public const string RangeDetection = "范围目标检测";
 
 
 }

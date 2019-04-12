@@ -5,10 +5,12 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace ETModel
 {
-    public enum UnitTeam
+    public enum UnitType
     {
+        Static,
         Player,
-        Enemy
+        Monster,
+
     }
 
     [ObjectSystem]
@@ -53,7 +55,7 @@ namespace ETModel
 			}
 		}
 
-        public UnitTeam UnitTeam
+        public UnitType UnitType
         {
             get;set;
         }

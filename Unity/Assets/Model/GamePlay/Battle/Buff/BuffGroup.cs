@@ -61,28 +61,6 @@ public struct BuffGroup
         return num;
     }
 
-    /// <summary>
-    /// 禁止BUFFMgrComponent以外的地方调用它
-    /// </summary>
-    /// <param name="unitId"></param>
-    public void OnBuffGroupAdd(Unit source, Unit target)
-    {
-        if (buffList.Count>0)
-        {
-            foreach (var v in buffList)
-            {
-                OnBuffAdd(v, source, target);
-            }
-        }
-    }
-
-    void OnBuffAdd(IBuffData v, Unit source, Unit target)
-    {
-        BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.GetBuffIdType());
-        IBuffActionWithGetInputHandler buffActionWithGetInputHandler = baseBuffHandler as IBuffActionWithGetInputHandler;
-        buffActionWithGetInputHandler?.ActionHandle(v, source, new List<IBufferValue>() { new BufferValue_TargetUnits() { targets = new Unit[1] { target } } });
-    }
-
     public void OnBuffGroupRemove(Unit source, Unit target)
     {
         if (buffList.Count > 0)
@@ -98,14 +76,16 @@ public struct BuffGroup
     {
         BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.GetBuffIdType());
         IBuffRemoveHanlder buffRemoveHanlder = baseBuffHandler as IBuffRemoveHanlder;
-        buffRemoveHanlder?.Remove(v, source, new List<IBufferValue>() { new BufferValue_TargetUnits() { targets = new Unit[1] { target } } });
+        if (buffRemoveHanlder != null)
+        {
+            BuffHandlerVar buffHandlerVar = new BuffHandlerVar();
+            buffHandlerVar.bufferValues = new Dictionary<Type, IBufferValue>(1);
+            buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[1] { target } };
+            buffHandlerVar.source = source;
+            buffHandlerVar.playSpeed = 1;// 这个应该从角色属性计算得出,不过这里就先恒定为1好了.
+            buffHandlerVar.data = v;
+            buffRemoveHanlder.Remove(buffHandlerVar);
+        }
     }
-
-    public void OnBuffGroupRefresh(IBuffData oldBuff, IBuffData newBuff, Unit source, Unit target)
-    {
-        Remove(oldBuff, source, target);
-        OnBuffAdd(newBuff, source, target);
-    }
-
 }
 

@@ -20,10 +20,12 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
         damageData.damageValue = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff);
         damageData.isCritical = false;
 
+
         foreach (var v in baseBuffReturnedValues)
         {
             BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
             Unit target = buffReturnedValue_TargetUnit.Value.target;
+
             Game.EventSystem.Run(EventIdType.CalDamage, source.Id, target.Id, damageData);
         }
     }

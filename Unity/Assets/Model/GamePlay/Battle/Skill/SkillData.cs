@@ -156,6 +156,8 @@ public abstract class BaseSkillData
         // 如果是蓄力类型的,那么会有一个列表,代表蓄力达到第几段了,每一段增加多少伤害
         public List<ChargeData> chargeDatas;// 注意顺序代表第几段
 
+        //如果技能选取目标是有范围的,那么这个就是对应的范围限制
+        public float radius;
 
         public override Pipeline_TriggerType GetTriggerType()
         {

@@ -74,14 +74,24 @@ public static class GameCalNumericTool
             }
 
             //暴击判定
-            float criticalRate = sourceUnitNumericCom.GetAsFloat(NumericType.CritRate);
-            rateCharge = RandomHelper.RandomNumber(0, 100);
-            if (rateCharge / 100.0f <= criticalRate)
+            //可能有技能提升效果
+            if(!skillDamageValue.isCritical)
             {
-                //暴击判定通过
-                skillDamageValue.isCritical = true;
+                float criticalRate = sourceUnitNumericCom.GetAsFloat(NumericType.CritRate);
+                rateCharge = RandomHelper.RandomNumber(0, 100);
+                if (rateCharge / 100.0f <= criticalRate)
+                {
+                    //暴击判定通过
+                    skillDamageValue.isCritical = true;
+                 
+                }
+            }
+            if (skillDamageValue.isCritical)
+            {
                 skillDamageValue.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * sourceUnitNumericCom.GetAsFloat(NumericType.CritDamagePct));
             }
+
+         
 
             NumericType resistType  = NumericType.ArmorResist;
 
