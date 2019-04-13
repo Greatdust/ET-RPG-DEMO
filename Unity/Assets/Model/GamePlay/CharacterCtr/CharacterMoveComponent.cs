@@ -78,7 +78,7 @@ namespace ETModel
 
         }
 
-        ETTask MoveTo(Vector3 target, float speed)
+        public ETTask MoveTo(Vector3 target, float speed)
         {
             if (Vector3.Distance(target, moveTarget) < 0.01f) return ETTask.CompletedTask;
             moveTarget = target;
@@ -103,7 +103,7 @@ namespace ETModel
             if (moveTcs == null) return;
 
             long timeNow = TimeHelper.Now();
-            if (timeNow >= endTime)
+            if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
             {
                 animatorComponent.SetFloatValue("MoveSpeed", 0);
                 unit.Position = moveTarget;

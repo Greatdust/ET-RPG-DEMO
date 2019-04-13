@@ -10,31 +10,30 @@ using System.Threading.Tasks;
 public class BuffHandler_GiveRecover : BaseBuffHandler,IBuffActionWithGetInputHandler
 {
 
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_GiveRecover buff = data as Buff_GiveRecover;
-        foreach (var v in baseBuffReturnedValues)
+        Buff_GiveRecover buff = (Buff_GiveRecover)buffHandlerVar.data;
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            NumericComponent numericComponent = target.GetComponent<NumericComponent>();
+            NumericComponent numericComponent = v.GetComponent<NumericComponent>();
             if (buff.hpValue > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, target.Id, buff.hpValue);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, v.Id, buff.hpValue);
             }
             if (buff.hpPct > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, target.Id, numericComponent.GetAsFloat(NumericType.HPMax_Final) * buff.hpPct);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, v.Id, numericComponent.GetAsFloat(NumericType.HPMax_Final) * buff.hpPct);
             }
             if (buff.mpValue > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, target.Id, buff.mpValue);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, v.Id, buff.mpValue);
             }
             if (buff.mpPct > 0)
             {
-                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, target.Id, numericComponent.GetAsFloat(NumericType.MPMax_Final) * buff.mpPct);
+                Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, v.Id, numericComponent.GetAsFloat(NumericType.MPMax_Final) * buff.mpPct);
             }
-
         }
     }
 }

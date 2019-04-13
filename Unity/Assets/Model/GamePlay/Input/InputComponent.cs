@@ -52,7 +52,7 @@ namespace ETModel
                 {
                     if (Input.GetButtonDown(v.Key))
                     {
-                        v.Value.canUse = SkillHelper.CheckSkillCanUse(ActiveSkillComponent.GetSkillAppendedData(v.Value.skillId), parent);
+                        v.Value.canUse = SkillHelper.CheckIfSkillCanUse(v.Value.skillId, parent);
                         if (v.Value.canUse)
                             UseSkill(v.Value.skillId);
                     }

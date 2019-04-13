@@ -56,7 +56,6 @@
     <Compile Include="..\..\Unity\Assets\Model\Base\ProcessHelper.cs">
       <Link>Base/ProcessHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\Unity\Assets\Model\Bullet\Config\BulletConfigData.cs" Link="Module\Demo\BulletConfigData.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Component\Config\StartConfig.cs">
       <Link>Component\Config\StartConfig.cs</Link>
     </Compile>
@@ -325,7 +324,7 @@
     <PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParty\BulletSharp\BulletSharp.csproj" />
+    <ProjectReference Include="..\ThirdParty\Box2DSharp\Box2DSharp.csproj" />
     <ProjectReference Include="..\ThirdParty\Google.Protobuf\Google.Protobuf.csproj" />
     <ProjectReference Include="..\ThirdParty\KcpLib\KcpLib.csproj" />
     <ProjectReference Include="..\ThirdParty\MongoDBDriver\MongoDB.Bson\MongoDB.Bson.csproj" />

@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 [BuffType(BuffIdType.EnhanceSkillEffect)]
 public class BuffHandler_EnhanceSkillEffect : BaseBuffHandler,IBuffActionWithGetInputHandler
 {
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_EnhanceSkillEffect buff = data as Buff_EnhanceSkillEffect;
-        foreach (var v in baseBuffReturnedValues)
+        Buff_EnhanceSkillEffect buff = (Buff_EnhanceSkillEffect)buffHandlerVar.data;
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            SkillEffectComponent skillEffectComponent = target.GetComponent<SkillEffectComponent>();
+            SkillEffectComponent skillEffectComponent = v.GetComponent<SkillEffectComponent>();
             skillEffectComponent.AddEffectData(buff.skillId, buff.effectData);
         }
     }

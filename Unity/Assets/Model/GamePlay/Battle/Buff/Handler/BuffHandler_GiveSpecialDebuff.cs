@@ -9,17 +9,14 @@ using System.Threading.Tasks;
 [BuffType(BuffIdType.GiveSpecialDebuff)]
 public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetInputHandler,IBuffRemoveHanlder
 {
-
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_GiveSpecialDebuff buff = data as Buff_GiveSpecialDebuff;
-
+        Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
         if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
-        foreach (var v in baseBuffReturnedValues)
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            UnitStateComponent unitState = target.GetComponent<UnitStateComponent>();
+            UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
@@ -29,20 +26,18 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
                     property_NotInControl.Set(true);
                     break;
             }
-
         }
     }
 
-    public void Remove(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
-    {
-        Buff_GiveSpecialDebuff buff = data as Buff_GiveSpecialDebuff;
 
+    public void Remove(BuffHandlerVar buffHandlerVar)
+    {
+        Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
         if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
-        foreach (var v in baseBuffReturnedValues)
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            UnitStateComponent unitState = target.GetComponent<UnitStateComponent>();
+            UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
@@ -52,7 +47,6 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
                     property_NotInControl.Set(false);
                     break;
             }
-
         }
     }
 }

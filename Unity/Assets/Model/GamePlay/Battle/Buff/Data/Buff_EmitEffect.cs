@@ -21,6 +21,8 @@ public struct Buff_EmitEffect : IBuffData
     public float emitSpeed;//发射速度
     public float duration;//生命周期
 
+    public string pipelineSignal; // 执行哪个PipelineData下的逻辑
+
     public List<string> effectParams ;
 
     public string GetBuffIdType()

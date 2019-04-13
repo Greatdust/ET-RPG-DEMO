@@ -8,61 +8,55 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [BuffType(BuffIdType.Move)]
-public class BuffHandler_Move : BaseBuffHandler, IBuffActionWithSetOutputHandler
+public class BuffHandler_Move : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-    public List<IBufferValue> ActionHandle(IBuffData data, Unit source, Unit target)
+    public async void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_Move buff_Move = data as Buff_Move;
-
-
-
-        Vector3 targetPos = target.Position + Vector3.Normalize(source.Position - target.Position) * buff_Move.targetPosOffset;
-        BufferValue_Pos returnedValue = new BufferValue_Pos()
+        try
         {
-            startPos = source.Position,
-            aimPos = targetPos,
-             startDir = source.Rotation
-        };
-
-        if (buff_Move.resetDir)
-            source.GameObject.transform.forward = target.Position - source.Position;
-        if (buff_Move.flash || buff_Move.moveDuration == 0)
-        {
-            //瞬移
-            source.Position = targetPos;
-        }
-        else
-        {
-            if (!string.IsNullOrEmpty(buff_Move.animatorBoolValue))
+            Buff_Move buff_Move = (Buff_Move)buffHandlerVar.data;
+            if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
             {
-                float moveSpeed = Vector3.Distance(targetPos, source.Position) / buff_Move.moveDuration;
-                AnimatorComponent animatorComponent = source.GetComponent<AnimatorComponent>();
-                animatorComponent.SetBoolValue(buff_Move.animatorBoolValue, true);
-                animatorComponent.SetAnimatorSpeed(moveSpeed / 10);//TODO: 默认单位移动速度10m/s,以后要根据配置表来
+                Log.Error("给移动的Buff提供的参数不包含目标位置!  " + buffHandlerVar.skillId);
+                return;
             }
-            //CharacterCtrComponent characterCtrComponent = source.GetComponent<CharacterCtrComponent>();
-            //characterCtrComponent.MoveToAsync(targetPos, buff_Move.moveDuration, () =>
-            // {
-            //     if (!string.IsNullOrEmpty(buff_Move.animatorBoolValue))
-            //     {
-            //         AnimatorComponent animatorComponent = source.GetComponent<AnimatorComponent>();
-            //         animatorComponent.SetBoolValue(buff_Move.animatorBoolValue, false);
-            //         animatorComponent.SetAnimatorSpeed(1);
-            //     }
-            // }, null).Coroutine();
+            if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
+            {
+                Log.Error("给移动的Buff提供的参数不包含移动的目标!  " + buffHandlerVar.skillId);
+                return;
+            }
+
+            foreach (var v in bufferValue_TargetUnits.targets)
+            {
+
+                if (buff_Move.resetDir)
+                    v.Rotation = Quaternion.LookRotation(bufferValue_Pos.aimPos - v.Position);
+                Vector3 aimPos = bufferValue_Pos.aimPos - buff_Move.targetPosOffset * (bufferValue_Pos.aimPos - v.Position);
+
+                //TODO: 下面的移动都不严谨, 要做位移的合法性检查
+
+                if (buff_Move.flash || buff_Move.moveDuration == 0)
+                {
+                    //需要检查目标位置是否能瞬移过去,然后瞬移不过去的时候,找到最合理的一个点瞬移过去
+                    //瞬移
+                    v.Position = aimPos;
+                }
+                else
+                {
+                    //需要检查目标位置是否能移动过去,如果不行的话,就不位移了
+                    CharacterMoveComponent characterMoveComponent = buffHandlerVar.source.GetComponent<CharacterMoveComponent>();
+                    float moveSpeed = Vector3.Distance(v.Position, aimPos) / buff_Move.moveDuration;
+                    await characterMoveComponent.MoveTo(aimPos, moveSpeed);
+
+
+                }
+            }
         }
-        List<IBufferValue> list = new List<IBufferValue>();
-        list.Add(returnedValue);
-        return list;
-    }
-
-    public List<IBufferValue> ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
-    {
-
-           BufferValue_TargetUnits? buffReturnedValue_TargetUnit = baseBuffReturnedValues[0] as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-        return ActionHandle(data, source, target);
+        catch (Exception e)
+        {
+            Log.Error(e.ToString());
+        }
     }
 }
 

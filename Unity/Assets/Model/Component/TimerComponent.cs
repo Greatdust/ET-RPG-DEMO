@@ -102,7 +102,8 @@ namespace ETModel
 
 		private void Remove(long id)
 		{
-			this.timers.Remove(id);
+            if (this.timers.ContainsKey(id))
+                this.timers.Remove(id);
 		}
 
 		public ETTask WaitTillAsync(long tillTime, CancellationToken cancellationToken)
@@ -142,8 +143,11 @@ namespace ETModel
 			{
 				this.minTime = timer.Time;
 			}
-			cancellationToken.Register(() => { this.Remove(timer.Id); });
-			return tcs.Task;
+           
+
+            cancellationToken.Register(() => { this.Remove(timer.Id); });
+
+            return tcs.Task;
 		}
 
 		public ETTask WaitAsync(long time)

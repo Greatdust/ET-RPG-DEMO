@@ -96,25 +96,25 @@ public class GameGlobalConfig : SerializedScriptableObject
     [LabelText("传奇品质底图名")]
     public string itemQuality_QC;
 
-    public Sprite GetItemQualitySprite(ItemQualityLevel itemQualityLevel)
-    {
-        switch (itemQualityLevel)
-        {
-            case ItemQualityLevel.劣质:
+    //public Sprite GetItemQualitySprite(ItemQualityLevel itemQualityLevel)
+    //{
+    //    switch (itemQualityLevel)
+    //    {
+    //        case ItemQualityLevel.劣质:
 
-                return baseItemAtlas.GetSprite(itemQuality_Bai);
-            case ItemQualityLevel.下品:
-                return baseItemAtlas.GetSprite(itemQuality_Lv);
-            case ItemQualityLevel.中品:
-                return baseItemAtlas.GetSprite(itemQuality_Lan);
-            case ItemQualityLevel.上品:
-                return baseItemAtlas.GetSprite(itemQuality_Fen);
-            case ItemQualityLevel.极品:
-                return baseItemAtlas.GetSprite(itemQuality_Jin);
-            default:
-                return null;
-        }
-    }
+    //            return baseItemAtlas.GetSprite(itemQuality_Bai);
+    //        case ItemQualityLevel.下品:
+    //            return baseItemAtlas.GetSprite(itemQuality_Lv);
+    //        case ItemQualityLevel.中品:
+    //            return baseItemAtlas.GetSprite(itemQuality_Lan);
+    //        case ItemQualityLevel.上品:
+    //            return baseItemAtlas.GetSprite(itemQuality_Fen);
+    //        case ItemQualityLevel.极品:
+    //            return baseItemAtlas.GetSprite(itemQuality_Jin);
+    //        default:
+    //            return null;
+    //    }
+    //}
 
 }
 

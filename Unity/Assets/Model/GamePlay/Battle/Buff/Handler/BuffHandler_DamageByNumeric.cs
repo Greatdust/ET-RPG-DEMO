@@ -11,22 +11,37 @@ using UnityEngine;
 public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_DamageByNumeric buff = data as Buff_DamageByNumeric;
-        NumericComponent numericComponent = source.GetComponent<NumericComponent>();
+        Buff_DamageByNumeric buff = (Buff_DamageByNumeric)buffHandlerVar.data;
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+
+        NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
         GameCalNumericTool.DamageData damageData = new GameCalNumericTool.DamageData();
+
+        
+
         damageData.damageType = buff.damageType;
+
         damageData.damageValue = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff);
-        damageData.isCritical = false;
-
-
-        foreach (var v in baseBuffReturnedValues)
+        if (buffHandlerVar.bufferValues.TryGetValue(typeof(BufferValue_DamageAddPct),out var damageAddPct))
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
+            damageData.damageValue = Mathf.RoundToInt((1 + ((BufferValue_DamageAddPct)damageAddPct).damageAddPct) * damageData.damageValue);
+        }
+        damageData.isCritical = false;
+        SkillEffectComponent skillEffectComponent = buffHandlerVar.source.GetComponent<SkillEffectComponent>();
+        var effectData = skillEffectComponent.GetEffectData(buffHandlerVar.skillId);
+        if (effectData != null)
+        {
+            damageData.damageValue = Mathf.RoundToInt((1 + effectData.coefficientAddPct) * damageData.damageValue);
+            damageData.isCritical = effectData.critical;
+        }
 
-            Game.EventSystem.Run(EventIdType.CalDamage, source.Id, target.Id, damageData);
+
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
+        {
+
+            Game.EventSystem.Run(EventIdType.CalDamage, buffHandlerVar.source.Id, v.Id, damageData);
         }
     }
 }

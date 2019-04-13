@@ -14,9 +14,6 @@ public struct Buff_Move : IBuffData
     public bool flash;//瞬间移动
     public float moveDuration;
 
-    public string animatorBoolValue;//移动的同时播放animator中的动画,并控制其播放速度
-
-
     public string GetBuffIdType()
     {
         return BuffIdType.Move;

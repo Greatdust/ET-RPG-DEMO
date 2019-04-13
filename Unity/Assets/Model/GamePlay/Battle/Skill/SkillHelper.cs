@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ETModel;
 using static BaseSkillData;
@@ -9,17 +10,35 @@ using static BaseSkillData;
 public static class SkillHelper
 {
 
-    public static bool CheckSkillCanUse(ActiveSkillData skillData, Unit unit)
-    {
-        if (!CheckActiveConditions(skillData, unit)) return false;
-        return true;
-    }
+    private static Dictionary<string, Action<BuffHandlerVar>> collisionActions = new Dictionary<string, Action<BuffHandlerVar>>();// 存储技能执行中的飞行道具碰撞时会触发的逻辑
 
-    public static bool CheckActiveConditions(BaseSkillData baseSkillData, Unit source)
+    //存储技能执行过程中产生的中间数据,一般在切换场景的时候清理一下就好
+    public static Dictionary<string, Dictionary<Type, IBufferValue>> tempData = new Dictionary<string, Dictionary<Type, IBufferValue>>();
+
+    
+
+    public static bool CheckIfSkillCanUse(string skillId, Unit source)
     {
-        if (baseSkillData.activeConditionDatas.Count == 0)
+        SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
+
+        BaseSkillData skillData = skillConfigComponent.GetActiveSkill(skillId);
+        if (skillData == null)
+        {
+            skillData = skillConfigComponent.GetPassiveSkill(skillId);
+
+            TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer(source.GetHashCode() + skillId.GetHashCode());
+
+            if (TimeHelper.ClientNow() - timer.timing < timer.interval)
+            {
+                return false;
+            }
+            timer.interval = (long)(skillData.coolDown * 1000);
+        }
+
+
+        if (skillData.activeConditionDatas.Count == 0)
             return true;
-        foreach (var v in baseSkillData.activeConditionDatas)
+        foreach (var v in skillData.activeConditionDatas)
         {
             var handler = SkillActiveConditionHandlerComponent.Instance.GetHandler(v.GetBuffActiveConditionType());
             if (!handler.MeetCondition(v, source))
@@ -30,48 +49,91 @@ public static class SkillHelper
         return true;
     }
 
-    public static async ETTask ExcuteActiveSkill(ActiveSkillData activeSkillData, ETCancellationTokenSource tokenSource)
+    public struct ExcuteSkillParams : IDisposable
     {
-        await ExcuteSkillData(activeSkillData, tokenSource);      
+        public Unit source; // 技能使用方
+        public string skillId;
+        public int skillLevel;
+        public BaseSkillData baseSkillData;
+        public float playSpeed; // 播放速度,影响特效,音效,动作的速度
+        public CancellationTokenSource cancelToken; // 用来中断技能的
+        public Stack<(LinkedListNode<BasePipelineData>, int, int)> cycleStartsStack;// 一个专门为循环开始/节点服务的栈. 第一个int是当前循环次数,第二个int是总循环次数
+
+
+        public void Dispose()
+        {
+            cancelToken?.Dispose();
+            cycleStartsStack?.Clear();
+            cycleStartsStack = null;
+        }
+    }
+ 
+
+
+    public static async ETTask ExcuteActiveSkill(ExcuteSkillParams skillParams)
+    {
+        SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
+
+        skillParams.baseSkillData = skillConfigComponent.GetActiveSkill(skillParams.skillId);
+        await ExcuteSkillData(skillParams);
     }
 
-    public static async void ExcutePassiveSkill(PassiveSkillData passiveSkillData, ETCancellationTokenSource tokenSource)
+    public static async void ExcutePassiveSkill(ExcuteSkillParams skillParams)
     {
-        await  ExcuteSkillData(passiveSkillData, tokenSource);
+        SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
+
+        skillParams.baseSkillData = skillConfigComponent.GetPassiveSkill(skillParams.skillId);
+        await ExcuteSkillData(skillParams);
     }
 
-    static async ETTask ExcuteSkillData(BaseSkillData skillData,ETCancellationTokenSource  tokenSource)
+    public static void OnPassiveSkillRemove(string skillId)
+    {
+
+    }
+
+    static async ETTask ExcuteSkillData(ExcuteSkillParams skillParams)
     {
         try
         {
-            if (skillData.pipelineDatas != null && skillData.pipelineDatas.Count > 0)
+            TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer(skillParams.source.GetHashCode() + skillParams.skillId.GetHashCode());
+            timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
+            timer.timing = TimeHelper.ClientNow();
+            skillParams.playSpeed = 1;
+
+            skillParams.cycleStartsStack = new Stack<(LinkedListNode<BasePipelineData>, int, int)>();
+
+            if (skillParams.baseSkillData.pipelineDatas != null && skillParams.baseSkillData.pipelineDatas.Count > 0)
             {
-                //创建一个只有所有开启的PipelineData的LinkedList,方便执行
+                //创建一个只有所有开启的PipelineData的LinkedList,方便执行. 另外需要碰撞才能触发的 不会加入到执行列表里
                 LinkedList<BasePipelineData> enablePipelineDataList = new LinkedList<BasePipelineData>();
-                var node = skillData.pipelineDatas.First;
-                while (node != null)
+
+                foreach(var value in skillParams.baseSkillData.pipelineDatas)
                 {
-                    if (node.Value.enable)
+                    if (value.enable && value.GetTriggerType() != Pipeline_TriggerType.碰撞检测)
                     {
-                        enablePipelineDataList.AddLast(new LinkedListNode<BasePipelineData>(node.Value));
+                        enablePipelineDataList.AddLast(new LinkedListNode<BasePipelineData>(value));
                     }
-                    node = node.Next;
-                }
-                node = enablePipelineDataList.First;
+                    if (value.GetTriggerType() == Pipeline_TriggerType.碰撞检测)
+                    {
+                        // 向CollisionAction中添加Action,由其他可以触发碰撞事件的buff来触发
+                        if (!collisionActions.ContainsKey(value.pipelineSignal))
+                        {
+                            collisionActions[value.pipelineSignal] = (var) => { ExcutePipeLine_Collision(value as Pipeline_Collision, var); };
+                        }
 
+                    }
+                }
+                var node = enablePipelineDataList.First;
 
                 while (node != null)
                 {
-                    if (tokenSource.Token.IsCancellationRequested) return; //如果后续节点的执行已经取消了,那么这里就返回不执行了
-                    if (node.Value.GetTriggerType() == Pipeline_TriggerType.碰撞检测)
-                        node = node.Next;
-                    node = await ExcutePipeLineData(node, skillData, tokenSource);
-                    tokenSource?.Dispose();
-                    tokenSource = new ETCancellationTokenSource();
+                    if (skillParams.cancelToken.Token.IsCancellationRequested) return; //如果后续节点的执行已经取消了,那么这里就返回不执行了
+                    node = await ExcutePipeLineData(node, skillParams);
                 }
 
+                //
+                skillParams.Dispose();
             }
-
         }
         catch (Exception e)
         {
@@ -85,54 +147,110 @@ public static class SkillHelper
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    static async ETTask<LinkedListNode<BasePipelineData>> ExcutePipeLineData(LinkedListNode<BasePipelineData> node,BaseSkillData parentSkillData,ETCancellationTokenSource tokenSource)
+    static async ETTask<LinkedListNode<BasePipelineData>> ExcutePipeLineData(LinkedListNode<BasePipelineData> node, ExcuteSkillParams skillParams)
     {
         if (node == null) return null;
+        BuffHandlerVar buffHandlerVar = new BuffHandlerVar();
+        buffHandlerVar.playSpeed = skillParams.playSpeed;
+        buffHandlerVar.skillId = skillParams.skillId;
+        buffHandlerVar.skillLevel = skillParams.skillLevel;
+        buffHandlerVar.source = skillParams.source;
         switch (node.Value)
         {
             case Pipeline_FixedTime pipeline_DelayTime:
-                
+
                 if (pipeline_DelayTime.delayTime > 0)
-                    await TimerComponent.Instance.WaitAsync((long)(pipeline_DelayTime.delayTime * parentSkillData.skillExcuteSpeed* 1000), tokenSource.Token);
-                if (node.Next.Value.GetTriggerType() == Pipeline_TriggerType.碰撞检测)
                 {
-                    Pipeline_Collision pipeline_Collision = node.Next.Value as Pipeline_Collision;
-                    parentSkillData.buffReturnValues.TryGetValue(pipeline_Collision.buffSignal,out var returnValue);
-                    HandleBuffsWithCollision(pipeline_DelayTime, pipeline_Collision.buffSignal, node.Next, returnValue, tokenSource).Coroutine();
+                    await TimerComponent.Instance.WaitAsync((long)(pipeline_DelayTime.delayTime * skillParams.playSpeed * 1000), skillParams.cancelToken.Token);
+
+                }
+
+                HandleBuffs(pipeline_DelayTime, buffHandlerVar, skillParams).Coroutine();
+
+                if (pipeline_DelayTime.fixedTime > 0)
+                {
+                    await TimerComponent.Instance.WaitAsync((long)(pipeline_DelayTime.fixedTime * skillParams.playSpeed * 1000), skillParams.cancelToken.Token);
+                }
+                return node.Next;
+
+            case Pipeline_CycleStart pipeline_CycleStart:
+
+                (LinkedListNode<BasePipelineData>, int, int) stackItem = default;
+                if (skillParams.cycleStartsStack.Count > 0)
+                {
+                    stackItem = skillParams.cycleStartsStack.Pop();
+
+                }
+                stackItem.Item1 = node;
+                stackItem.Item2++;
+                stackItem.Item3 = pipeline_CycleStart.repeatCount;
+                skillParams.cycleStartsStack.Push(stackItem);
+
+                return node.Next;
+            case Pipeline_CycleEnd pipeline_CycleEnd:
+                stackItem = skillParams.cycleStartsStack.Pop();
+                if (stackItem.Item2 >= stackItem.Item3)
+                {
+                    return node.Next;
                 }
                 else
                 {
-                    HandleBuffs(pipeline_DelayTime,null, tokenSource).Coroutine();
+                    skillParams.cycleStartsStack.Push(stackItem);
+                    return stackItem.Item1;
                 }
-                if (pipeline_DelayTime.fixedTime > 0)
-                    await TimerComponent.Instance.WaitAsync(pipeline_DelayTime.fixedTime * parentSkillData.skillExcuteSpeed);
+            case Pipeline_Programmable pipeline_Programmable:
+                SkillData_Var skillData_Var = default;
+                skillData_Var.pipelineSignal = pipeline_Programmable.pipelineSignal;
+                skillData_Var.skillId = skillParams.skillId;
+                skillData_Var.source = skillParams.source;
+                skillParams.cancelToken.Token.Register(()=>pipeline_Programmable.pmb.Break(skillData_Var));
+                pipeline_Programmable.pmb.Excute(skillData_Var);
                 return node.Next;
-            case Pipeline_Collision pipeline_Collision:
-                //这里不直接处理 
-               
+            case Pipeline_FindTarget findTarget:
+                switch (findTarget.findTargetType)
+                {
+                    case FindTargetType.自身:
+                        tempData[findTarget.pipelineSignal] = new Dictionary<Type, IBufferValue>();
+                        tempData[findTarget.pipelineSignal][typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { skillParams.source } };
+                        break;
+                    case FindTargetType.我方N人:
+                        break;
+                    case FindTargetType.敌方N人:
+                        break;
+                    case FindTargetType.我方全体:
+                        break;
+                    case FindTargetType.敌方全体:
+                        break;
+                    case FindTargetType.自身为中心的范围内:
+                        break;
+                    case FindTargetType.距离自己最近的N个队友:
+                        break;
+                    case FindTargetType.距离自己最近的N个敌人:
+                        break;
+                }
                 return node.Next;
-            case Pipeline_CycleStart pipeline_CycleStart:
 
-                for (int i = 0; i < pipeline_CycleStart.repeatCount; i++)
+            case Pipeline_WaitForInput pipeline_WaitForInput:
+                switch (pipeline_WaitForInput.inputType)
                 {
-                    var startNode = node.Next;
-                    for (int j = 0; j < pipeline_CycleStart.cycleRange; j++)
-                    {
-                        if (tokenSource.Token.IsCancellationRequested) return null;
-                        if (startNode.Value.GetTriggerType() != Pipeline_TriggerType.碰撞检测)
-                            startNode = await ExcutePipeLineData(startNode, parentSkillData, tokenSource);
-                        else
-                            startNode = startNode.Next;
-                    }
-                }
+                    //等待用户输入,可能有正确输入/取消/输入超时三种情况
 
-                var nextNode = node.Next;
-                for (int i = 0; i < pipeline_CycleStart.cycleRange; i++)
-                {
-                    nextNode = nextNode.Next;
-                }
+                    case InputType.Tar:
+                        break;
+                    case InputType.Dir:
+                        break;
+                    case InputType.Pos:
+                        break;
+                    case InputType.Charge:
+                        break;
+                    case InputType.Spell:
+                        break;
+                    case InputType.ContinualSpell:
+                        //这个持续引导,需要一个专门的使用持续引导Effect的Handler来配合. 如果游戏内这样的技能比较少,干脆用可编程节点实现,然后抽离出数据 ,让对应节点可复用
 
-                return nextNode;
+                        break;
+                }
+                return node.Next;
             default:
                 break;
         }
@@ -140,21 +258,14 @@ public static class SkillHelper
         return null;
     }
 
-    static void ExcutePipeLineDataWithCollision(LinkedListNode<BasePipelineData> node, List<IBufferValue> buffReturnedValues, ETCancellationTokenSource tokenSource)
+    static void ExcutePipeLine_Collision(Pipeline_Collision pipeline_Collision, BuffHandlerVar buffHandlerVar)
     {
-        Pipeline_Collision collision = node.Value as Pipeline_Collision;
-        if (node.Next.Value.GetTriggerType() == Pipeline_TriggerType.碰撞检测)
-        {
-            //这种一般是类似于发射一个火球,火球分裂成几个小火球这种情况
-            HandleBuffsWithCollision(collision, collision.buffSignal, node.Next, buffReturnedValues, tokenSource).Coroutine();
-        }
-        else
-        {
-            HandleBuffs(collision,buffReturnedValues, tokenSource).Coroutine();
-        }
+
+        HandleBuffsWithCollision(pipeline_Collision, buffHandlerVar).Coroutine();
+
     }
 
-    static async ETVoid HandleBuffs(PipelineDataWithBuff pipelineData,List<IBufferValue> buffReturnedValues, ETCancellationTokenSource tokenSource)
+    static async ETVoid HandleBuffsWithCollision(Pipeline_Collision pipelineData, BuffHandlerVar buffHandlerVar)
     {
         if (pipelineData.buffs.Count > 0)
         {
@@ -162,106 +273,90 @@ public static class SkillHelper
             {
                 if (!v.enable) continue;
                 if (v.delayTime > 0)
-                    await TimerComponent.Instance.WaitAsync((long)(1000 * v.delayTime), tokenSource.Token);
-                HandleBuff(v, buffReturnedValues);
-            }
-        }
-
-    }
-
-    static async ETVoid HandleBuffsWithCollision(PipelineDataWithBuff pipelineData,string aimBuffSignal, LinkedListNode<BasePipelineData> nextNode, List<IBufferValue> buffReturnedValues, ETCancellationTokenSource tokenSource)
-    {
-        if (pipelineData.buffs.Count > 0)
-        {
-            foreach (var v in pipelineData.buffs)
-            {
-                if (!v.enable) continue;
-                if (v.delayTime > 0)
-                    await TimerComponent.Instance.WaitAsync(v.delayTime  * v.ParentSkillData.skillExcuteSpeed);
+                    await TimerComponent.Instance.WaitAsync(v.delayTime); // 这是飞行道具产生的结果, 不受技能释放速度影响
                 BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.buffData.GetBuffIdType());
-                if (v.buffSignal == aimBuffSignal)
+
+                BuffHandlerVar newVar = buffHandlerVar;
+                if (buffHandlerVar.bufferValues != null)
+                    newVar.bufferValues = new Dictionary<Type, IBufferValue>();
+                foreach (var buffValue in buffHandlerVar.bufferValues)
                 {
-                    IBuffActionWithCollision buffActionWithCollision = baseBuffHandler as IBuffActionWithCollision;
-                    if (buffActionWithCollision != null)
-                    {
-                        List<IBufferValue> returnValue_targets = null;
-                        if (!v.ParentSkillData.buffReturnValues.TryGetValue(v.buffSignal, out returnValue_targets))
-                        {
-                            returnValue_targets = new List<IBufferValue>();
-                            returnValue_targets.Add(new BufferValue_TargetUnits() { target = v.ParentSkillData.SourceUnit, playSpeedScale = v.ParentSkillData.skillExcuteSpeed });
-                        }
-                        buffActionWithCollision.ActionHandle(v.buffData, v.ParentSkillData.SourceUnit, returnValue_targets, (targetId) =>
-                        {
-                            List<IBufferValue> returnVars = new List<IBufferValue>();
-                            returnVars.Add(new BufferValue_TargetUnits() { target = UnitComponent.Instance.Get(targetId) , playSpeedScale = v.ParentSkillData.skillExcuteSpeed });
-                            ExcutePipeLineDataWithCollision(nextNode, returnVars, tokenSource);
-                        });
-                        continue;
-                    }
-                    else
-                    {
-                        Log.Error("配置错误,碰撞检测节点接收的参数来源错误! " + v.ParentSkillData.skillId + "  " + v.buffSignal);
-                    }
+                    newVar.bufferValues[buffValue.Key] = buffValue.Value;
                 }
-                HandleBuff(v, buffReturnedValues);
+
+                HandleBuff(v, buffHandlerVar);
             }
         }
 
     }
 
-    static void HandleBuff(BuffInSkill buff, List<IBufferValue> buffReturnedValues)
+
+    static async ETVoid HandleBuffs(PipelineDataWithBuff pipelineData, BuffHandlerVar buffHandlerVar, ExcuteSkillParams skillParams)
+    {
+        if (pipelineData.buffs.Count > 0)
+        {
+            foreach (var v in pipelineData.buffs)
+            {
+                if (!v.enable) continue;
+                if (v.delayTime > 0)
+                    await TimerComponent.Instance.WaitAsync((long)(1000 * v.delayTime), skillParams.cancelToken.Token);
+                BuffHandlerVar newVar = buffHandlerVar;
+                newVar.bufferValues = new Dictionary<Type, IBufferValue>();
+                if (buffHandlerVar.bufferValues != null)
+                    foreach (var buffValue in buffHandlerVar.bufferValues)
+                    {
+                        newVar.bufferValues[buffValue.Key] = buffValue.Value;
+                    }
+
+                HandleBuff(v, buffHandlerVar);
+            }
+        }
+
+    }
+
+    static void HandleBuff(BuffInSkill buff, BuffHandlerVar buffHandlerVar)
     {
         BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(buff.buffData.GetBuffIdType());
-        if (buffReturnedValues == null && !string.IsNullOrEmpty(buff.signal_GetInput))
+        if (buff.signals_GetInput != null && buff.signals_GetInput.Length > 0)
         {
-            buff.ParentSkillData.buffReturnValues.TryGetValue(buff.signal_GetInput, out buffReturnedValues);
+            foreach (var signal in buff.signals_GetInput)
+                foreach (var v in tempData[signal])
+                {
+                    buffHandlerVar.bufferValues[v.Key] = v.Value;
+                }
         }
-        if (buffReturnedValues == null)
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {
-            buff.ParentSkillData.buffReturnValues.TryGetValue(buff.buffSignal, out buffReturnedValues);
+            buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits()
+            {
+                targets = new Unit[] { buffHandlerVar.source }
+            };
         }
-        if (buffReturnedValues == null)
-        {
-            buffReturnedValues = new List<IBufferValue>();
-            buffReturnedValues.Add(new BufferValue_TargetUnits() { target = buff.ParentSkillData.SourceUnit, playSpeedScale = buff.ParentSkillData.skillExcuteSpeed });
-        }
+        buffHandlerVar.data = buff.buffData;
+
         IBuffActionWithGetInputHandler buffActionWithGetInput = baseBuffHandler as IBuffActionWithGetInputHandler;
         if (buffActionWithGetInput != null)
         {
-            buffActionWithGetInput.ActionHandle(buff.buffData, buff.ParentSkillData.SourceUnit, buffReturnedValues);
+            buffActionWithGetInput.ActionHandle(buffHandlerVar);
             return;
         }
         IBuffActionWithSetOutputHandler buffActionWithSetOutputHandler = baseBuffHandler as IBuffActionWithSetOutputHandler;
         if (buffActionWithSetOutputHandler != null)
         {
-            List<IBufferValue> newBuffReturnedValue = buffActionWithSetOutputHandler.ActionHandle(buff.buffData, buff.ParentSkillData.SourceUnit, buffReturnedValues);
-            buff.ParentSkillData.AddReturnValue(buff.buffSignal, newBuffReturnedValue);
+            var newBuffReturnedValue = buffActionWithSetOutputHandler.ActionHandle(buffHandlerVar);
+            if (!tempData.TryGetValue(buff.buffSignal, out var Dic))
+            {
+                Dic = new Dictionary<Type, IBufferValue>();
+                tempData[buff.buffSignal] = Dic;
+            }
+            foreach (var v in newBuffReturnedValue)
+            {
+                Dic[v.GetType()] = v;
+            }
             return;
         }
 
     }
 
-    #region 获取技能的目标
-
-   
-    #endregion
-    #region 自动选择技能
-    public static ETTaskCompletionSource<ActiveSkillData> ChooseSkillDataTask;
-    public static ActiveSkillData GetActiveSkillData(Unit unit)
-    {
-        try
-        {
-            ActiveSkillData activeSkillData = unit.GetComponent<AutoChoosedSkillComponent>().GetSkillData(unit);
-            Log.Debug(activeSkillData.skillName);
-            return activeSkillData;
-
-        }
-        catch (Exception e)
-        {
-            Log.Error(e.ToString());
-            return null;
-        }
-    }
-    #endregion
 }
 

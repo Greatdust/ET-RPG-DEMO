@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -28,26 +29,11 @@ public class ActiveSkillComponent : ETModel.Component
 
     public string Skill_NormalAttack ;//记录一下普攻，单独抽出来
 
-    //string 是对应的BuffSignal
-    public Dictionary<string, Dictionary<Type,IBufferValue>> buffReturnValues = new Dictionary<string, Dictionary<Type, IBufferValue>>();//存储技能执行过程中产生的中间数据
-
-    public Dictionary<string, Action> collisionEvents = new Dictionary<string, Action>();//存储技能执行过程中产生的碰撞事件,string是对应的BuffSignal
-
-    public ETCancellationTokenSource cancelToken;//用以执行技能中断的
+    public CancellationTokenSource cancelToken;//用以执行技能中断的
 
     public void Awake()
     {
         skillList = new Dictionary<string, BaseSkill_AppendedData>();
-    }
-
-    public void AddReturnValue(string buffSignal, IBufferValue buffReturnedValue)
-    {
-        if (!buffReturnValues.TryGetValue(buffSignal, out var dic))
-        {
-            dic = new Dictionary<Type, IBufferValue>();
-            buffReturnValues[buffSignal] = dic;
-        }
-        dic[buffReturnedValue.GetType()] = buffReturnedValue;
     }
 
     #region 战斗流程
@@ -57,8 +43,14 @@ public class ActiveSkillComponent : ETModel.Component
         {
             if (!skillList.ContainsKey(skillId)) return;
             ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
-            cancelToken = new ETCancellationTokenSource();
-            await SkillHelper.ExcuteActiveSkill(activeSkillData, cancelToken);
+            SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+            excuteSkillParams.skillId = skillId;
+            excuteSkillParams.source = GetParent<Unit>();
+            excuteSkillParams.skillLevel = 1;
+
+            cancelToken = new CancellationTokenSource();
+            excuteSkillParams.cancelToken = cancelToken;
+            await SkillHelper.ExcuteActiveSkill(excuteSkillParams);
         }
         catch (Exception e)
         {

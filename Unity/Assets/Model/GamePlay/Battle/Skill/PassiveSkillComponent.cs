@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -41,50 +42,61 @@ public class PassiveSkillComponent : ETModel.Component
 
     public Dictionary<string, PassiveSkillBufferData> bufferDatas;
 
+    public CancellationTokenSource cancelToken;//用以执行技能中断的
+
     public void Awake()
     {
         skillList = new Dictionary<string, BaseSkill_AppendedData>();
         bufferDatas = new Dictionary<string, PassiveSkillBufferData>();
     }
 
-    void ExcutePassiveSkill(PassiveSkillData v)
+    void ExcutePassiveSkill(string skillId)
     {
 
         Unit source = GetParent<Unit>();
-        if (!bufferDatas.ContainsKey(v.skillId))
-            bufferDatas[v.skillId] = new PassiveSkillBufferData();
-        if (v.listenToEvent)
+        if (!bufferDatas.ContainsKey(skillId))
+            bufferDatas[skillId] = new PassiveSkillBufferData();
+        SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+        excuteSkillParams.skillId = skillId;
+        excuteSkillParams.source = GetParent<Unit>();
+        excuteSkillParams.skillLevel = 1;
+
+        cancelToken = new CancellationTokenSource();
+        excuteSkillParams.cancelToken = cancelToken;
+
+        PassiveSkillData passiveSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetPassiveSkill(skillId);
+        if (passiveSkillData.listenToEvent)
         {
-            if (!bufferDatas[v.skillId].apply)
+            if (!bufferDatas[skillId].apply)
             {
-                bufferDatas[v.skillId].apply = true;
-                bufferDatas[v.skillId].aEvent = new ListenPassiveSkillEvent(
+                bufferDatas[skillId].apply = true;
+                bufferDatas[skillId].aEvent = new ListenPassiveSkillEvent(
                   (unitId) =>
                     {
                         if (unitId == source.Id)
                         {
-                            if (SkillHelper.CheckActiveConditions(v, source))
+                            if (SkillHelper.CheckIfSkillCanUse(skillId, source))
                             {
                                 tokenSource = new ETCancellationTokenSource();
-                                SkillHelper.ExcutePassiveSkill(v, tokenSource);
-                                bufferDatas[v.skillId].apply = true;
+
+                                SkillHelper.ExcutePassiveSkill(excuteSkillParams);
                             }
                         }
                     }
                     );
-                Game.EventSystem.RegisterEvent(v.eventIdType, bufferDatas[v.skillId].aEvent);
+                Game.EventSystem.RegisterEvent(passiveSkillData.eventIdType, bufferDatas[skillId].aEvent);
             }
             return;
         }
         else
         {
-            if (bufferDatas[v.skillId].apply) return;
+            if (bufferDatas[skillId].apply) return;
         }
-        if (SkillHelper.CheckActiveConditions(v, source))
+        if (SkillHelper.CheckIfSkillCanUse(skillId, source))
         {
             tokenSource = new ETCancellationTokenSource();
-            SkillHelper.ExcutePassiveSkill(v, tokenSource);
-            bufferDatas[v.skillId].apply = true;
+            SkillHelper.ExcutePassiveSkill(excuteSkillParams);
+            bufferDatas[skillId].apply = true;
         }
 
     }
@@ -110,8 +122,7 @@ public class PassiveSkillComponent : ETModel.Component
         {
             skillList.Add(skillId, new BaseSkill_AppendedData() { level = 1 });
         }
-        PassiveSkillData data = Game.Scene.GetComponent<SkillConfigComponent>().GetPassiveSkill(skillId);
-        ExcutePassiveSkill(data);
+        ExcutePassiveSkill(skillId);
     }
 
     public void RemoveSkill(string skillId)
@@ -132,6 +143,7 @@ public class PassiveSkillComponent : ETModel.Component
                 }
 
             }
+            SkillHelper.OnPassiveSkillRemove(skillId);
             skillList.Remove(skillId);
         }
     }

@@ -11,36 +11,37 @@ using PF;
 [BuffType(BuffIdType.PlayAnim)]
 public class BuffHandler_PlayAnim : BaseBuffHandler,IBuffActionWithGetInputHandler
 {
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        BufferValue_TargetUnits? target = null;
-        foreach (var v in baseBuffReturnedValues)
+
+        Buff_PlayAnim buff_PlayAnim = (Buff_PlayAnim)buffHandlerVar.data;
+
+        if (buff_PlayAnim.playSpeed == 0)
+            buff_PlayAnim.playSpeed = 1;
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
         {
-            target = v as BufferValue_TargetUnits?;
-            if (target != null)
+            Log.Error("找不到对应的目标!");
+            return;
+        }
+        foreach (var v in bufferValue_TargetUnits.targets)
+        {
+            //角色动画
+            AnimatorComponent animatorComponent = v.GetComponent<AnimatorComponent>();
+            if (!string.IsNullOrEmpty(buff_PlayAnim.anim_boolValue))
             {
-                break;
+                animatorComponent.SetBoolValue(buff_PlayAnim.anim_boolValue, buff_PlayAnim.boolValue);
             }
-        }
+            if (!string.IsNullOrEmpty(buff_PlayAnim.anim_triggerValue))
+            {
+                animatorComponent.SetTrigger(buff_PlayAnim.anim_triggerValue);
+            }
+            
+            float speed = buffHandlerVar.playSpeed * buff_PlayAnim.playSpeed;
 
-        Buff_PlayAnim buff_PlayAnim = data as Buff_PlayAnim;
-        //角色动画
-        AnimatorComponent animatorComponent = source.GetComponent<AnimatorComponent>();
-        if (!string.IsNullOrEmpty(buff_PlayAnim.anim_boolValue))
-        {
-            animatorComponent.SetBoolValue(buff_PlayAnim.anim_boolValue, buff_PlayAnim.boolValue);
+            animatorComponent.SetAnimatorSpeed(speed);
         }
-        if (!string.IsNullOrEmpty(buff_PlayAnim.anim_triggerValue))
-        {
-            animatorComponent.SetTrigger(buff_PlayAnim.anim_triggerValue);
-        }
-        float speed = target.Value.playSpeedScale;
-        if (buff_PlayAnim.playTime > 0)
-        {
-            speed = speed * (buff_PlayAnim.origin / buff_PlayAnim.playTime);
-
-        }
-        animatorComponent.SetAnimatorSpeed(speed);
 
     }
 }

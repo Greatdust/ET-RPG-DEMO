@@ -11,10 +11,10 @@ using UnityEngine;
 public class BuffHandler_DOT : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_DOT buff = data as Buff_DOT;
-        NumericComponent numericComponent = source.GetComponent<NumericComponent>();
+        Buff_DOT buff = (Buff_DOT)buffHandlerVar.data;
+        NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
         //这里只是计算一下DOT的伤害(快照机制),实际DOT的处理是在BuffMgr中管理的
         buff.damageValue = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff * numericComponent.GetAsFloat(NumericType.FinalDamage_AddPct));
     }

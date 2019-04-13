@@ -10,11 +10,17 @@ using System.Threading.Tasks;
 public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInputHandler, IBuffRemoveHanlder
 {
 
-
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_UpdateNumeric buff = data as Buff_UpdateNumeric;
-        NumericComponent numericComponent = source.GetComponent<NumericComponent>();
+        Buff_UpdateNumeric buff = (Buff_UpdateNumeric)buffHandlerVar.data;
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
+        {
+            Log.Error("找不到目标!");
+            return;
+        }
+
+        NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
 
         if (buff.addValueByNumeric)
         {
@@ -27,23 +33,24 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
             if (buff.updateValue == buff.valueAdd) return;
             buff.updateValue = buff.valueAdd;
         }
-        foreach (var v in baseBuffReturnedValues)
+        foreach (var v in bufferValue_TargetUnits.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, target.Id, buff.updateValue);
+
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, buff.updateValue);
         }
     }
-
-    public void Remove(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void Remove(BuffHandlerVar buffHandlerVar)
     {
-        Buff_UpdateNumeric buff = data as Buff_UpdateNumeric;
-       
-        foreach (var v in baseBuffReturnedValues)
+        Buff_UpdateNumeric buff = (Buff_UpdateNumeric)buffHandlerVar.data;
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, target.Id, -buff.updateValue);
+            Log.Error("找不到目标!");
+            return;
+        }
+        foreach (var v in bufferValue_TargetUnits.targets)
+        {
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, -buff.updateValue);
         }
         buff.updateValue = 0;
     }

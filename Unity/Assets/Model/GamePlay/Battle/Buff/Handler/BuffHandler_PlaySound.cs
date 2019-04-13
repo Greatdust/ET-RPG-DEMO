@@ -8,41 +8,31 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [BuffType(BuffIdType.PlaySound)]
-public class BuffHandler_PlaySound : BaseBuffHandler,IBuffActionWithGetInputHandler
+public class BuffHandler_PlaySound : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
-
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        BufferValue_TargetUnits? target = null;
-        foreach (var v in baseBuffReturnedValues)
-        {
-            target = v as BufferValue_TargetUnits?;
-            if (target != null)
-            {
-                break;
-            }
-        }
 
-        Buff_PlaySound buff_PlaySound = data as Buff_PlaySound;
+        Buff_PlaySound buff_PlaySound = (Buff_PlaySound)buffHandlerVar.data;
 
         AudioClip audioClip = Game.Scene.GetComponent<AudioCacheComponent>().Get(buff_PlaySound.audioClipName);
 
-        AudioComponent audioComponent = source.GetComponent<AudioComponent>();
+
+
+        AudioComponent audioComponent = buffHandlerVar.source.GetComponent<AudioComponent>();
 
 
         if (buff_PlaySound.onlyPlayOnceTime)
         {
-            audioComponent.PlayAttackAudio(audioClip, target.Value.playSpeedScale, 0);
+            audioComponent.PlayAttackAudio(audioClip, buffHandlerVar.playSpeed, 0);
 
         }
         else
         {
-            audioComponent.PlayAttackAudio(audioClip, target.Value.playSpeedScale, buff_PlaySound.duration);
+            audioComponent.PlayAttackAudio(audioClip, buffHandlerVar.playSpeed, buff_PlaySound.duration);
         }
     }
-
-
 }
 
 

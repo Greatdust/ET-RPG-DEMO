@@ -89,21 +89,24 @@ public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff_emitEffect.emitObjId, effectGo);
     }
 
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues, Action<long> action)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar, Action<long> action)
     {
-        Buff_EmitEffect buff_EmitEffect = data as Buff_EmitEffect;
-        foreach (var v in baseBuffReturnedValues)
+        Buff_EmitEffect buff = (Buff_EmitEffect)buffHandlerVar.data;
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
-            BufferValue_TargetUnits? buffReturnedValue_TargetUnit = v as BufferValue_TargetUnits?;
-            Unit target = buffReturnedValue_TargetUnit.Value.target;
-            ActionHandle(buff_EmitEffect, source, target,buffReturnedValue_TargetUnit.Value.playSpeedScale, action);
+            ActionHandle(buff, buffHandlerVar.source, v, buffHandlerVar.playSpeed, action);
         }
-
     }
 
-    public void ActionHandle(IBuffData data, Unit source, List<IBufferValue> baseBuffReturnedValues)
+    public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        ActionHandle(data, source, baseBuffReturnedValues, null);
+        Buff_EmitEffect buff = (Buff_EmitEffect)buffHandlerVar.data;
+        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        foreach (var v in buffReturnedValue_TargetUnit.targets)
+        {
+            ActionHandle(buff, buffHandlerVar.source, v, buffHandlerVar.playSpeed, null);
+        }
     }
 }
 

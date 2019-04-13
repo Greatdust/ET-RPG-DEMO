@@ -43,22 +43,23 @@ public static class BattleEventHandler
 
     static void AddEffectCache(EffectCacheComponent effectCacheComponent,AudioCacheComponent audioCacheComponent, ActiveSkillComponent skillComponent)
     {
-        foreach (var skillData in skillComponent.activeSkillDic.Values)
+        foreach (var skill in skillComponent.skillList)
         {
+            ActiveSkillData skillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skill.Key);
             Game.Scene.GetComponent<ResourcesComponent>().LoadBundle(skillData.skillAssetsABName.StringToAB());
             GameObject skillAssetsPrefabGo = Game.Scene.GetComponent<ResourcesComponent>().GetAsset(skillData.skillAssetsABName.StringToAB(), skillData.skillAssetsABName) as GameObject;
 
-            if (skillData.AllBuffInSkill != null && skillData.AllBuffInSkill.Count > 0)
+            var buffList = skillData.GetAllBuffs(BuffIdType.EmitEffectInSkill, BuffIdType.HitEffect, BuffIdType.PlaySound,BuffIdType.AddBuff);
+            if (buffList.Count > 0)
             {
                 //循环检测每一个Buff,看是否是播放特效的,如果是,那就找到对应的Buff 缓存起来
-                foreach (var buff in skillData.AllBuffInSkill.Values)
+                foreach (var buff in buffList)
                 {
-                    if (!buff.enable) continue;
-                    AddEffectCache(effectCacheComponent, buff.buffData, skillAssetsPrefabGo);
-                    AddAudioCache(audioCacheComponent, buff.buffData, skillAssetsPrefabGo);
-                    if (buff.buffData.GetBuffIdType() == BuffIdType.AddBuff)
+                    AddEffectCache(effectCacheComponent, buff, skillAssetsPrefabGo);
+                    AddAudioCache(audioCacheComponent, buff, skillAssetsPrefabGo);
+                    if (buff.GetBuffIdType() == BuffIdType.AddBuff)
                     {
-                        Buff_AddBuff buff_AddBuffOnSkillEnd = buff.buffData as Buff_AddBuff;
+                        Buff_AddBuff buff_AddBuffOnSkillEnd = (Buff_AddBuff)buff;
                         if (buff_AddBuffOnSkillEnd.buffGroup.buffList == null) continue;
                         foreach (var buff_onSkillEnd in buff_AddBuffOnSkillEnd.buffGroup.buffList)
                         {
@@ -74,21 +75,17 @@ public static class BattleEventHandler
     {
         if (buff.GetBuffIdType() == BuffIdType.EmitEffectInSkill)
         {
-            Buff_EmitEffect buff_EmitEffect = buff as Buff_EmitEffect;
-            if (buff_EmitEffect != null)
-            {
-                if (!string.IsNullOrEmpty(buff_EmitEffect.emitObjId) && !effectCacheComponent.Contains(buff_EmitEffect.emitObjId))
-                    effectCacheComponent.Add(buff_EmitEffect.emitObjId, skillAssetsPrefabGo.Get<GameObject>(buff_EmitEffect.emitObjId));
-            }
+            Buff_EmitEffect buff_EmitEffect = (Buff_EmitEffect)buff;
+            if (!string.IsNullOrEmpty(buff_EmitEffect.emitObjId) && !effectCacheComponent.Contains(buff_EmitEffect.emitObjId))
+                effectCacheComponent.Add(buff_EmitEffect.emitObjId, skillAssetsPrefabGo.Get<GameObject>(buff_EmitEffect.emitObjId));
+
         }
         if (buff.GetBuffIdType() == BuffIdType.HitEffect)
         {
-            Buff_HitEffect buff_HitEffect = buff as Buff_HitEffect;
-            if (buff_HitEffect != null)
-            {
-                if (!string.IsNullOrEmpty(buff_HitEffect.hitObjId) && !effectCacheComponent.Contains(buff_HitEffect.hitObjId))
-                    effectCacheComponent.Add(buff_HitEffect.hitObjId, skillAssetsPrefabGo.Get<GameObject>(buff_HitEffect.hitObjId));
-            }
+            Buff_HitEffect buff_HitEffect = (Buff_HitEffect)buff;
+            if (!string.IsNullOrEmpty(buff_HitEffect.hitObjId) && !effectCacheComponent.Contains(buff_HitEffect.hitObjId))
+                effectCacheComponent.Add(buff_HitEffect.hitObjId, skillAssetsPrefabGo.Get<GameObject>(buff_HitEffect.hitObjId));
+
 
         }
     }
@@ -96,12 +93,11 @@ public static class BattleEventHandler
     {
         if (buff.GetBuffIdType() == BuffIdType.PlaySound)
         {
-            Buff_PlaySound buff_PlaySound = buff as Buff_PlaySound;
-            if (buff_PlaySound != null)
-            {
-                if (!string.IsNullOrEmpty(buff_PlaySound.audioClipName) && audioCacheComponent.Get(buff_PlaySound.audioClipName) == null)
-                    audioCacheComponent.Add(buff_PlaySound.audioClipName, skillAssetsPrefabGo.Get<AudioClip>(buff_PlaySound.audioClipName));
-            }
+            Buff_PlaySound buff_PlaySound = (Buff_PlaySound)buff;
+
+            if (!string.IsNullOrEmpty(buff_PlaySound.audioClipName) && audioCacheComponent.Get(buff_PlaySound.audioClipName) == null)
+                audioCacheComponent.Add(buff_PlaySound.audioClipName, skillAssetsPrefabGo.Get<AudioClip>(buff_PlaySound.audioClipName));
+
         }
     }
 
