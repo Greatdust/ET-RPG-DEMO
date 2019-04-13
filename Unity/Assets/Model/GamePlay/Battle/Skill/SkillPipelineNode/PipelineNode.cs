@@ -17,10 +17,9 @@ public enum Pipeline_TriggerType
     等待用户输入,  //这个目的是为了接收用户输入的数据,传输到后续Pipeline中. 比如选择一个目标/方向/范围使用技能,蓄力类技能,引导类技能等,
     自动寻找目标, //这个目的是为了处理一些BUFF直接作用于自身,以自身为中心的范围内的目标,或者敌方队伍全体,我方队伍全体这种情况
     可编程,// 这个目的是暴露全部可以支持的Buff作为借口供外部脚本使用.
-        //条件判断 // 用以实现技能执行时满足一些条件执行A,满足另一些条件执行B的情况.比如一个技能的效果是发射一枚火球,但是有30%的概率连续发射两枚,或者周围环境是火焰环境,火球变成火龙
-        //持续引导
+    条件判断 // 用以实现技能执行时满足一些条件执行A,满足另一些条件执行B的情况.比如一个技能的效果是发射一枚火球,但是有30%的概率连续发射两枚,或者周围环境是火焰环境,火球变成火龙
+     
 }
-
 
 [Serializable]
 public abstract class BasePipelineData
@@ -46,10 +45,13 @@ public abstract class BasePipelineData
 [Serializable]
 public abstract class PipelineDataWithBuff : BasePipelineData
 {
+    [GUIColor(142 / 255.0f, 212 / 255.0f, 243/255.0f, 1f)]
     public List<BuffInSkill> buffs = new List<BuffInSkill>();
 
 }
 
+[LabelText("固定时间")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_FixedTime : PipelineDataWithBuff
 {
@@ -66,6 +68,9 @@ public class Pipeline_FixedTime : PipelineDataWithBuff
     }
 }
 
+[LabelText("碰撞事件")]
+[LabelWidth(150)]
+[GUIColor(133 / 255.0f, 250 / 255.0f, 103 / 255.0f, 1f)]
 [Serializable]
 public class Pipeline_Collision : PipelineDataWithBuff
 {
@@ -75,6 +80,8 @@ public class Pipeline_Collision : PipelineDataWithBuff
     }
 }
 
+[LabelText("循环开始")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_CycleStart : BasePipelineData
 {
@@ -90,6 +97,8 @@ public class Pipeline_CycleStart : BasePipelineData
     }
 }
 
+[LabelText("循环结束")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_CycleEnd : BasePipelineData
 {
@@ -119,6 +128,8 @@ public struct ChargeData
     public float coff;
 }
 
+[LabelText("接收玩家输入")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_WaitForInput : BasePipelineData
 {
@@ -138,7 +149,8 @@ public class Pipeline_WaitForInput : BasePipelineData
     }
 }
 
-
+[LabelText("可编程节点")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_Programmable : BasePipelineData
 {
@@ -177,6 +189,8 @@ public enum FindTargetType
     距离自己最近的N个敌人
 }
 
+[LabelText("寻找目标")]
+[LabelWidth(150)]
 [Serializable]
 public class Pipeline_FindTarget : BasePipelineData
 {

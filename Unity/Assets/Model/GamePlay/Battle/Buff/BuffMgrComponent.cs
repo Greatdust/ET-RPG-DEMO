@@ -75,7 +75,7 @@ public class BuffMgrComponent : ETModel.Component
                 switch (v)
                 {
                     case Buff_DOT dot:
-                        GameCalNumericTool.CalDotDamage(GetParent<Unit>(), dot);
+                        GameCalNumericTool.CalDotDamage(buffGroup.sourceUnitId,GetParent<Unit>(), dot);
                         break;
 
                     default:

@@ -7,15 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 [Serializable]
-public struct Buff_HitEffect : IBuffData
+public class Buff_HitEffect : BaseBuffData
 {
     public string hitObjId;//击中时播放的特效
     public float duration ;//特效生命周期
 
-    [NonSerialized]
-    public GameObject effectGo;
-
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.HitEffect;
     }

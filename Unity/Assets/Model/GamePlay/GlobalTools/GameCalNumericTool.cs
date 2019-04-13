@@ -138,11 +138,12 @@ public static class GameCalNumericTool
         }
     }
 
-    public static void CalDotDamage(Unit destUnit, Buff_DOT dot)
+    public static void CalDotDamage(long sourceUnitId,  Unit destUnit, Buff_DOT dot)
     {
         DamageData damageData = new DamageData();
         damageData.damageType = dot.damageType;
-        damageData.damageValue = dot.damageValue;
+
+        damageData.damageValue =  BuffHandlerVar.cacheDatas_int[(sourceUnitId,dot.buffSignal)];
         NumericComponent destUnitNumericCom = destUnit.GetComponent<NumericComponent>();
         NumericType resistType = NumericType.ArmorResist;
 
@@ -152,7 +153,7 @@ public static class GameCalNumericTool
 
         }
 
-        damageData.damageValue = Mathf.RoundToInt((dot.damageValue) * (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
+        damageData.damageValue = Mathf.RoundToInt(damageData.damageValue * (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
         damageData.damageValue = Mathf.RoundToInt(damageData.damageValue *
                (1 - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 
 [Serializable]
-public struct Buff_PlayAnim : IBuffData
+public class Buff_PlayAnim : BaseBuffData
 {
   
     [LabelText("BOOL变量名")]
@@ -32,7 +32,7 @@ public struct Buff_PlayAnim : IBuffData
 
 
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.PlayAnim;
     }

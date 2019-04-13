@@ -38,6 +38,7 @@ public class SkillConfigComponent : Component
         {
             return null;
         }
+        data.skillId = skillId;
         return data;
     }
 
@@ -48,6 +49,7 @@ public class SkillConfigComponent : Component
         {
             return null;
         }
+        data.skillId = skillId;
         return data;
     }
 }

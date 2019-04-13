@@ -11,9 +11,10 @@ using UnityEngine;
 [LabelText("改变角色属性")]
 [LabelWidth(150)]
 [Serializable]
-public struct Buff_UpdateNumeric :   IBuffData
+public class Buff_UpdateNumeric :   BaseBuffData
 {
-
+    [LabelText("效果受使用者属性影响")]
+    [LabelWidth(220)]
     public bool addValueByNumeric;
     [ShowIf("addValueByNumeric")]
     [LabelWidth(200)]
@@ -25,18 +26,16 @@ public struct Buff_UpdateNumeric :   IBuffData
     [LabelWidth(200)]
     public float growthCoff;// 系数随技能等级的成长值 
     [LabelText("基础增加值")]
-    [LabelWidth(200)]
+    [LabelWidth(120)]
     public float valueAdd;//基础增加值
     [LabelText("成长值")]
-    [LabelWidth(200)]
+    [LabelWidth(120)]
     public float growthValue;// 随技能等级的成长值 
     [LabelText("目标属性")]
-    [LabelWidth(200)]
+    [LabelWidth(120)]
     public NumericType targetNumeric;
-    [HideInInspector]
-    [NonSerialized]
-    public float updateValue;//用以记录到底给目标角色添加了多少属性
-    public string GetBuffIdType()
+
+    public override string GetBuffIdType()
     {
         return BuffIdType.UpdateNumeric;
     }

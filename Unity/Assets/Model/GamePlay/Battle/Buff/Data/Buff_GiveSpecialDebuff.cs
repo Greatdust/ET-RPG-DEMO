@@ -7,16 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 [Serializable]
-public struct Buff_GiveSpecialDebuff : IBuffData
+public class Buff_GiveSpecialDebuff : BaseBuffData
 {
     public RestrictionType restrictionType;
 
     public int aimStackNum ;//叠加多少层之后才触发特殊效果
 
-    [NonSerialized]
-    public int currStackNum ;//当前叠加的层数
-
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.GiveSpecialDebuff;
     }

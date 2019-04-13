@@ -10,13 +10,13 @@ using UnityEngine;
 
 
 [Serializable]
-public struct Buff_DirectDamage : IBuffData
+public class Buff_DirectDamage : BaseBuffData
 {
     public int damageValue;
     public GameCalNumericTool.DamageType damageType;
     public int growthValue;// 随技能等级的成长值 
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.DirectDamage;
     }

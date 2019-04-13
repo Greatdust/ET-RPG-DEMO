@@ -25,18 +25,17 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
         if (buff.addValueByNumeric)
         {
             float value = numericComponent.GetAsFloat(buff.sourceNumeric) * buff.coefficient + buff.valueAdd;
-            if (buff.updateValue == value) return;
-            buff.updateValue = value;
+
+            BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)] = value;
         }
         else
         {
-            if (buff.updateValue == buff.valueAdd) return;
-            buff.updateValue = buff.valueAdd;
+            BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)] = buff.valueAdd;
         }
         foreach (var v in bufferValue_TargetUnits.targets)
         {
 
-            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, buff.updateValue);
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id,(float)BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)]);
         }
     }
     public void Remove(BuffHandlerVar buffHandlerVar)
@@ -50,9 +49,9 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
         }
         foreach (var v in bufferValue_TargetUnits.targets)
         {
-            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, -buff.updateValue);
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, -(float)BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)]);
         }
-        buff.updateValue = 0;
+        BuffHandlerVar.cacheDatas_float.Remove((buffHandlerVar.source.Id, buff.buffSignal));
     }
 }
 

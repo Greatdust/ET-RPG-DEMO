@@ -16,7 +16,9 @@ public class BuffHandler_DOT : BaseBuffHandler, IBuffActionWithGetInputHandler
         Buff_DOT buff = (Buff_DOT)buffHandlerVar.data;
         NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
         //这里只是计算一下DOT的伤害(快照机制),实际DOT的处理是在BuffMgr中管理的
-        buff.damageValue = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff * numericComponent.GetAsFloat(NumericType.FinalDamage_AddPct));
+
+        BuffHandlerVar.cacheDatas_int[(buffHandlerVar.source.Id,buff.buffSignal)] = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff * numericComponent.GetAsFloat(NumericType.FinalDamage_AddPct));
+
     }
 }
 

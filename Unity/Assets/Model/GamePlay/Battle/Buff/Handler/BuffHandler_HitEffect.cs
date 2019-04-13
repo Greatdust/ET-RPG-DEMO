@@ -13,6 +13,7 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
 
     public async void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
         Buff_HitEffect buff = (Buff_HitEffect)buffHandlerVar.data;
 
         BufferValue_Pos bufferValue_Pos = (BufferValue_Pos)buffHandlerVar.bufferValues[typeof(BufferValue_Pos)];
@@ -29,6 +30,7 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
         go.SetActive(true);
         await TimerComponent.Instance.WaitAsync((long)(buff.duration * 1000));
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.hitObjId, effectGo);
+#endif
     }
 }
 

@@ -13,6 +13,7 @@ public enum SkillType
     Passive,//被动技能
 }
 
+//行为树中做行为用. 比如根据某某条件,使用什么样的技能
 [Flags]
 public enum ActiveSkillTag
 {
@@ -22,8 +23,9 @@ public enum ActiveSkillTag
     RESTORE = 1<<4,//带恢复
     INTERRUPT = 1<<5,// 带打断
     CONTROL = 1<<6, // 带控制
-    RANGE = 1<<7, // 范围伤害
-    LOCK = 1<<8 //单体锁定
+    RANGE = 1<<7, // 带范围
+    LOCK = 1<<8, //单体锁定
+    SELF = 1<<9 //只能给自己用
 }
 
 //技能本身是否可以被打断
@@ -56,14 +58,10 @@ public abstract class BaseSkillData
     }
 
 
-
+ 
     [Serializable]
     public class BuffInSkill
     {
-        [ReadOnly]
-        [LabelText("SIGNAL")]
-        [LabelWidth(100)]
-        public string buffSignal;//一个Skill中的BUFF和其他BUFF区别开的标志,通常命名为buff_加上buff添加时的序号
         [LabelText("输入SIGNAL")]
         [InfoBox("获取哪些signal的输出作为处理自身BUFF时的输入,可以是Pipeline节点的,可以是其他Buff的")]
         [LabelWidth(100)]
@@ -76,36 +74,41 @@ public abstract class BaseSkillData
         public float delayTime;//延迟执行的时间
         [LabelText("BUFF数据")]
         [LabelWidth(100)]
-        public IBuffData buffData;//这个是通用的BUFF数据
+        public BaseBuffData buffData;//这个是通用的BUFF数据
 
-        public BuffInSkill()
-        {
-            //需要保证每个技能的每个buffSignal 都是唯一的
-            buffSignal = "B_" + IdGenerater.GenerateId().ToString();
-        }
     }
 
-    [LabelText("技能ID")]
-    [LabelWidth(100)]
+    [HideInInspector]
     public string skillId;//在数据中存储的Id
+    [TabGroup("基础信息")]
     [LabelText("技能名")]
     [LabelWidth(100)]
     public string skillName;//显示出来的名字
+    [TabGroup("基础信息")]
+    [LabelText("技能介绍")]
+    [LabelWidth(100)]
+    [Multiline(5)]
+    public string skillDesc;//技能介绍
+    [TabGroup("基础信息")]
     [LabelText("资源AB包名")]
     [LabelWidth(100)]
     public string skillAssetsABName;//技能资源所在AB包的前缀名
+    [TabGroup("基础信息")]
     [LabelText("冷却时间")]
     [LabelWidth(100)]
     public float coolDown;//冷却时间
 
     public abstract SkillType SkillType { get; }
-
+    [TabGroup("基础信息")]
     [LabelText("使用条件")]
     [LabelWidth(100)]
     public List<IActiveConditionData> activeConditionDatas = new List<IActiveConditionData>();//技能是否可以执行的检测条件
+    [TabGroup("流程内容")]
     [LabelText("流程内容,排列顺序等于执行顺序")]
     [LabelWidth(100)]
+    [ListDrawerSettings(ShowIndexLabels = true)]
     public List<BasePipelineData> pipelineDatas = new List<BasePipelineData>();
+    [TabGroup("基础信息")]
     [LabelText("打断类型")]
     [LabelWidth(100)]
     public TypeOfInterruption interruptType = TypeOfInterruption.UnStoppable;// 可以被打断的类型
@@ -135,14 +138,15 @@ public abstract class BaseSkillData
         public List<IncreData> incrementData = new List<IncreData>();
 
     }
+    [TabGroup("技能扩展")]
     [LabelText("技能扩展")]
     [LabelWidth(100)]
     public List<IncrementUpdate> incrementUpdates;//
 
 
-    public List<IBuffData> GetAllBuffs(params string[] types)
+    public List<BaseBuffData> GetAllBuffs(params string[] types)
     {
-        List<IBuffData> buffDatas = new List<IBuffData>();
+        List<BaseBuffData> buffDatas = new List<BaseBuffData>();
 
         foreach (var v in pipelineDatas)
         {
@@ -173,9 +177,11 @@ public abstract class BaseSkillData
 public class PassiveSkillData : BaseSkillData
 {
     public override SkillType SkillType => SkillType.Passive;
+    [TabGroup("基础信息")]
     [LabelText("监听事件")]
     [LabelWidth(100)]
     public bool listenToEvent;//需要持续不断检测作为激活条件的被动技能,具体实现用监听对应事件来做,而不是每帧检测
+    [TabGroup("基础信息")]
     [LabelText("事件ID")]
     [LabelWidth(100)]
     [ShowIf("listenToEvent")]
@@ -194,9 +200,11 @@ public class ActiveSkillData : BaseSkillData
             return SkillType.Active;
         }
     }
+    [TabGroup("基础信息")]
     [LabelText("是普通攻击")]
     [LabelWidth(120)]
     public bool isNormalAttack;//是否是普通攻击
+    [TabGroup("基础信息")]
     [LabelText("技能标签")]
     [LabelWidth(120)]
     public ActiveSkillTag activeSkillTag;//规定技能的标签.一方面方便玩家了解技能,另一方面可以帮助怪物战斗时选择技能的AI

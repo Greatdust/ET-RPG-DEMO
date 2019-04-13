@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 
 [Serializable]
-public struct Buff_DamageByNumeric :   IBuffData
+public class Buff_DamageByNumeric :   BaseBuffData
 {
     public NumericType numericType;
     public float baseCoff;//系数
@@ -18,7 +18,7 @@ public struct Buff_DamageByNumeric :   IBuffData
     public float growthCoff;// 系数随技能等级的成长值 
 
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.DamageByNumeric;
     }

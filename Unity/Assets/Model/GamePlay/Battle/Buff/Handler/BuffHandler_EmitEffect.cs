@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using PF;
 using UnityEngine;
 
-[BuffType(BuffIdType.EmitEffectInSkill)]
+[BuffType(BuffIdType.EmitObj)]
 public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,IBuffActionWithGetInputHandler
 {
 
-    public async void ActionHandle(Buff_EmitEffect buff_emitEffect, Unit source, Unit target,float playSpeed, Action<long> collisionEvent)
+    public async void ActionHandle(Buff_EmitObj buff_emitEffect, Unit source, Unit target,float playSpeed, Action<long> collisionEvent)
     {
+        //TODO: 应该要发射一个碰撞体的,这个碰撞体是双端共用的
+#if !SERVER
         //特效
         UnityEngine.GameObject go = null;
         go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff_emitEffect.emitObjId);//先找到缓存的特效物体
@@ -52,6 +54,7 @@ public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,
                 else
                     go.transform.forward = source.GameObject.transform.position - target.GameObject.transform.position;
             }
+
         }
 
         go.SetActive(true);
@@ -87,11 +90,13 @@ public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,
         mainModule.simulationSpeed = playSpeed;//这里实际上是内部调用了C++端,所以改变结构体里的值直接影响结果
         await TimerComponent.Instance.WaitAsync(buff_emitEffect.duration / playSpeed);
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff_emitEffect.emitObjId, effectGo);
+#endif
     }
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar, Action<long> action)
     {
-        Buff_EmitEffect buff = (Buff_EmitEffect)buffHandlerVar.data;
+
+        Buff_EmitObj buff = (Buff_EmitObj)buffHandlerVar.data;
         BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
         foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
@@ -101,7 +106,7 @@ public class BuffHandler_EmitEffect : BaseBuffHandler, IBuffActionWithCollision,
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-        Buff_EmitEffect buff = (Buff_EmitEffect)buffHandlerVar.data;
+        Buff_EmitObj buff = (Buff_EmitObj)buffHandlerVar.data;
         BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
         foreach (var v in buffReturnedValue_TargetUnit.targets)
         {

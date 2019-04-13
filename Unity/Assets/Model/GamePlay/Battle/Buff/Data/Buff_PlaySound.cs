@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
-public struct Buff_PlaySound : IBuffData
+public class Buff_PlaySound : BaseBuffData
 {
     [LabelText("音频名")]
     [InfoBox("这个音频名是技能资源AB包上的RC组件里定义的Key")]
@@ -21,7 +21,7 @@ public struct Buff_PlaySound : IBuffData
     [HideIf("onlyPlayOnceTime")]
     public float duration;//这个时候声音会循环播放,生命周期到达时,会删除
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.PlaySound;
     }

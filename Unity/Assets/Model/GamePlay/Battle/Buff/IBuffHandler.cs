@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public abstract class BaseBuffHandler
 {
@@ -13,7 +14,7 @@ public abstract class BaseBuffHandler
 
 public struct BuffHandlerVar
 {
-    public IBuffData data; // 对应的Buff数据
+    public BaseBuffData data; // 对应的Buff数据
     public Unit source; // 来源方
     public float playSpeed;// 技能,特效等的播放速度
     public string skillId;
@@ -30,6 +31,15 @@ public struct BuffHandlerVar
         value = (T)bufferValues[typeof(T)];
         return true;
     }
+
+    //缓存BuffHandler执行过程中产生的中间数据,key的long是UnitId,string是buffSignal
+    public readonly static Dictionary<(long, string), object> cacheDatas_object = new Dictionary<(long, string), object>();
+
+    //避免装箱拆箱
+    public readonly static Dictionary<(long, string), float> cacheDatas_float = new Dictionary<(long, string), float>();
+    public readonly static Dictionary<(long, string), int> cacheDatas_int = new Dictionary<(long, string), int>();
+
+
 }
 
 

@@ -30,7 +30,7 @@ public struct BuffGroup
     [LabelWidth(150)]
     public float duration ;
 
-    public List<IBuffData> buffList;
+    public List<BaseBuffData> buffList;
 
     public long BuffGroupId
     {
@@ -43,7 +43,7 @@ public struct BuffGroup
         set => buffGroupId = value;
     }
 
-    public void AddBuff(IBuffData baseBuffData)
+    public void AddBuff(BaseBuffData baseBuffData)
     {
         buffList.Add(baseBuffData);
     }
@@ -67,12 +67,12 @@ public struct BuffGroup
         {
             foreach (var v in buffList)
             {
-                Remove(v, source, target);
+                Remove(in v, source, target);
             }
         }
     }
 
-    void Remove(IBuffData v,Unit source,Unit target)
+    void Remove(in BaseBuffData v,Unit source,Unit target)
     {
         BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(v.GetBuffIdType());
         IBuffRemoveHanlder buffRemoveHanlder = baseBuffHandler as IBuffRemoveHanlder;

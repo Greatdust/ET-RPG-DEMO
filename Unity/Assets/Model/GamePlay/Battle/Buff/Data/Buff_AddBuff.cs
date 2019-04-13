@@ -7,11 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [Serializable]
-public struct Buff_AddBuff : IBuffData
+public class Buff_AddBuff : BaseBuffData
 {
     public BuffGroup buffGroup;
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.AddBuff;
     }

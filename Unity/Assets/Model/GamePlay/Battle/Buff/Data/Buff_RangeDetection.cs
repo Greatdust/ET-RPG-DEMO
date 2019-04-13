@@ -11,7 +11,7 @@ using UnityEngine;
 //2D物理
 
 [Serializable]
-public struct Buff_RangeDetection : IBuffData
+public class Buff_RangeDetection : BaseBuffData
 {
     public enum CollisionShape
     {
@@ -22,20 +22,11 @@ public struct Buff_RangeDetection : IBuffData
     //DEMO中暂时就做矩形和圆形. 
     public CollisionShape shapeType;
 
-    //如果是Box,x和y就是两条边,注意角色旋转的时候,shapevalue也会跟着旋转
+    //如果是Box,x和y就是两条边,默认状态下
     //如果是circle,x就是半径
     public Vector2 shapeValue ;
 
-
-
-    [NonSerialized]
-    public Vector2 position;//位置
-
-    [NonSerialized]
-    public float angle; //0或者2π代表上方(0,1),π代表(0,-1)
-
-
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.RangeDetection; //范围检测
     }

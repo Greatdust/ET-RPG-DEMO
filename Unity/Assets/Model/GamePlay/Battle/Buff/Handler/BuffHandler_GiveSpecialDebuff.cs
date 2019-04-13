@@ -12,7 +12,8 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
-        if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
+        
+        //if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
         BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
         foreach (var v in buffReturnedValue_TargetUnit.targets)
         {
@@ -33,7 +34,7 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
     public void Remove(BuffHandlerVar buffHandlerVar)
     {
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
-        if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
+        //if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
         BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
         foreach (var v in buffReturnedValue_TargetUnit.targets)
         {

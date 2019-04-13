@@ -12,7 +12,7 @@ public class SkillCollection : SerializedScriptableObject
     public Dictionary<string,PassiveSkillData> passiveSkillDataDic =new Dictionary<string, PassiveSkillData>();
 
 #if UNITY_EDITOR
-    [Button("保存所有技能信息至文件")]
+    [Button("保存所有技能信息至文件", 25)]
     public void SaveToFile()
     {
         using (FileStream file = File.Create(Application.dataPath + "../../../Config/ActiveSkillData.bytes"))
@@ -29,6 +29,7 @@ public class SkillCollection : SerializedScriptableObject
             bf.Serialize(file, passiveSkillDataDic);
             file.Close();
         }
+        Debug.Log("保存成功!");
     }
 #endif
 }

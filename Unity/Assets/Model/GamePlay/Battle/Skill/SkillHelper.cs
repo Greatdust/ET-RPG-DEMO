@@ -344,10 +344,10 @@ public static class SkillHelper
         if (buffActionWithSetOutputHandler != null)
         {
             var newBuffReturnedValue = buffActionWithSetOutputHandler.ActionHandle(buffHandlerVar);
-            if (!tempData.TryGetValue(buff.buffSignal, out var Dic))
+            if (!tempData.TryGetValue(buff.buffData.buffSignal, out var Dic))
             {
                 Dic = new Dictionary<Type, IBufferValue>();
-                tempData[buff.buffSignal] = Dic;
+                tempData[buff.buffData.buffSignal] = Dic;
             }
             foreach (var v in newBuffReturnedValue)
             {

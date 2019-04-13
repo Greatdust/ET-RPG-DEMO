@@ -49,7 +49,7 @@ public static class BattleEventHandler
             Game.Scene.GetComponent<ResourcesComponent>().LoadBundle(skillData.skillAssetsABName.StringToAB());
             GameObject skillAssetsPrefabGo = Game.Scene.GetComponent<ResourcesComponent>().GetAsset(skillData.skillAssetsABName.StringToAB(), skillData.skillAssetsABName) as GameObject;
 
-            var buffList = skillData.GetAllBuffs(BuffIdType.EmitEffectInSkill, BuffIdType.HitEffect, BuffIdType.PlaySound,BuffIdType.AddBuff);
+            var buffList = skillData.GetAllBuffs(BuffIdType.EmitObj, BuffIdType.HitEffect, BuffIdType.PlaySound,BuffIdType.AddBuff);
             if (buffList.Count > 0)
             {
                 //循环检测每一个Buff,看是否是播放特效的,如果是,那就找到对应的Buff 缓存起来
@@ -71,11 +71,11 @@ public static class BattleEventHandler
             }
         }
     }
-    static void AddEffectCache(EffectCacheComponent effectCacheComponent, IBuffData buff, GameObject skillAssetsPrefabGo)
+    static void AddEffectCache(EffectCacheComponent effectCacheComponent, BaseBuffData buff, GameObject skillAssetsPrefabGo)
     {
-        if (buff.GetBuffIdType() == BuffIdType.EmitEffectInSkill)
+        if (buff.GetBuffIdType() == BuffIdType.EmitObj)
         {
-            Buff_EmitEffect buff_EmitEffect = (Buff_EmitEffect)buff;
+            Buff_EmitObj buff_EmitEffect = (Buff_EmitObj)buff;
             if (!string.IsNullOrEmpty(buff_EmitEffect.emitObjId) && !effectCacheComponent.Contains(buff_EmitEffect.emitObjId))
                 effectCacheComponent.Add(buff_EmitEffect.emitObjId, skillAssetsPrefabGo.Get<GameObject>(buff_EmitEffect.emitObjId));
 
@@ -89,7 +89,7 @@ public static class BattleEventHandler
 
         }
     }
-    static void AddAudioCache(AudioCacheComponent audioCacheComponent, IBuffData buff, GameObject skillAssetsPrefabGo)
+    static void AddAudioCache(AudioCacheComponent audioCacheComponent, BaseBuffData buff, GameObject skillAssetsPrefabGo)
     {
         if (buff.GetBuffIdType() == BuffIdType.PlaySound)
         {

@@ -14,7 +14,7 @@ public class BuffHandler_PlayAnim : BaseBuffHandler,IBuffActionWithGetInputHandl
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-
+#if !SERVER
         Buff_PlayAnim buff_PlayAnim = (Buff_PlayAnim)buffHandlerVar.data;
 
         if (buff_PlayAnim.playSpeed == 0)
@@ -43,6 +43,7 @@ public class BuffHandler_PlayAnim : BaseBuffHandler,IBuffActionWithGetInputHandl
             animatorComponent.SetAnimatorSpeed(speed);
         }
 
+#endif
     }
 }
 

@@ -13,7 +13,7 @@ public class BuffHandler_PlaySound : BaseBuffHandler, IBuffActionWithGetInputHan
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-
+#if !SERVER
         Buff_PlaySound buff_PlaySound = (Buff_PlaySound)buffHandlerVar.data;
 
         AudioClip audioClip = Game.Scene.GetComponent<AudioCacheComponent>().Get(buff_PlaySound.audioClipName);
@@ -32,6 +32,7 @@ public class BuffHandler_PlaySound : BaseBuffHandler, IBuffActionWithGetInputHan
         {
             audioComponent.PlayAttackAudio(audioClip, buffHandlerVar.playSpeed, buff_PlaySound.duration);
         }
+#endif
     }
 }
 

@@ -40,7 +40,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 1
-      Data: 24124
+      Data: test_001
     - Name: 
       Entry: 7
       Data: 2|ActiveSkillData, Unity.Model
@@ -48,8 +48,11 @@ MonoBehaviour:
       Entry: 6
       Data: 
     - Name: skillName
-      Entry: 6
-      Data: 
+      Entry: 1
+      Data: "\u519C\u592B\u4E09\u62F3"
+    - Name: skillDesc
+      Entry: 1
+      Data: "\u6CA1\u6709\u4EC0\u4E48\u662F\u4E00\u62F3\u4E0D\u80FD\u89E3\u51B3\u7684,\u5982\u679C\u6709,\u90A3\u5C31\u4E09\u62F3\n\u8FDE\u7EED\u5BF9\u76EE\u6807\u9020\u6210\u4E09\u6B21\u4F24\u5BB3.\u6BCF\u6B21\u4F24\u5BB3\u4E3A<color=#add8e6f>85%</color>x\u653B\u51FB\u529B."
     - Name: skillAssetsABName
       Entry: 6
       Data: 
@@ -57,25 +60,33 @@ MonoBehaviour:
       Entry: 4
       Data: 0
     - Name: activeConditionDatas
-      Entry: 7
-      Data: 3|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
-        Unity.Model]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: pipelineDatas
       Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+      Data: 3|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 4|Pipeline_FindTarget, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: P_101918750343169
+    - Name: findTargetType
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 7
       Data: 5|Pipeline_FixedTime, Unity.Model
@@ -95,20 +106,8 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 7|BaseSkillData+BuffInSkill, Unity.Model
-    - Name: buffSignal
-      Entry: 1
-      Data: B_101917863444482
     - Name: signals_GetInput
-      Entry: 7
-      Data: 8|System.String[], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: enable
       Entry: 5
@@ -138,6 +137,42 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 8|Pipeline_Programmable, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: P_101919500402689
+    - Name: pmb
+      Entry: 7
+      Data: 9|PmbNode_TEST001, Unity.Model
+    - Name: emit
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 10|Pipeline_Collision, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: P_101919640584193
+    - Name: buffs
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -147,24 +182,14 @@ MonoBehaviour:
       Entry: 3
       Data: 5
     - Name: incrementUpdates
-      Entry: 7
-      Data: 9|System.Collections.Generic.List`1[[BaseSkillData+IncrementUpdate, Unity.Model]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: isNormalAttack
       Entry: 5
       Data: false
     - Name: activeSkillTag
       Entry: 3
-      Data: 0
+      Data: 130
     - Name: 
       Entry: 8
       Data: 
@@ -179,14 +204,83 @@ MonoBehaviour:
       Data: 
     - Name: passiveSkillDataDic
       Entry: 7
-      Data: 10|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[PassiveSkillData,
+      Data: 11|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[PassiveSkillData,
         Unity.Model]], mscorlib
     - Name: comparer
       Entry: 9
       Data: 1
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: 
+      Entry: 1
+      Data: 252345
+    - Name: 
+      Entry: 7
+      Data: 12|PassiveSkillData, Unity.Model
+    - Name: skillId
+      Entry: 6
+      Data: 
+    - Name: skillName
+      Entry: 1
+      Data: "\u8840\u6218"
+    - Name: skillDesc
+      Entry: 1
+      Data: "\u5929\u5802\u5411\u5DE6,\u6211\u5411\u53F3!\n\u8840\u91CF\u5269\u4F59\u767E\u5206\u6BD4\u6BCF\u964D\u4F4E<color=#add8e6f>1%</color>,
+        \u81EA\u8EAB\u653B\u51FB\u529B\u4E0A\u5347<color=#add8e6f>1%</color>."
+    - Name: skillAssetsABName
+      Entry: 6
+      Data: 
+    - Name: coolDown
+      Entry: 4
       Data: 0
+    - Name: activeConditionDatas
+      Entry: 7
+      Data: 13|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
+        Unity.Model]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: pipelineDatas
+      Entry: 7
+      Data: 14|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: interruptType
+      Entry: 3
+      Data: 1
+    - Name: incrementUpdates
+      Entry: 6
+      Data: 
+    - Name: listenToEvent
+      Entry: 5
+      Data: false
+    - Name: eventIdType
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 

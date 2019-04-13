@@ -10,7 +10,8 @@ public static class BuffIdType
     public const string DamageByNumeric = "直接伤害";
     public const string DOT = "持续伤害";
     public const string UpdateNumeric = "改变数值";
-    public const string EmitEffectInSkill = "发射技能中的特效";
+    public const string EmitObj = "发射飞行道具";
+    public const string PlayEffect = "播放特效";
     public const string EmitEffectWithBuff = "发射BUFF携带特效";
     public const string HitEffect = "击中特效";
     public const string PlaySound = "播放音效";

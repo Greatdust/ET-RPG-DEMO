@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 [Serializable]
 //这个一般不是技能用的,是道具,场景里的元素给予的直接回复效果
-public struct Buff_GiveRecover : IBuffData
+public class Buff_GiveRecover : BaseBuffData
 {
     public float hpValue;
     public float hpPct;
     public float mpValue;
     public float mpPct;
 
-    public string GetBuffIdType()
+    public override string GetBuffIdType()
     {
         return BuffIdType.GiveRecover;
     }
