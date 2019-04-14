@@ -41,7 +41,7 @@ namespace ETModel
 
         HitRate = 1021,
         DodgeRate = 1022,
-        Speed = 1023,
+        MoveSpeed = 1023,
         CritRate = 1024,//暴击率
         CritDamagePct = 1025,//暴击伤害(百分比)
         [LabelText("吸血率")]
@@ -54,8 +54,10 @@ namespace ETModel
         [LabelText("MP每秒恢复")]
         MP_Restore = 1032,
 
+        ATK = 1033, // 物理攻击力
+        MagicATK = 1034,
 
-        FinalDamage_ReducePct = 1040,
+FinalDamage_ReducePct = 1040,
         FinalDamage_AddPct = 1041,
 
 

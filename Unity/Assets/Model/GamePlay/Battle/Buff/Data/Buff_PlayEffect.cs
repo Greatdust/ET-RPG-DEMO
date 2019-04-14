@@ -30,7 +30,7 @@ public class Buff_PlayEffect : BaseBuffData
 
     public override string GetBuffIdType()
     {
-        return BuffIdType.EmitObj;
+        return BuffIdType.PlayEffect;
     }
 
 }

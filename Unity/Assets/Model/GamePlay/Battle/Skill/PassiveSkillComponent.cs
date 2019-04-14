@@ -143,7 +143,7 @@ public class PassiveSkillComponent : ETModel.Component
                 }
 
             }
-            SkillHelper.OnPassiveSkillRemove(skillId);
+            SkillHelper.OnPassiveSkillRemove(GetParent<Unit>(),skillId);
             skillList.Remove(skillId);
         }
     }

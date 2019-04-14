@@ -14,8 +14,13 @@ public class BuffHandler_GiveRecover : BaseBuffHandler,IBuffActionWithGetInputHa
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_GiveRecover buff = (Buff_GiveRecover)buffHandlerVar.data;
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+
+        foreach (var v in targetUnits.targets)
         {
             NumericComponent numericComponent = v.GetComponent<NumericComponent>();
             if (buff.hpValue > 0)

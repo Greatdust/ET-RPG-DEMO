@@ -14,8 +14,10 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_DamageByNumeric buff = (Buff_DamageByNumeric)buffHandlerVar.data;
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
         NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
         GameCalNumericTool.DamageData damageData = new GameCalNumericTool.DamageData();
 
@@ -38,7 +40,7 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
         }
 
 
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+        foreach (var v in targetUnits.targets)
         {
 
             Game.EventSystem.Run(EventIdType.CalDamage, buffHandlerVar.source.Id, v.Id, damageData);

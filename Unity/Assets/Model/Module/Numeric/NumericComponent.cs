@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace ETModel
 {
 	[ObjectSystem]
-	public class NumericComponentAwakeSystem : AwakeSystem<NumericComponent>
+	public class NumericComponentAwakeSystem : AwakeSystem<NumericComponent,int>
 	{
-		public override void Awake(NumericComponent self)
+		public override void Awake(NumericComponent self, int typeId)
 		{
-			self.Awake();
+			self.Awake(typeId);
 		}
 	}
 
@@ -16,11 +16,36 @@ namespace ETModel
 	{
 		public readonly Dictionary<int, int> NumericDic = new Dictionary<int, int>();
 
-		public void Awake()
+		public void Awake(int typeId)
 		{
             // 这里初始化base值
-            Set(NumericType.Speed, 7.0f);
-		}
+            UnitConfig unitConfig = Game.Scene.GetComponent<ConfigComponent>().Get(typeof(UnitConfig), typeId) as UnitConfig;
+
+            Set(NumericType.ArmorResist, unitConfig.ArmorResist);
+            Set(NumericType.ATK, unitConfig.ATK);
+            Set(NumericType.CritDamagePct, unitConfig.CritDamagePct);
+            Set(NumericType.CritRate, unitConfig.CritRate);
+            Set(NumericType.DodgeRate, unitConfig.DodgeRate);
+
+ 
+            Set(NumericType.HitRate, unitConfig.HitRate);
+            Set(NumericType.HP, unitConfig.HPMax);
+            Set(NumericType.HPMax_Base, unitConfig.HPMax);
+
+
+            Set(NumericType.HP_LeechRate, unitConfig.HP_LeechRate);
+            Set(NumericType.HP_Restore, unitConfig.HP_Restore);
+            Set(NumericType.Level, unitConfig.Level);
+            Set(NumericType.MagicATK, unitConfig.MagicATK);
+            Set(NumericType.MagicResist, unitConfig.MagicResist);
+
+            Set(NumericType.MoveSpeed, unitConfig.MoveSpeed);
+            Set(NumericType.MP, unitConfig.MPMax);
+            Set(NumericType.MPMax_Base, unitConfig.MPMax);
+            Set(NumericType.MP_LeechRate, unitConfig.MP_LeechRate);
+            Set(NumericType.MP_Restore, unitConfig.MP_Restore);
+
+        }
 
 		public float GetAsFloat(NumericType numericType)
 		{

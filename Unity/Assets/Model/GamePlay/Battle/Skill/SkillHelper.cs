@@ -10,7 +10,7 @@ using static BaseSkillData;
 public static class SkillHelper
 {
 
-    private static Dictionary<string, Action<BuffHandlerVar>> collisionActions = new Dictionary<string, Action<BuffHandlerVar>>();// 存储技能执行中的飞行道具碰撞时会触发的逻辑
+    public static readonly Dictionary<string, Action<BuffHandlerVar>> collisionActions = new Dictionary<string, Action<BuffHandlerVar>>();// 存储技能执行中的飞行道具碰撞时会触发的逻辑
 
     //存储技能执行过程中产生的中间数据,一般在切换场景的时候清理一下就好
     public static Dictionary<string, Dictionary<Type, IBufferValue>> tempData = new Dictionary<string, Dictionary<Type, IBufferValue>>();
@@ -86,8 +86,32 @@ public static class SkillHelper
         await ExcuteSkillData(skillParams);
     }
 
-    public static void OnPassiveSkillRemove(string skillId)
+    public static void OnPassiveSkillRemove(Unit unit, string skillId)
     {
+        SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
+        PassiveSkillData passiveSkillData = skillConfigComponent.GetPassiveSkill(skillId);
+        BuffHandlerVar buffHandlerVar = new BuffHandlerVar();
+        buffHandlerVar.source = unit;
+        buffHandlerVar.skillId = skillId;
+        foreach (var v in passiveSkillData.pipelineDatas)
+        {
+            PipelineDataWithBuff pipelineDataWithBuff = v as PipelineDataWithBuff;
+
+
+            if (pipelineDataWithBuff != null)
+            {
+                
+                foreach (var buff in pipelineDataWithBuff.buffs)
+                {
+                    IBuffRemoveHanlder buffRemoveHanlder = Game.Scene.GetComponent<BuffHandlerComponent>().GetHandler(buff.buffData.GetBuffIdType()) as IBuffRemoveHanlder;
+                    if (buffRemoveHanlder != null)
+                    {
+                        buffHandlerVar.data = buff.buffData;
+                        buffRemoveHanlder.Remove(buffHandlerVar);
+                    }
+                }
+            }
+        }
 
     }
 
@@ -98,6 +122,7 @@ public static class SkillHelper
             TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer(skillParams.source.GetHashCode() + skillParams.skillId.GetHashCode());
             timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
             timer.timing = TimeHelper.ClientNow();
+            //TODO; 发出消息提示进入冷却
             skillParams.playSpeed = 1;
 
             skillParams.cycleStartsStack = new Stack<(LinkedListNode<BasePipelineData>, int, int)>();
@@ -236,8 +261,17 @@ public static class SkillHelper
                     //等待用户输入,可能有正确输入/取消/输入超时三种情况
 
                     case InputType.Tar:
+
                         break;
                     case InputType.Dir:
+                        //直接智能施法模式
+                        BufferValue_Dir bufferValue_Dir = new BufferValue_Dir();
+                        bufferValue_Dir.dir = UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputDir();
+                        if (!tempData.ContainsKey(pipeline_WaitForInput.pipelineSignal))
+                        {
+                            tempData[pipeline_WaitForInput.pipelineSignal] = new Dictionary<Type, IBufferValue>();
+                        }
+                        tempData[pipeline_WaitForInput.pipelineSignal][typeof(BufferValue_Dir)] = bufferValue_Dir;
                         break;
                     case InputType.Pos:
                         break;
@@ -325,13 +359,6 @@ public static class SkillHelper
                     buffHandlerVar.bufferValues[v.Key] = v.Value;
                 }
         }
-        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
-        {
-            buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits()
-            {
-                targets = new Unit[] { buffHandlerVar.source }
-            };
-        }
         buffHandlerVar.data = buff.buffData;
 
         IBuffActionWithGetInputHandler buffActionWithGetInput = baseBuffHandler as IBuffActionWithGetInputHandler;
@@ -344,6 +371,7 @@ public static class SkillHelper
         if (buffActionWithSetOutputHandler != null)
         {
             var newBuffReturnedValue = buffActionWithSetOutputHandler.ActionHandle(buffHandlerVar);
+            if (newBuffReturnedValue == null) return;
             if (!tempData.TryGetValue(buff.buffData.buffSignal, out var Dic))
             {
                 Dic = new Dictionary<Type, IBufferValue>();

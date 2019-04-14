@@ -21,29 +21,32 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
 
         Buff_RangeDetection buff_RangeDetection = (Buff_RangeDetection)buffHandlerVar.data;
 
-        //根据传入进来的方向和位置计算做范围检测的区域
 
-        BufferValue_Pos bufferValue_Pos = (BufferValue_Pos)buffHandlerVar.bufferValues[typeof(BufferValue_Pos)];
-
-        Vector2 pos = new Vector2(bufferValue_Pos.aimPos.x, bufferValue_Pos.aimPos.z);
-
-        BufferValue_Dir bufferValue_Dir = (BufferValue_Dir)buffHandlerVar.bufferValues[typeof(BufferValue_Dir)];
-
-        UnityEngine.Vector2 angleV2 = new UnityEngine.Vector2(bufferValue_Dir.dir.x, bufferValue_Dir.dir.z);
-
-        float angle = 0;
-        if (angleV2.x > 0)
-        {
-            angle = UnityEngine.Vector2.Angle(UnityEngine.Vector2.up, angleV2) * Settings.Pi / 180;
-        }
-        var transform = new Transform(in pos, angle);
         PolyshapeQueryCallback polyshapeQueryCallback = new PolyshapeQueryCallback();
         AABB ab = new AABB();
 
         switch (buff_RangeDetection.shapeType)
         {
             case Buff_RangeDetection.CollisionShape.Box:
-                // 初始的默认0方向是Vector3.forward. BOX2D中的角度是逆时针旋转的(0->π).
+                //根据传入进来的方向和位置计算做范围检测的区域
+
+
+                if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
+                {
+                    Log.Error("Box检测没有收到位置  " + buffHandlerVar.skillId);
+                    return null;
+                }
+
+                if (!buffHandlerVar.GetBufferValue(out BufferValue_Dir bufferValue_Dir))
+                {
+                    Log.Error("Box检测没有收到方向  " + buffHandlerVar.skillId);
+                    return null;
+                }
+
+                Vector2 pos = bufferValue_Pos.aimPos.ToVector2();
+
+
+                var transform = new Transform(in pos, bufferValue_Dir.dir.ToRotation2D().Angle);
                 var Vertices = new Vector2[4];
 
                 float hx = buff_RangeDetection.shapeValue.x;
@@ -70,6 +73,13 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
                 break;
             case Buff_RangeDetection.CollisionShape.Circle:
 
+                if (!buffHandlerVar.GetBufferValue(out bufferValue_Pos))
+                {
+                    Log.Error("Circle检测没有收到位置  " + buffHandlerVar.skillId);
+                    return null;
+                }
+                pos = bufferValue_Pos.aimPos.ToVector2();
+                transform = new Transform(in pos, 0);
                 var p = transform.Position + MathUtils.Mul(transform.Rotation, transform.Position);
                 float raidus = buff_RangeDetection.shapeValue.x;
                 ab.LowerBound.Set(p.X - raidus, p.Y - raidus);
@@ -79,9 +89,14 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
         }
         PhysicWorldComponent.Instance.world.QueryAABB(polyshapeQueryCallback, ab);
 
+        if (polyshapeQueryCallback.units == null || polyshapeQueryCallback.units.Count == 0)
+        {
+            return null;
+        }
         //拿到了所有检测到的Unit
         bufferValue_TargetUnits.targets = polyshapeQueryCallback.units.ToArray();
         
+
         Log.Debug(polyshapeQueryCallback.units.ListToString());
         return new IBufferValue[] { bufferValue_TargetUnits };
     }

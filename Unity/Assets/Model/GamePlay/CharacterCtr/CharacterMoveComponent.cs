@@ -18,11 +18,11 @@ namespace ETModel
     }
 
     [ObjectSystem]
-    public class CharacterMoveComponentUpdateSystem : UpdateSystem<CharacterMoveComponent>
+    public class CharacterMoveComponentUpdateSystem : FixedUpdateSystem<CharacterMoveComponent>
     {
-        public override void Update(CharacterMoveComponent self)
+        public override void FixedUpdate(CharacterMoveComponent self)
         {
-            self.Update();
+            self.FixedUpdate();
         }
     }
 
@@ -43,6 +43,7 @@ namespace ETModel
         public ETTaskCompletionSource moveTcs;
         public ETCancellationTokenSource cancellationTokenSource;
 
+        private float baseMoveSpeed = 5;// 这个应该从配置表里读
 
         public void Awake()
         {
@@ -60,7 +61,7 @@ namespace ETModel
             {
                 moveTcs = null;
             }
-            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed);
+            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.MoveSpeed);
 
             if (Vector3.Distance(unit.Position, path[0]) > 1)
             {
@@ -92,20 +93,25 @@ namespace ETModel
             float time = distance / speed;
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
-            animatorComponent.SetFloatValue("MoveSpeed", 1);
 
+            float pitch = speed / baseMoveSpeed;
+            animatorComponent.SetAnimatorSpeed(pitch);
+            animatorComponent.SetBoolValue(CharacterAnim.Run, true);
+            GetParent<Unit>().GetComponent<AudioComponent>().PlayMoveSound(pitch);
             return moveTcs.Task;
 
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
             if (moveTcs == null) return;
 
             long timeNow = TimeHelper.Now();
             if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
             {
-                animatorComponent.SetFloatValue("MoveSpeed", 0);
+                animatorComponent.SetBoolValue(CharacterAnim.Run, false);
+                GetParent<Unit>().GetComponent<AudioComponent>().PauseMoveSound();
+                animatorComponent.SetAnimatorSpeed(1);
                 unit.Position = moveTarget;
                 var t = moveTcs;
                 moveTcs = null;

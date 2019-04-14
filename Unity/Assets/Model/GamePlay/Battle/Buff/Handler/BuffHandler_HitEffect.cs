@@ -16,7 +16,10 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
 #if !SERVER
         Buff_HitEffect buff = (Buff_HitEffect)buffHandlerVar.data;
 
-        BufferValue_Pos bufferValue_Pos = (BufferValue_Pos)buffHandlerVar.bufferValues[typeof(BufferValue_Pos)];
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos value_Pos))
+        {
+            return;
+        }
 
         UnityEngine.GameObject go = null;
         go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.hitObjId);//先找到缓存的特效物体
@@ -24,7 +27,7 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
         go.SetActive(false);
 
         //在目标位置处播放
-        go.transform.position = bufferValue_Pos.aimPos;
+        go.transform.position = value_Pos.aimPos;
 
 
         go.SetActive(true);

@@ -35,7 +35,7 @@ public class AudioComponent : ETModel.Component
     }
 
 
-    public void PlayAttackAudio(AudioClip audioClip, float pitch = 1, float duration = 0)
+    public void PlayAttackSound(AudioClip audioClip, float pitch = 1, float duration = 0)
     {
         if (unitAudioSourceHelper.attackAS != null)
         {
@@ -44,7 +44,21 @@ public class AudioComponent : ETModel.Component
         }
     }
 
+    public void PlayMoveSound(float pitch)
+    {
+        if (unitAudioSourceHelper.moveAS != null)
+        {
+            unitAudioSourceHelper.PlayMoveSound(pitch);
+        }
+    }
 
+    public void PauseMoveSound()
+    {
+        if (unitAudioSourceHelper.moveAS != null)
+        {
+            unitAudioSourceHelper.PauseMoveSound();
+        }
+    }
 
 
     async ETVoid PlayAudio(AudioSource audioSource, AudioClip clip, float duration = 0)

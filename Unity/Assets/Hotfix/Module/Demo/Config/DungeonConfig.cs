@@ -2,7 +2,7 @@ using ETModel;
 
 namespace ETHotfix
 {
-	[Config((int)(AppType.Map | AppType.ClientM))]
+	[Config((int)(AppType.Map))]
 	public partial class DungeonConfigCategory : ACategory<DungeonConfig>
 	{
 	}

@@ -51,14 +51,17 @@ namespace ETModel
             {
                 total += v.damageValue;
             }
-            this.Entity.GetComponent<AnimatorComponent>().SetTrigger("Hit"); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
+            this.Entity.GetComponent<AnimatorComponent>().SetTrigger(CharacterAnim.Hit); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
             
             Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, GetParent<Unit>().Id, -(float)total); //受到伤害,所以是负数
         }
 
-        public void GetDie()
+        public async void GetDie()
         {
-            this.Entity.GetComponent<AnimatorComponent>().SetBoolValue("Die",true);
+            this.Entity.GetComponent<AnimatorComponent>().SetBoolValue(CharacterAnim.Dead, true);
+            await TimerComponent.Instance.WaitAsync(2000); // 如果允许角色原地复活.这里就要加入取消了
+            if (GetParent<Unit>().UnitType == UnitType.Monster)
+                GetParent<Unit>().Dispose();
         }
 
         public void GetHP(int value)

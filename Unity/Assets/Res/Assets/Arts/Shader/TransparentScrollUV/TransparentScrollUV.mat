@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TransparentScrollUV
+  m_Shader: {fileID: 4800000, guid: 5bb1f43b014058542ae4146d0a82eea0, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DetailMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: -3.45}
+        m_Offset: {x: 0, y: 0.49}
+    - _DetailTex:
+        m_Texture: {fileID: 2800000, guid: d050bf809d412d044b715ccb1e49f97f, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 4f56685f9650c3945b6be5fd848486af, type: 3}
+        m_Scale: {x: 5.95, y: 13.67}
+        m_Offset: {x: 0, y: 0.51}
+    m_Floats:
+    - _Alpha: 0.5
+    - _DetailIntensity: 3
+    - _Intensity: 2.5
+    - _Saturate: 1
+    m_Colors:
+    - _Color: {r: 0.4217128, g: 0.43373403, b: 0.47794116, a: 1}
+    - _Speed: {r: 0.08, g: 0, b: 0, a: 0.08}

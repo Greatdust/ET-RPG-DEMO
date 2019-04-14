@@ -16,7 +16,6 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
 
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
         {
-            Log.Error("找不到目标!");
             return;
         }
 

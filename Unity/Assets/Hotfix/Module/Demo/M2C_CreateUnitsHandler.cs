@@ -19,7 +19,7 @@ namespace ETHotfix
 				{
 					continue;
 				}
-				Unit unit = UnitFactory.Create(unitInfo.UnitId);
+				Unit unit = UnitFactory.Create(unitInfo.UnitId,1001);
 
                 Vector3 postion = new Vector3(unitInfo.Position.X, unitInfo.Position.Y, unitInfo.Position.Z);
                 unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);

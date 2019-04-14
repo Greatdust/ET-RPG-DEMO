@@ -23,7 +23,6 @@ public static class SceneChangeHelper
         {
             beforeActiveAction();
         }
-        await TimerComponent.Instance.WaitAsync(0.3f);
       //  ui.Remove(UIType.UILoading);
        // ui.DisplayAllUI();
         sceneChangeComponent.loadMapOperation.allowSceneActivation = true;

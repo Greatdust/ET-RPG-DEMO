@@ -14,7 +14,11 @@ public class BuffHandler_DirectDamage : BaseBuffHandler, IBuffActionWithGetInput
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_DirectDamage buff = (Buff_DirectDamage)buffHandlerVar.data;
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+
         GameCalNumericTool.DamageData damageData = new GameCalNumericTool.DamageData();
 
 
@@ -33,7 +37,7 @@ public class BuffHandler_DirectDamage : BaseBuffHandler, IBuffActionWithGetInput
             damageData.isCritical = effectData.critical;
         }
 
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+        foreach (var v in targetUnits.targets)
         {
             Game.EventSystem.Run(EventIdType.CalDamage, buffHandlerVar.source.Id, v.Id, damageData);
         }

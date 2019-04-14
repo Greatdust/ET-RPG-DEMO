@@ -9,10 +9,6 @@ namespace ETHotfix
         {
             try
             {
-                // 加载Unit资源
-                ResourcesComponent resourcesComponent = ETModel.Game.Scene.GetComponent<ResourcesComponent>();
-                await resourcesComponent.LoadBundleAsync($"unit.unity3d");
-
                 // 加载场景资源
                 await ETModel.Game.Scene.GetComponent<ResourcesComponent>().LoadBundleAsync("map.unity3d");
                 // 切换到map场景
@@ -20,7 +16,12 @@ namespace ETHotfix
                 {
                     await sceneChangeComponent.ChangeSceneAsync(SceneType.Map);
                 }
-				
+                ETModel.Game.EventSystem.Run(ETModel.EventIdType.LoadAssets);
+                // 加载Unit资源
+                ResourcesComponent resourcesComponent = ETModel.Game.Scene.GetComponent<ResourcesComponent>();
+                await resourcesComponent.LoadBundleAsync($"unit.unity3d");
+
+
                 G2C_EnterMap g2CEnterMap = await ETModel.SessionComponent.Instance.Session.Call(new C2G_EnterMap()) as G2C_EnterMap;
                 PlayerComponent.Instance.MyPlayer.UnitId = g2CEnterMap.UnitId;
 
@@ -37,7 +38,7 @@ namespace ETHotfix
                     }
 
                 }
-                ETModel.Game.Scene.AddComponent<PathfindingComponent>();
+
 
                 //Game.Scene.AddComponent<OperaComponent>();
 

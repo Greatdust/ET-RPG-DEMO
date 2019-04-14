@@ -12,8 +12,13 @@ public class BuffHandler_EnhanceSkillEffect : BaseBuffHandler,IBuffActionWithGet
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_EnhanceSkillEffect buff = (Buff_EnhanceSkillEffect)buffHandlerVar.data;
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+
+        foreach (var v in targetUnits.targets)
         {
             SkillEffectComponent skillEffectComponent = v.GetComponent<SkillEffectComponent>();
             skillEffectComponent.AddEffectData(buff.skillId, buff.effectData);

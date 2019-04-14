@@ -34,6 +34,7 @@ namespace ETModel
         private Unit unit;
         private CommandSimulaterComponent simulaterComponent;
 
+
         private CommandInputInfo_Move inputInfo_Move = new CommandInputInfo_Move();
 
         public int simulateFrame;//预测帧
@@ -76,18 +77,20 @@ namespace ETModel
                     {
                         case CommandInput_Move input_Move:
 
-                          
+
 
                             CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
                             v.commandResult = result_Move;
-                            //每秒最多发送60次
+                           
+                            //再预测这一帧的结果
+                            unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
+
+                            if (!Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode) break;
+                            Log.Debug("frame : " + simulateFrame + "  本地预测的路径: " + result_Move.Path.ListToString<Vector3>());
                             inputInfo_Move.Frame = simulateFrame;
                             inputInfo_Move.AimPos = new Vector3Info() { X = input_Move.clickPos.x, Y = input_Move.clickPos.y, Z = input_Move.clickPos.z };
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
 
-                            Log.Debug("frame : " + simulateFrame + "  本地预测的路径: " + result_Move.Path.ListToString<Vector3>());
-                            //再预测这一帧的结果
-                            unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
                             break;
                     }
                 }

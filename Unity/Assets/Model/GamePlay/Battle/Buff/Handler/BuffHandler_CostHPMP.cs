@@ -13,9 +13,12 @@ public class BuffHandler_CostHPMP : BaseBuffHandler, IBuffActionWithGetInputHand
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_CostHP_MP cost = (Buff_CostHP_MP)buffHandlerVar.data;
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
 
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+        foreach (var v in targetUnits.targets)
         {
             Unit target = v;
             NumericComponent numericComponent = target.GetComponent<NumericComponent>();

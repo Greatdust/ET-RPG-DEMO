@@ -8,6 +8,7 @@ using System.Numerics;
 
 namespace ETModel
 {
+    [ObjectSystem]
     public class PhysicWorldComponentAwakeSystem : AwakeSystem<PhysicWorldComponent>
     {
         public override void Awake(PhysicWorldComponent self)

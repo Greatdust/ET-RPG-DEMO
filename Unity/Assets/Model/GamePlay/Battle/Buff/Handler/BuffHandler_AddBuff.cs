@@ -12,6 +12,11 @@ public class BuffHandler_AddBuff : BaseBuffHandler, IBuffActionWithGetInputHandl
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+
         Buff_AddBuff addBuff = (Buff_AddBuff)buffHandlerVar.data;
         addBuff.buffGroup.sourceUnitId = buffHandlerVar.source.Id;
         //添加BUFF时执行一下对应的Action
@@ -41,10 +46,7 @@ public class BuffHandler_AddBuff : BaseBuffHandler, IBuffActionWithGetInputHandl
                 buffActionWithGetInputHandler.ActionHandle(var1);
             }
         }
-
-        BufferValue_TargetUnits value_TargetUnits = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-
-        foreach (var v in value_TargetUnits.targets)
+        foreach (var v in targetUnits.targets)
         {
             BuffMgrComponent buffMgr = v.GetComponent<BuffMgrComponent>();
             buffMgr.AddBuffGroup(addBuff.buffGroup.BuffGroupId, addBuff.buffGroup);

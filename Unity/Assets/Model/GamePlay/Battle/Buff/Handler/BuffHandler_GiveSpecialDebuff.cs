@@ -12,10 +12,15 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
-        
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
+
         //if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+
+        foreach (var v in targetUnits.targets)
         {
             UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
@@ -34,9 +39,13 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
     public void Remove(BuffHandlerVar buffHandlerVar)
     {
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        {
+            return;
+        }
         //if (buff.currStackNum < buff.aimStackNum) return;//叠加层数没达到
-        BufferValue_TargetUnits buffReturnedValue_TargetUnit = (BufferValue_TargetUnits)buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)];
-        foreach (var v in buffReturnedValue_TargetUnit.targets)
+
+        foreach (var v in targetUnits.targets)
         {
             UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中

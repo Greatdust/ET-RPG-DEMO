@@ -60,6 +60,21 @@ namespace ETModel
             }
         }
 
+        public Vector3 GetInputDir()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 1000))
+            {
+                return new Vector2(hit.point.x - GetParent<Unit>().Position.x, hit.point.z - GetParent<Unit>().Position.z);
+            }
+            var forward = GetParent<Unit>().GameObject.transform.forward;
+            return new Vector3(forward.x,0, forward.z);
+        }
+
+        
+
         public void AddSkillToHotKey(string hotKeyName, string skillId)
         {
             hotKeyToSkill[hotKeyName] = new HotKeyState()

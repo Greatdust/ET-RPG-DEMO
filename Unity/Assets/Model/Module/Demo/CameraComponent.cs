@@ -98,7 +98,6 @@ namespace ETModel
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 1000, this.mapMask))
                 {
-                    Log.Debug("开始移动,目标位置" +  hit.point);
                     this.ClickPoint = hit.point;
                     commandInput.clickPos.x = this.ClickPoint.x;
                     commandInput.clickPos.y = this.ClickPoint.y;
