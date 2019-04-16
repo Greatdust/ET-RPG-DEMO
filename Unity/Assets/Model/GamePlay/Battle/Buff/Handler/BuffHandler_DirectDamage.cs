@@ -37,9 +37,18 @@ public class BuffHandler_DirectDamage : BaseBuffHandler, IBuffActionWithGetInput
             damageData.isCritical = effectData.critical;
         }
 
+        if (!SkillHelper.tempData.ContainsKey(buff.buffSignal))
+        {
+            SkillHelper.tempData[buff.buffSignal] = new Dictionary<Type, IBufferValue>();
+            SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)] = new BufferValue_AttackSuccess() { successDic = new Dictionary<long, bool>() };
+        }
+        var attackSuccess = (BufferValue_AttackSuccess)SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)];
         foreach (var v in targetUnits.targets)
         {
-            Game.EventSystem.Run(EventIdType.CalDamage, buffHandlerVar.source.Id, v.Id, damageData);
+            bool result = GameCalNumericTool.CalFinalDamage(buffHandlerVar.source.Id, v.Id, damageData);
+            attackSuccess.successDic[v.Id] = result;
+
+
         }
     }
 }

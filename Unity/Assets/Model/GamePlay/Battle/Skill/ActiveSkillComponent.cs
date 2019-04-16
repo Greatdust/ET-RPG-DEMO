@@ -42,15 +42,24 @@ public class ActiveSkillComponent : ETModel.Component
         try
         {
             if (!skillList.ContainsKey(skillId)) return;
+            if (!SkillHelper.CheckIfSkillCanUse(skillId, GetParent<Unit>())) return;
             ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
             SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
             excuteSkillParams.skillId = skillId;
             excuteSkillParams.source = GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
 
+            //TODO: 暂时先让使用技能的取消之前的行动. 后续需要根据情况判断是否处于前一个技能的硬直/引导等状态
+            cancelToken?.Cancel();
+            Game.EventSystem.Run(EventIdType.CancelPreAction,GetParent<Unit>());
+            CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+            characterStateComponent.Set(SpecialStateType.NotInControl, true);
             cancelToken = new CancellationTokenSource();
             excuteSkillParams.cancelToken = cancelToken;
             await SkillHelper.ExcuteActiveSkill(excuteSkillParams);
+            cancelToken?.Dispose();
+            cancelToken = null;
+            characterStateComponent.Set(SpecialStateType.NotInControl, false);
         }
         catch (Exception e)
         {

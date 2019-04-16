@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using PF;
+using UnityEngine;
 
 [BuffType(BuffIdType.PlayEffect)]
 public class BuffHandler_PlayEffect : BaseBuffHandler,IBuffActionWithGetInputHandler,IBuffRemoveHanlder
@@ -15,34 +16,83 @@ public class BuffHandler_PlayEffect : BaseBuffHandler,IBuffActionWithGetInputHan
     {
 #if !SERVER
         Buff_PlayEffect buff = (Buff_PlayEffect)buffHandlerVar.data;
-        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+        if (buff.lockToTarget)
         {
-            return;
+            if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
+            {
+                return;
+            }
+            foreach (var v in targetUnits.targets)
+            {
+                PlayEffect_LockToTarget(v, buff, buffHandlerVar).Coroutine();
+            }
         }
-        foreach (var v in targetUnits.targets)
+        else
         {
-
-
-            UnityEngine.GameObject go = null;
-            go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.effectObjId);//先找到缓存的特效物体
-
-            BuffHandlerVar.cacheDatas_object[(buffHandlerVar.source.Id, buff.buffSignal)] = go;
-
-            go.SetActive(false);
-
-            //在目标位置处播放,并跟随
-            go.transform.position = v.Position + buff.posOffset;
-            go.transform.parent = v.GameObject.transform;
-
-            go.SetActive(true);
+            if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos pos))
+            {
+                return;
+            }
+            PlayEffect(pos.aimPos, buff, buffHandlerVar).Coroutine();
         }
 #endif
     }
+#if !SERVER
+    public async ETVoid PlayEffect_LockToTarget(Unit target,Buff_PlayEffect buff, BuffHandlerVar buffHandlerVar)
+    {
+
+        UnityEngine.GameObject go = null;
+        go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.effectObjId);//先找到缓存的特效物体
+
+        BuffHandlerVar.cacheDatas_object[(buffHandlerVar.source.Id, buff.buffSignal)] = go;
+
+        go.SetActive(false);
+
+        //在目标位置处播放,并跟随
+        go.transform.position = target.Position + buff.posOffset.ToV3();
+        go.transform.parent = target.GameObject.transform;
+
+        go.SetActive(true);
+        if (buff.duration > 0)
+        {
+            await TimerComponent.Instance.WaitAsync(buff.duration);
+            go.transform.parent = null;
+            Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.effectObjId, go);
+        }
+    }
+
+    public async ETVoid PlayEffect(Vector3 target, Buff_PlayEffect buff, BuffHandlerVar buffHandlerVar)
+    {
+
+        UnityEngine.GameObject go = null;
+        go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.effectObjId);//先找到缓存的特效物体
+
+        BuffHandlerVar.cacheDatas_object[(buffHandlerVar.source.Id, buff.buffSignal)] = go;
+
+        go.SetActive(false);
+
+        //在目标位置处播放,并跟随
+        go.transform.position = target + buff.posOffset.ToV3();
+
+        go.SetActive(true);
+        if (buff.duration > 0)
+        {
+            await TimerComponent.Instance.WaitAsync(buff.duration);
+         
+        }
+        go.transform.parent = null;
+        Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.effectObjId, go);
+    }
+#endif
 
     public void Remove(BuffHandlerVar buffHandlerVar)
     {
 #if !SERVER
         Buff_PlayEffect buff = (Buff_PlayEffect)buffHandlerVar.data;
+        if (buff.duration > 0)
+        {
+            return;
+        }
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {
             return;

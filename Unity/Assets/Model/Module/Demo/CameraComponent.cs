@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using System;
 using UnityEngine;
 
 namespace ETModel
@@ -137,20 +138,24 @@ namespace ETModel
 
             if (Input.mousePosition.x < Width * 0.1f)
             {
-                xDelta = -1;
+                xDelta += 1;
+                yDelta -= 1;
+ 
             }
             if (Input.mousePosition.x > Width * 0.9f)
             {
-                xDelta = 1;
-
+                xDelta -= 1;
+                yDelta += 1;
             }
             if (Input.mousePosition.y < height * 0.1f)
             {
-                yDelta = -1;
+                xDelta -= 1;
+                yDelta -= 1;
             }
             if (Input.mousePosition.y > height * 0.9f)
             {
-                yDelta = 1;
+                xDelta += 1;
+                yDelta += 1;
 
             }
 
@@ -162,7 +167,10 @@ namespace ETModel
                 return;
             }
 
-            Vector3 move = new Vector3(yDelta, 0, -xDelta) * 10 * Time.deltaTime;
+
+
+
+            Vector3 move = new Vector3( yDelta , 0, xDelta )  * 10 * Time.deltaTime;
 
             playerCam.transform.position += move;
 

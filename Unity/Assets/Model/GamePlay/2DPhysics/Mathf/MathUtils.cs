@@ -27,9 +27,15 @@ namespace ETModel
         public static Rotation ToRotation2D(this UnityEngine.Quaternion quaternion)
         {
             var v3 = quaternion.eulerAngles;
-            float angle = -v3.y * Settings.Pi / 180;
+            float angle = ToAngle(v3.y);
             return new Rotation(angle);
 
+        }
+
+        public static float ToAngle(float degreeInU3D)
+        {
+            float angle = -degreeInU3D * Settings.Pi / 180;
+            return angle;
         }
 
         //只变化Y轴的角度

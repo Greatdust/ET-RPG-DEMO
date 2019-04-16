@@ -44,6 +44,9 @@
         public const string GiveMp = "GiveMp";
 
         public const string OnUnitDie = "OnUnitDie";
+
+        public const string CharacterStateUpdate = "CharacterStateUpdate";
+        public const string CancelPreAction = "CancelPreAction";
         #endregion
 
         #region 奖励相关

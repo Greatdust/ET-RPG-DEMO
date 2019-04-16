@@ -31,6 +31,7 @@ public enum BuffStackType
     刷新,
     独立
 }
+[Serializable]
 public abstract class BaseBuffData
 {
     //这个string值的意义,是为了可能需要做的,将技能数据层放到热更代码里
@@ -44,7 +45,7 @@ public abstract class BaseBuffData
     public BaseBuffData()
     {
         //需要保证每个技能的每个buffSignal 都是唯一的
-        buffSignal = "B_" + IdGenerater.GenerateId().ToString();
+        buffSignal = "B_" + GetBuffIdType() +"_"+ IdGenerater.GenerateId().ToString();
     }
 }
 

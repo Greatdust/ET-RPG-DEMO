@@ -16,14 +16,34 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
         Buff_EmitObj buff = buffHandlerVar.data as Buff_EmitObj;
-
+        UnitData emitObjData = new UnitData();
+        if (!buff.FindFriend)
+            emitObjData.groupIndex = buffHandlerVar.source.UnitData.groupIndex;
+        else
+        {
+            switch (buffHandlerVar.source.UnitData.groupIndex)
+            {
+                case GroupIndex.Default:
+                    emitObjData.groupIndex = GroupIndex.Default;
+                    break;
+                case GroupIndex.Player:
+                    emitObjData.groupIndex = GroupIndex.Monster;
+                    break;
+                case GroupIndex.Monster:
+                    emitObjData.groupIndex = GroupIndex.Player;
+                    break;
+            }
+        }
+        emitObjData.unitLayer = buff.layer;
+        emitObjData.layerMask = buff.layerMask;
+        emitObjData.unitTag = UnitTag.Default;
         if (buff.lockTarget)
         {
             if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
             {
-                Log.Error("没有找到锁定的目标");
                 return;
             }
+
             //每个单位都发射一个特效
             foreach (var v in targetUnits.targets)
             {
@@ -33,38 +53,48 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
                 UnityEngine.GameObject go = null;
                 go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.emitObjId);//先找到缓存的特效物体
                 var effectGo = go;
-                go.SetActive(false);
-                Unit unit = UnitFactory.CreateEmitObj(go, buff.layer, buff.layerMask, new CircleShape() { Radius = 0.5f });
 
+                Unit unit = UnitFactory.CreateEmitObj(go, emitObjData);
+                go.SetActive(true);
 #else
 
 #endif
-                unit.Position = unit.Position + buff.startPosOffset;
+                Vector3 dir = (v.Position - buffHandlerVar.source.Position).normalized;
+                Vector3 startPosOffset = buff.startPosOffset.ToV3();
+
+                unit.Position = buffHandlerVar.source.Position + new Vector3(dir.x * startPosOffset.x, startPosOffset.y, dir.z * startPosOffset.z);
+                Quaternion quaternion = Quaternion.LookRotation(dir, Vector3.up);
+                unit.Rotation = quaternion;
                 CollisionEvent_LockTarget(buffHandlerVar, unit, v, buff.emitSpeed).Coroutine();
             }
         }
         else
         {
-            if (!buffHandlerVar.GetBufferValue(out BufferValue_Dir dir))
+            if (!buffHandlerVar.GetBufferValue(out BufferValue_Dir buffer_dir))
             {
-                Log.Error("发射飞行道具没有传入方向!");
                 return;
             }
 #if !SERVER
             UnityEngine.GameObject go = null;
             go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.emitObjId);//先找到缓存的特效物体
             var effectGo = go;
-            go.SetActive(false);
-            Unit unit = UnitFactory.CreateEmitObj(go, buff.layer, buff.layerMask, new CircleShape() { Radius = 0.5f });
-
+            Unit unit = UnitFactory.CreateEmitObj(go, emitObjData);
+            go.SetActive(true);
 #else
 
 #endif
+            Vector3 startPosOffset = buff.startPosOffset.ToV3();
+            Vector3 dir = buffer_dir.dir.normalized;
 
-            unit.Position = unit.Position + buff.startPosOffset;
-            Quaternion quaternion = Quaternion.LookRotation(dir.dir, Vector3.up);
+            unit.Position = buffHandlerVar.source.Position + new Vector3(dir.x * startPosOffset.x, startPosOffset.y, dir.z * startPosOffset.z);
+            Log.Debug("{0}使用者位置 方向{1} 初始位置偏移量{2},计算出的最终位置{3}", buffHandlerVar.source.Position, dir, startPosOffset, unit.Position);
+            Log.Debug("飞行物体的高度{0}", unit.Position.y);
+
+
+            Quaternion quaternion = Quaternion.LookRotation(buffer_dir.dir, Vector3.up);
             unit.Rotation = quaternion;
-            Vector3 targetPos = dir.dir * buff.emitSpeed * buff.duration + unit.Position;
+            buffHandlerVar.source.Rotation = quaternion;
+            Vector3 targetPos = dir * buff.emitSpeed * buff.duration + unit.Position;
             CollisionEvent(buffHandlerVar, unit, targetPos, buff.emitSpeed).Coroutine();
         }
 
@@ -79,8 +109,10 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
 
         newVar.bufferValues = new Dictionary<Type, IBufferValue>();
         //万一提前被其他人挡了
-        newVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { result.Item1 } };
-
+        newVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { result.Item1 } }; // 产出目标单位
+        newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 }; // 产出碰撞位置
+        Vector3 dir = (result.Item2 - emitObj.Position).normalized;
+        newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0, dir.z) }; // 产出方向,为了实现击退等效果
         var go = emitObj.GameObject;
         emitObj.RemoveGameObject();
         emitObj.Dispose();
@@ -103,7 +135,8 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
         if (result.Item1 != null)
             newVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { result.Item1 } };
         newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 };
-
+        Vector3 dir = (result.Item2 - emitObj.Position).normalized;
+        newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0,dir.z) };
 
         var go = emitObj.GameObject;
         emitObj.RemoveGameObject();

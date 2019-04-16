@@ -23,7 +23,7 @@ public class UnitAudioSourceHelper : MonoBehaviour
         [Serializable]
     public struct MaterialToClip
     {
-        public Material material;
+        public Material[] materials;
         public AudioClip[] audioClips;
     }
 
@@ -41,7 +41,8 @@ public class UnitAudioSourceHelper : MonoBehaviour
         if (materialToClips == null) return;
         foreach (var v in materialToClips)
         {
-            moveAudioClips.Add(v.material, v.audioClips);
+            foreach (var mat in v.materials)
+                moveAudioClips.Add(mat, v.audioClips);
         }
     }
 

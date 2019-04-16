@@ -128,9 +128,8 @@ namespace ETModel
             }
             foreach (var v in dungeonCom.enemyTeam)
             {
-                UnitStateComponent unitStateComponent = v.GetComponent<UnitStateComponent>();
-                Property_Die property_Die = unitStateComponent.GetCurrState<Property_Die>();
-                if (!property_Die.Get())
+                CharacterStateComponent unitStateComponent = v.GetComponent<CharacterStateComponent>();
+                if (!unitStateComponent.Get(SpecialStateType.Die))
                     return false;
             }
             return true;
@@ -160,9 +159,8 @@ namespace ETModel
         {
             foreach (var v in dungeonCom.playerTeam)
             {
-                UnitStateComponent unitStateComponent = v.GetComponent<UnitStateComponent>();
-                Property_Die property_Die = unitStateComponent.GetCurrState<Property_Die>();
-                if (!property_Die.Get())
+                CharacterStateComponent unitStateComponent = v.GetComponent<CharacterStateComponent>();
+                if (!unitStateComponent.Get( SpecialStateType.Die))
                     return false;
             }
             return true;

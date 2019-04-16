@@ -9,7 +9,6 @@ namespace ETModel
 	{
 		public override void Awake(UI self, string name, GameObject gameObject)
 		{
-
 			self.Awake(name, gameObject);
 		}
 	}

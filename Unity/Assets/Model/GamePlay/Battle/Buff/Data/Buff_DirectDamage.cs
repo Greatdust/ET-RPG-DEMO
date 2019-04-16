@@ -8,7 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-
+[LabelText("固定伤害")]
+[LabelWidth(120)]
 [Serializable]
 public class Buff_DirectDamage : BaseBuffData
 {

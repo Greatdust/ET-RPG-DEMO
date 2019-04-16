@@ -116,7 +116,7 @@ public class PassiveSkillComponent : ETModel.Component
         }
     }
 
-    public void AddPassiveSkillData(string skillId)
+    public void AddSkill(string skillId)
     {
         if (!skillList.ContainsKey(skillId))
         {

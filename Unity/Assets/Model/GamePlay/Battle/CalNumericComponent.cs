@@ -26,7 +26,7 @@ namespace ETModel
     //客户端留一份,预备可能开发的单机模式 . 如果是有服务器的情况下,这个组件应该只有服务器用得到
     //这个组件用来结算 玩家 接收伤害/接收恢复效果 ,自身持续恢复效果
     //注意是结算!!!!!!!!!! 不是处理!!!!!!
-    public class CalNumericComponent : ETModel.Component
+    public class CalNumericComponent : Component
     {
         private const long restoreTimeSpan = 1000;//自动回复效果间隔,正式开发这个值请走配置文档
 
@@ -51,8 +51,9 @@ namespace ETModel
             {
                 total += v.damageValue;
             }
-            this.Entity.GetComponent<AnimatorComponent>().SetTrigger(CharacterAnim.Hit); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
-            
+           // this.Entity.GetComponent<AnimatorComponent>().SetTrigger(CharacterAnim.Hit); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
+
+            Log.Debug("受到伤害  " + (-total));
             Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, GetParent<Unit>().Id, -(float)total); //受到伤害,所以是负数
         }
 
@@ -60,8 +61,7 @@ namespace ETModel
         {
             this.Entity.GetComponent<AnimatorComponent>().SetBoolValue(CharacterAnim.Dead, true);
             await TimerComponent.Instance.WaitAsync(2000); // 如果允许角色原地复活.这里就要加入取消了
-            if (GetParent<Unit>().UnitType == UnitType.Monster)
-                GetParent<Unit>().Dispose();
+           //TODO: 执行清理或者其他操作
         }
 
         public void GetHP(int value)
@@ -82,13 +82,13 @@ namespace ETModel
                 timer.timing += timer.interval;
                 NumericComponent numericComponent = this.Entity.GetComponent<NumericComponent>();
 
-                UnitStateComponent unitStateComponent = this.Entity.GetComponent<UnitStateComponent>();
-
-                Property_InBattleState property_InBattleState = unitStateComponent.GetCurrState<Property_InBattleState>();
+                CharacterStateComponent unitStateComponent = this.Entity.GetComponent<CharacterStateComponent>();
+                if (!unitStateComponent.Get(SpecialStateType.Die))
+                    return;
                 if (numericComponent.GetAsFloat(NumericType.HP_RemainPct) < 1.0f)
                 {
 
-                    if (property_InBattleState.Get())
+                    if (unitStateComponent.Get( SpecialStateType.InBattle))
                     {
                         GetHP(numericComponent.GetAsInt(NumericType.HP_Restore));
                     }
@@ -101,7 +101,7 @@ namespace ETModel
                 if (numericComponent.GetAsFloat(NumericType.MP_RemainPct) < 1.0f)
                 {
 
-                    if (property_InBattleState.Get())
+                    if (unitStateComponent.Get(SpecialStateType.InBattle))
                     {
                         GetMP(numericComponent.GetAsInt(NumericType.MP_Restore));
                     }

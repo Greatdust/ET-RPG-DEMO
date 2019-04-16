@@ -22,7 +22,6 @@ namespace ETModel
             Game.Scene.AddComponent<SkillConfigComponent>();
             Game.Scene.AddComponent<EffectCacheComponent>();
             Game.Scene.AddComponent<AudioCacheComponent>();
-
         }
     }
 

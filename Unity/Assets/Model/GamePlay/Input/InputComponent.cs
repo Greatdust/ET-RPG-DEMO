@@ -16,11 +16,11 @@ namespace ETModel
     }
 
     [ObjectSystem]
-    public class InputComponentUpdateSystem : FixedUpdateSystem<InputComponent>
+    public class InputComponentUpdateSystem : UpdateSystem<InputComponent>
     {
-        public override void FixedUpdate(InputComponent self)
+        public override void Update(InputComponent self)
         {
-            self.FixedUpdate();
+            self.Update();
         }
     }
 
@@ -44,7 +44,7 @@ namespace ETModel
             ActiveSkillComponent = parent.GetComponent<ActiveSkillComponent>();
         }
 
-        public void FixedUpdate()
+        public void Update()
         {
             if (Input.anyKeyDown)
             {
@@ -65,15 +65,61 @@ namespace ETModel
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 1000))
+            if (Physics.Raycast(ray, out hit, 100, Physics.AllLayers))
             {
-                return new Vector2(hit.point.x - GetParent<Unit>().Position.x, hit.point.z - GetParent<Unit>().Position.z);
+                return new Vector3(hit.point.x - GetParent<Unit>().Position.x,0, hit.point.z - GetParent<Unit>().Position.z);
             }
             var forward = GetParent<Unit>().GameObject.transform.forward;
             return new Vector3(forward.x,0, forward.z);
         }
 
-        
+        public bool GetInputPos(out Vector3 pos)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100, Physics.AllLayers))
+            {
+                pos = hit.point;
+                return true;
+            }
+            pos = Vector3.zero;
+            return false;
+        }
+
+        public bool GetInputTarget(out Unit unit, bool findFriend, GroupIndex groupIndex)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, LayerMask.GetMask("Character")))
+            {
+                UnitGameObjectHelper unitGameObject = hit.collider.gameObject.GetComponent<UnitGameObjectHelper>();
+                Log.Debug("寻找目标");
+                if (unitGameObject != null)
+                {
+
+                    Unit u = UnitComponent.Instance.Get(unitGameObject.UnitId);
+                    if (findFriend)
+                    {
+                        if (u.UnitData.groupIndex == groupIndex)
+                        {
+                            unit = u;
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (u.UnitData.groupIndex != groupIndex)
+                        {
+                            unit = u;
+                            return true;
+                        }
+                    }
+                }
+            }
+            unit = null;
+            return false;
+        }
+
 
         public void AddSkillToHotKey(string hotKeyName, string skillId)
         {

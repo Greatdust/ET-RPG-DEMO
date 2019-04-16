@@ -1,4 +1,5 @@
 ﻿using ETModel;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+[LabelText("给予特殊DEBUFF")]
+[LabelWidth(150)]
 [Serializable]
 public class Buff_GiveSpecialDebuff : BaseBuffData
 {

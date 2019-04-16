@@ -11,6 +11,8 @@ using UnityEngine;
 /// <summary>
 /// 发射飞行道具
 /// </summary>
+[LabelText("发射飞行道具")]
+[LabelWidth(150)]
 [Serializable]
 public class Buff_EmitObj : BaseBuffData
 {
@@ -26,7 +28,7 @@ public class Buff_EmitObj : BaseBuffData
     public bool reverseDir;//下面所有的位置和方向设定,都是基于目标的位置和前方向的,即面对使用者的方向
     [LabelText("发射位置偏移")]
     [LabelWidth(150)]
-    public Vector3 startPosOffset;//相对于使用者的位置,等于在使用者的位置和前方向上加上这个V3
+    public Vector3Serializer startPosOffset;//相对于使用者的位置,等于在使用者的位置和前方向上加上这个V3
     [LabelText("飞行速度")]
     [LabelWidth(150)]
     public float emitSpeed;//发射速度
@@ -38,6 +40,9 @@ public class Buff_EmitObj : BaseBuffData
     [LabelText("碰撞遮罩")]
     [LabelWidth(150)]
     public UnitLayerMask layerMask;
+    [LabelText("寻找同类")]
+    [LabelWidth(150)]
+    public bool FindFriend;
 
 
     [LabelText("最大生命周期")]

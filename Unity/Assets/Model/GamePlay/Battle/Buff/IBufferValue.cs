@@ -1,4 +1,5 @@
 ﻿using ETModel;
+using System.Collections.Generic;
 using UnityEngine;
 
 //执行BUFF时,获得的返回值,用以接下来执行BUFF时的输入
@@ -42,6 +43,12 @@ public struct BufferValue_DamageAddPct : IBufferValue
 public struct BufferValue_Crit : IBufferValue
 {
     public bool isCrit;
+}
+
+//未命中
+public struct BufferValue_AttackSuccess : IBufferValue
+{
+    public Dictionary<long, bool> successDic;
 }
 
 

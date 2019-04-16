@@ -7,15 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-[Event(EventIdType.CalDamage)]
-public class CalFinalDamageEvent : AEvent<long, long, GameCalNumericTool.DamageData>
-{
-    public override void Run(long a, long b, GameCalNumericTool.DamageData c)
-    {
-        GameCalNumericTool.CalFinalDamage(a, b, c);
-    }
-}
-
 public static class GameCalNumericTool
 {
     public enum DamageType
@@ -47,20 +38,18 @@ public static class GameCalNumericTool
         return unitTime;
     }
 
-    public static void CalFinalDamage(long sourceUnitId,long destUnitId,DamageData skillDamageValue)
+    public static bool CalFinalDamage(long sourceUnitId,long destUnitId,DamageData skillDamageValue)
     {
         try
         {
-            UnitStateComponent unitState = UnitComponent.Instance.Get(destUnitId).GetComponent<UnitStateComponent>();
-            Property_Die property_Die = unitState.GetCurrState<Property_Die>();
-            if (property_Die.Get()) return;
-            Property_Invicible property_Invicible = unitState.GetCurrState<Property_Invicible>();
-            if (property_Invicible.Get())
+            CharacterStateComponent unitState = UnitComponent.Instance.Get(destUnitId).GetComponent<CharacterStateComponent>();
+            if (unitState.Get( SpecialStateType.Die)) return false;
+
+            if (unitState.Get( SpecialStateType.Invincible))
             {
                 //TODO: 提示无敌状态
-                return;
+                return false;
             }
-
             NumericComponent sourceUnitNumericCom = UnitComponent.Instance.Get(sourceUnitId).GetComponent<NumericComponent>();
             NumericComponent destUnitNumericCom = UnitComponent.Instance.Get(destUnitId).GetComponent<NumericComponent>();
             int rateCharge = 0;
@@ -70,7 +59,8 @@ public static class GameCalNumericTool
             if (rateCharge / 100.0f > hitRate)
             {
                 Game.EventSystem.Run(EventIdType.AttackMissing, sourceUnitId, destUnitId);
-                return;
+                Log.Debug("Miss!  命中率 "+ hitRate);
+                return false;
             }
 
             //暴击判定
@@ -100,9 +90,7 @@ public static class GameCalNumericTool
                 resistType = NumericType.MagicResist;
 
             }
-
-            skillDamageValue.damageValue = Mathf.RoundToInt((skillDamageValue.damageValue )* (1 - 100 / (destUnitNumericCom.GetAsFloat(resistType) + 100)));
-
+            skillDamageValue.damageValue = Mathf.RoundToInt(skillDamageValue.damageValue * ( 100.0f / (destUnitNumericCom.GetAsInt(resistType) + 100.0f)));
 
             //预防可能要考虑什么白字红字,黑字粉字等乱七八糟的情况,所以专门用一个List
             DamageData[] array = new DamageData[1];
@@ -113,8 +101,10 @@ public static class GameCalNumericTool
             for (int i = 0; i < array.Length; i++)
             {
                 var damage = array[i];
-                damage.damageValue = Mathf.RoundToInt(array[i].damageValue *
-                    (1 + sourceUnitNumericCom.GetAsFloat(NumericType.FinalDamage_AddPct) - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct)));
+
+                float finalDamagePct = 1 + sourceUnitNumericCom.GetAsFloat(NumericType.FinalDamage_AddPct) - destUnitNumericCom.GetAsFloat(NumericType.FinalDamage_ReducePct);
+
+                damage.damageValue = Mathf.RoundToInt(array[i].damageValue * finalDamagePct);
                 //限定最小伤害0
                 damage.damageValue = Mathf.Clamp(array[i].damageValue, 0, int.MaxValue);
                 array[i] = damage;
@@ -131,10 +121,12 @@ public static class GameCalNumericTool
             xiQu = sourceUnitNumericCom.GetAsFloat(NumericType.MP_LeechRate);
             if (xiQu > 0)
                 Game.EventSystem.Run(EventIdType.GiveMp, sourceUnitId, Mathf.RoundToInt(skillDamageValue.damageValue * xiQu));
+            return true;
         }
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
+            return false;
         }
     }
 

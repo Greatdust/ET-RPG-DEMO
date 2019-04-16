@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5089978193667061610}
   - component: {fileID: 5698881696183180209}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Skill_bingnv_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,4 +43,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 502d8cafd6a5a0447ab1db9a24cdcb10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: []
+  data:
+  - key: attack1
+    gameObject: {fileID: 141062, guid: 570205554ef4cbb458fcecaad6fb167f, type: 3}
+  - key: attack1_hit
+    gameObject: {fileID: 109862, guid: 2837780634ecf6643bf93280de94c9c4, type: 3}
+  - key: attack1_music
+    gameObject: {fileID: 8300000, guid: 76ade8a13da115c47a56e725a2f2bb83, type: 3}
+  - key: hit
+    gameObject: {fileID: 8300000, guid: 61c38df14ec6271429ce178e99b320e2, type: 3}

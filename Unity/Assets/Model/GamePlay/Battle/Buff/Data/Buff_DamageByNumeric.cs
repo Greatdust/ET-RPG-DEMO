@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-
+[LabelText("百分比伤害")]
+[LabelWidth(120)]
 [Serializable]
 public class Buff_DamageByNumeric :   BaseBuffData
 {

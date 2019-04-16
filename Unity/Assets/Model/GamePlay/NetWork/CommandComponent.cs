@@ -100,6 +100,11 @@ namespace ETModel
 
         public void CollectCommandInput(ICommandInput input)
         {
+            CharacterStateComponent property_CharacterState = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+            if (property_CharacterState.Get(SpecialStateType.CantDoAction) || property_CharacterState.Get(SpecialStateType.NotInControl))
+            {
+                return;
+            }
             collectedNewInput = true;
             Command command = CommandGCHelper.GetCommand();
             command.commandInput = input;

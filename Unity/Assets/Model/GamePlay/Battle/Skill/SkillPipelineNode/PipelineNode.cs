@@ -36,7 +36,8 @@ public abstract class BasePipelineData
     public BasePipelineData()
     {
         //需要保证每个技能的每个pipelineSignal 都是唯一的
-        pipelineSignal = "P_" + IdGenerater.GenerateId().ToString();
+
+        pipelineSignal = "P_" + GetTriggerType().ToString()+"_"+ IdGenerater.GenerateId().ToString();
     }
 }
 
@@ -46,6 +47,7 @@ public abstract class BasePipelineData
 public abstract class PipelineDataWithBuff : BasePipelineData
 {
     [GUIColor(142 / 255.0f, 212 / 255.0f, 243/255.0f, 1f)]
+    [ListDrawerSettings(ShowItemCount =true)]
     public List<BuffInSkill> buffs = new List<BuffInSkill>();
 
 }
@@ -142,6 +144,10 @@ public class Pipeline_WaitForInput : BasePipelineData
     //如果是引导类技能,那么这个就是需要引导的时间
 
     public float value;
+
+    [LabelText("是否寻找队友")]
+    [LabelWidth(120)]
+    public bool findFriend; 
 
     public override Pipeline_TriggerType GetTriggerType()
     {

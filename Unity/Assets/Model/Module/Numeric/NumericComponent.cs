@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ETModel
 {
@@ -14,7 +15,7 @@ namespace ETModel
 
 	public class NumericComponent: Component
 	{
-		public readonly Dictionary<int, int> NumericDic = new Dictionary<int, int>();
+		public readonly Dictionary<int, float> NumericDic = new Dictionary<int, float>();
 
 		public void Awake(int typeId)
 		{
@@ -49,17 +50,17 @@ namespace ETModel
 
 		public float GetAsFloat(NumericType numericType)
 		{
-			return (float)GetByKey((int)numericType) / 10000;
+			return (float)GetByKey((int)numericType);
 		}
 
 		public int GetAsInt(NumericType numericType)
 		{
-			return GetByKey((int)numericType);
+			return Mathf.RoundToInt(GetByKey((int)numericType));
 		}
 
 		public void Set(NumericType nt, float value)
 		{
-			this[nt] = (int) (value * 10000);
+			this[nt] = value;
 		}
 
 		public void Set(NumericType nt, int value)
@@ -67,7 +68,7 @@ namespace ETModel
 			this[nt] = value;
 		}
 
-		public int this[NumericType numericType]
+		public float this[NumericType numericType]
 		{
 			get
 			{
@@ -75,11 +76,7 @@ namespace ETModel
 			}
 			set
 			{
-				int v = this.GetByKey((int) numericType);
-				if (v == value)
-				{
-					return;
-				}
+				float v = this.GetByKey((int) numericType);
 
 				NumericDic[(int)numericType] = value;
 
@@ -87,9 +84,9 @@ namespace ETModel
 			}
 		}
 
-		private int GetByKey(int key)
+		private float GetByKey(int key)
 		{
-			int value = 0;
+			float value = 0;
 			this.NumericDic.TryGetValue(key, out value);
 			return value;
 		}
@@ -106,20 +103,20 @@ namespace ETModel
 			int pct = final * 10 + 3;
 
 
-			// 一个数值可能会多种情况影响，比如速度,加个buff可能增加速度绝对值100，也有些buff增加10%速度，所以一个值可以由5个值进行控制其最终结果
-			// final = (((base + add) * (100 + pct) / 100) + finalAdd) * (100 + finalPct) / 100;
-			this.NumericDic[final] = ((this.GetByKey(bas) + this.GetByKey(add)) * (100 + this.GetByKey(pct))) / 100;
-			Game.EventSystem.Run(EventIdType.NumericUpdated, this.Entity.Id, (NumericType) final, final);
+            // 一个数值可能会多种情况影响，比如速度,加个buff可能增加速度绝对值100，也有些buff增加10%速度，所以一个值可以由5个值进行控制其最终结果
+            // final = (((base + add) * (100 + pct) / 100) + finalAdd) * (100 + finalPct) / 100;
+            this.NumericDic[final] = ((this.GetByKey(bas) + this.GetByKey(add)) * (1 + this.GetByKey(pct)));
+			Game.EventSystem.Run(EventIdType.NumericUpdated, this.Entity.Id, (NumericType) final, this.NumericDic[final]);
 
             int reduceValue = final * 10 + 4;
-            if (!Enum.IsDefined(typeof(NumericType), reduceValue)) return;
+            //if (!Enum.TryParse<NumericType>(reduceValue.IntToString(),out var result)) return;
 
-            int reducePct = final * 10 + 5;
-            int remainPct = final * 10 + 6;
+            //int reducePct = final * 10 + 5;
+            //int remainPct = final * 10 + 6;
 
-            Set((NumericType)reduceValue, this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1)));
-            Set((NumericType)reducePct, this.GetAsFloat((NumericType)reduceValue)/this.GetAsFloat((NumericType)final));
-            Set((NumericType)remainPct, 1 - this.GetAsFloat((NumericType)reducePct));
+            //Set((NumericType)reduceValue, this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1)));
+            //Set((NumericType)reducePct, this.GetAsFloat((NumericType)reduceValue)/this.GetAsFloat((NumericType)final));
+            //Set((NumericType)remainPct, 1 - this.GetAsFloat((NumericType)reducePct));
 
         }
     }

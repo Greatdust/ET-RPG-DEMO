@@ -32,7 +32,7 @@ public class BuffHandler_Move : BaseBuffHandler, IBuffActionWithGetInputHandler
 
                 if (buff_Move.resetDir)
                     v.Rotation = Quaternion.LookRotation(bufferValue_Pos.aimPos - v.Position);
-                Vector3 aimPos = bufferValue_Pos.aimPos - buff_Move.targetPosOffset * (bufferValue_Pos.aimPos - v.Position);
+                Vector3 aimPos = bufferValue_Pos.aimPos;
 
                 //TODO: 下面的移动都不严谨, 要做位移的合法性检查
 

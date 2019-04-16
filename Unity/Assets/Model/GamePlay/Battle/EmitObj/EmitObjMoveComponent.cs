@@ -92,9 +92,9 @@ namespace ETModel
 
 
 
-        private void OnCollisionEnterHandler(Unit obj)
+        private void OnCollisionEnterHandler(Unit obj,Vector3 pos)
         {
-            OnEnd((obj, obj.Position));
+            OnEnd((obj, pos));
         }
 
         public void FixedUpdate()
@@ -132,10 +132,11 @@ namespace ETModel
 
         void OnEnd((Unit, Vector3) unit)
         {
+            GetParent<Unit>().OnCollisionEnterHandler -= OnCollisionEnterHandler;
             var t = moveTCS;
             moveTCS = null;
+
             t.SetResult(unit);
-            GetParent<Unit>().OnCollisionEnterHandler -= OnCollisionEnterHandler;
         }
     }
 

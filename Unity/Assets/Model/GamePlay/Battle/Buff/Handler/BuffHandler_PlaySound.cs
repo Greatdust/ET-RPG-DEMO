@@ -22,8 +22,11 @@ public class BuffHandler_PlaySound : BaseBuffHandler, IBuffActionWithGetInputHan
         AudioClip audioClip = Game.Scene.GetComponent<AudioCacheComponent>().Get(buff_PlaySound.audioClipName);
         foreach (var v in targetUnits.targets)
         {
-
-
+         
+            if (buffHandlerVar.GetBufferValue(out BufferValue_AttackSuccess attackSuccess))
+            {
+                if (!attackSuccess.successDic[v.Id]) continue;
+            }
             AudioComponent audioComponent = v.GetComponent<AudioComponent>();
 
 

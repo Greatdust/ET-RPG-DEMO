@@ -73,135 +73,40 @@ namespace ETModel
 
     }
 
-    public class Property_InBattleState : IProperty<bool>
+    public class Property_CharacterState : IProperty<Dictionary<int, bool>>
     {
-        public bool value;
+        public CharacterStateComponent characterState;
 
-        public bool Get()
+        public Dictionary<int, bool> Get()
         {
-            return value;
+            return characterState.StateDic;
         }
 
+        public Property_CharacterState(Unit unit)
+        {
+            characterState = unit.GetComponent<CharacterStateComponent>();
+        }
 
         public IProperty GetCopy()
         {
-            return new Property_InBattleState()
-            {
-                value = this.value
-            };
-
+            //角色的特殊状态不预测. 所以直接引用相同的
+            return new Property_CharacterState(characterState.GetParent<Unit>());
         }
 
-        public void Set(bool t)
+        public void Set(Dictionary<int, bool> t)
         {
-            value = t;
+            throw new NotImplementedException();
         }
 
-    }
-
-    public class Property_Die : IProperty<bool>
-    {
-        public bool value;
-
-        public bool Get()
+        public void Set(SpecialStateType specialStateType, bool value)
         {
-            return value;
+            characterState.Set(specialStateType, value);
         }
 
-
-        public IProperty GetCopy()
+        public bool Get(SpecialStateType specialStateType)
         {
-            return new Property_InBattleState()
-            {
-                value = this.value
-            };
-
+            return characterState.Get(specialStateType);
         }
-
-        public void Set(bool t)
-        {
-            value = t;
-        }
-
-    }
-
-    public class Property_UnStoppable : IProperty<bool>
-    {
-        public bool value;
-
-        public bool Get()
-        {
-            return value;
-        }
-
-
-        public IProperty GetCopy()
-        {
-            return new Property_InBattleState()
-            {
-                value = this.value
-            };
-
-        }
-
-        public void Set(bool t)
-        {
-            value = t;
-        }
-
-    }
-
-
-    public class Property_NotInControl : IProperty<bool>
-    {
-        public bool value;
-
-        public bool Get()
-        {
-            return value;
-        }
-
-
-        public IProperty GetCopy()
-        {
-            return new Property_InBattleState()
-            {
-                value = this.value
-            };
-
-        }
-
-        public void Set(bool t)
-        {
-            value = t;
-        }
-
-    }
-
-    public class Property_Invicible : IProperty<bool>
-    {
-        public bool value;
-
-        public bool Get()
-        {
-            return value;
-        }
-
-
-        public IProperty GetCopy()
-        {
-            return new Property_InBattleState()
-            {
-                value = this.value
-            };
-
-        }
-
-        public void Set(bool t)
-        {
-            value = t;
-        }
-
     }
 
 

@@ -8,7 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-
+[LabelText("播放角色动画")]
+[LabelWidth(150)]
 [Serializable]
 public class Buff_PlayAnim : BaseBuffData
 {

@@ -17,6 +17,14 @@
 
 		private static ushort value;
 
+        public static ushort Value
+        {
+            get
+            {
+                return ++value;
+            }
+        }
+
 		public static long GenerateId()
 		{
 			long time = TimeHelper.ClientNowSeconds();

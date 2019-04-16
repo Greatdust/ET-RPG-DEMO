@@ -79,25 +79,52 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
                     return null;
                 }
                 pos = bufferValue_Pos.aimPos.ToVector2();
+                Log.Debug("检测位置  " + pos);
                 transform = new Transform(in pos, 0);
-                var p = transform.Position + MathUtils.Mul(transform.Rotation, transform.Position);
+                var p = MathUtils.Mul(transform.Rotation, transform.Position);
                 float raidus = buff_RangeDetection.shapeValue.x;
                 ab.LowerBound.Set(p.X - raidus, p.Y - raidus);
                 ab.UpperBound.Set(p.X + raidus, p.Y + raidus);
 
                 break;
         }
+        Log.Debug(ab.LowerBound.ToString() + ab.UpperBound.ToString());
         PhysicWorldComponent.Instance.world.QueryAABB(polyshapeQueryCallback, ab);
 
         if (polyshapeQueryCallback.units == null || polyshapeQueryCallback.units.Count == 0)
         {
+            Log.Debug("没有检测到任何单位");
             return null;
         }
+
+        for (int i = polyshapeQueryCallback.units.Count - 1; i >= 0; i--)
+        {
+            //默认层(一般是特效,墙壁等)
+            if (polyshapeQueryCallback.units[i].UnitData.groupIndex ==  GroupIndex.Default)
+            {
+                polyshapeQueryCallback.units.RemoveAt(i);
+            }
+            if (buff_RangeDetection.FindFriend)
+            {
+                if (polyshapeQueryCallback.units[i].UnitData.groupIndex != buffHandlerVar.source.UnitData.groupIndex)
+                {
+                    polyshapeQueryCallback.units.RemoveAt(i);
+                }
+            }
+            else
+            {
+                if (polyshapeQueryCallback.units[i].UnitData.groupIndex == buffHandlerVar.source.UnitData.groupIndex)
+                {
+                    polyshapeQueryCallback.units.RemoveAt(i);
+                }
+            }
+        }
+
         //拿到了所有检测到的Unit
         bufferValue_TargetUnits.targets = polyshapeQueryCallback.units.ToArray();
         
 
-        Log.Debug(polyshapeQueryCallback.units.ListToString());
+        Log.Debug("范围检测到了  " + bufferValue_TargetUnits.targets.Length+ "  个目标");
         return new IBufferValue[] { bufferValue_TargetUnits };
     }
 }

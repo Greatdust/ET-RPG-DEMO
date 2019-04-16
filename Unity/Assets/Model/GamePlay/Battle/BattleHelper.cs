@@ -41,6 +41,18 @@ public static class BattleEventHandler
         }
     }
 
+    public static void LoadAssets(Unit unit)
+    {
+        EffectCacheComponent effectCacheComponent = Game.Scene.GetComponent<EffectCacheComponent>();
+        AudioCacheComponent audioCacheComponent = Game.Scene.GetComponent<AudioCacheComponent>();
+        //加载和缓存特效资源
+
+        ActiveSkillComponent skillComponent = unit.GetComponent<ActiveSkillComponent>();
+        AddEffectCache(effectCacheComponent, audioCacheComponent, skillComponent);
+        //TODO: 添加被动技能的
+
+    }
+
     static void AddEffectCache(EffectCacheComponent effectCacheComponent,AudioCacheComponent audioCacheComponent, ActiveSkillComponent skillComponent)
     {
         foreach (var skill in skillComponent.skillList)
@@ -49,7 +61,7 @@ public static class BattleEventHandler
             Game.Scene.GetComponent<ResourcesComponent>().LoadBundle(skillData.skillAssetsABName.StringToAB());
             GameObject skillAssetsPrefabGo = Game.Scene.GetComponent<ResourcesComponent>().GetAsset(skillData.skillAssetsABName.StringToAB(), skillData.skillAssetsABName) as GameObject;
 
-            var buffList = skillData.GetAllBuffs(BuffIdType.EmitObj, BuffIdType.HitEffect, BuffIdType.PlaySound,BuffIdType.AddBuff);
+            var buffList = skillData.GetAllBuffs(BuffIdType.EmitObj, BuffIdType.HitEffect, BuffIdType.PlayEffect, BuffIdType.PlaySound,BuffIdType.AddBuff);
             if (buffList.Count > 0)
             {
                 //循环检测每一个Buff,看是否是播放特效的,如果是,那就找到对应的Buff 缓存起来
@@ -88,14 +100,21 @@ public static class BattleEventHandler
 
 
         }
+        if (buff.GetBuffIdType() == BuffIdType.PlayEffect)
+        {
+            Buff_PlayEffect buff_PlayEffect = (Buff_PlayEffect)buff;
+            if (!string.IsNullOrEmpty(buff_PlayEffect.effectObjId) && !effectCacheComponent.Contains(buff_PlayEffect.effectObjId))
+                effectCacheComponent.Add(buff_PlayEffect.effectObjId, skillAssetsPrefabGo.Get<GameObject>(buff_PlayEffect.effectObjId));
+
+
+        }
     }
     static void AddAudioCache(AudioCacheComponent audioCacheComponent, BaseBuffData buff, GameObject skillAssetsPrefabGo)
     {
         if (buff.GetBuffIdType() == BuffIdType.PlaySound)
         {
             Buff_PlaySound buff_PlaySound = (Buff_PlaySound)buff;
-
-            if (!string.IsNullOrEmpty(buff_PlaySound.audioClipName) && audioCacheComponent.Get(buff_PlaySound.audioClipName) == null)
+            Log.Debug("添加音效" + buff_PlaySound.audioClipName);
                 audioCacheComponent.Add(buff_PlaySound.audioClipName, skillAssetsPrefabGo.Get<AudioClip>(buff_PlaySound.audioClipName));
 
         }

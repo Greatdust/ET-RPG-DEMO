@@ -18,6 +18,7 @@ public static class BuffIdType
     public const string AddBuff = "添加BUFF";
     public const string Move = "移动";
     public const string MoveBack = "返回";
+    public const string PushBack = "击退";
     public const string PlayAnim = "播放角色动画";
     public const string SkillEnd = "技能结束";
     public const string GiveSpecialDebuff = "给予特殊效果";

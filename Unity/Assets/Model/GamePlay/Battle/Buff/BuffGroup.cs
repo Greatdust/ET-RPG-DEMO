@@ -30,6 +30,7 @@ public struct BuffGroup
     [LabelWidth(150)]
     public float duration ;
 
+    [ListDrawerSettings(ShowItemCount = true)]
     public List<BaseBuffData> buffList;
 
     public long BuffGroupId

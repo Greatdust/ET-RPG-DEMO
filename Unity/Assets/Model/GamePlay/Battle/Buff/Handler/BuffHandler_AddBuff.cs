@@ -48,6 +48,11 @@ public class BuffHandler_AddBuff : BaseBuffHandler, IBuffActionWithGetInputHandl
         }
         foreach (var v in targetUnits.targets)
         {
+            //未造成伤害就不给予效果
+            if (buffHandlerVar.GetBufferValue(out BufferValue_AttackSuccess attackSuccess))
+            {
+                if (!attackSuccess.successDic[v.Id]) continue;
+            }
             BuffMgrComponent buffMgr = v.GetComponent<BuffMgrComponent>();
             buffMgr.AddBuffGroup(addBuff.buffGroup.BuffGroupId, addBuff.buffGroup);
         }

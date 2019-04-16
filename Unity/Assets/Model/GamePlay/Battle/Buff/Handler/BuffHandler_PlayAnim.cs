@@ -40,7 +40,7 @@ public class BuffHandler_PlayAnim : BaseBuffHandler,IBuffActionWithGetInputHandl
             
             float speed = buffHandlerVar.playSpeed * buff_PlayAnim.playSpeed;
 
-            animatorComponent.SetAnimatorSpeed(speed);
+           // animatorComponent.SetAnimatorSpeed(speed);
         }
 
 #endif

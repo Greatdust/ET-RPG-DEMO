@@ -31,7 +31,7 @@ public class AudioComponent : ETModel.Component
         if (unitAudioSourceHelper.emoteAS != null)
             unitAudioSourceHelper.emoteAS.outputAudioMixerGroup = audioPlayerMgr.characterSound;
         if (unitAudioSourceHelper.moveAS != null)
-            unitAudioSourceHelper.moveAS.outputAudioMixerGroup = audioPlayerMgr.soundEffect;
+            unitAudioSourceHelper.moveAS.outputAudioMixerGroup = audioPlayerMgr.characterSound;
     }
 
 
@@ -39,7 +39,7 @@ public class AudioComponent : ETModel.Component
     {
         if (unitAudioSourceHelper.attackAS != null)
         {
-            unitAudioSourceHelper.attackAS.pitch = pitch;
+            //unitAudioSourceHelper.attackAS.pitch = pitch;
             PlayAudio(unitAudioSourceHelper.attackAS, audioClip, duration).Coroutine();
         }
     }

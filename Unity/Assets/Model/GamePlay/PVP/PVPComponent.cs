@@ -26,9 +26,8 @@ namespace ETModel
             {
                 foreach (var v in red)
                 {
-                    UnitStateComponent unitStateComponent = v.GetComponent<UnitStateComponent>();
-                    Property_Die property_Die = unitStateComponent.GetCurrState<Property_Die>();
-                    if (!property_Die.Get())
+                    CharacterStateComponent unitStateComponent = v.GetComponent<CharacterStateComponent>();
+                    if (!unitStateComponent.Get(SpecialStateType.Die))
                     {
                         return;
                     }
@@ -42,9 +41,8 @@ namespace ETModel
             {
                 foreach (var v in blue)
                 {
-                    UnitStateComponent unitStateComponent = v.GetComponent<UnitStateComponent>();
-                    Property_Die property_Die = unitStateComponent.GetCurrState<Property_Die>();
-                    if (!property_Die.Get())
+                    CharacterStateComponent unitStateComponent = v.GetComponent<CharacterStateComponent>();
+                    if (!unitStateComponent.Get(SpecialStateType.Die))
                     {
                         return;
                     }

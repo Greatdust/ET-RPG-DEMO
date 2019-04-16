@@ -22,14 +22,15 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
 
         foreach (var v in targetUnits.targets)
         {
-            UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
+            CharacterStateComponent unitState = v.GetComponent<CharacterStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
                 case RestrictionType.击退:
+                    unitState.Set(SpecialStateType.NotInControl, true);
+                    break;
                 case RestrictionType.眩晕:
-                    Property_NotInControl property_NotInControl = unitState.GetCurrState<Property_NotInControl>();
-                    property_NotInControl.Set(true);
+                    unitState.Set(SpecialStateType.CantDoAction,true);
                     break;
             }
         }
@@ -47,14 +48,15 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
 
         foreach (var v in targetUnits.targets)
         {
-            UnitStateComponent unitState = v.GetComponent<UnitStateComponent>();
+            CharacterStateComponent unitState = v.GetComponent<CharacterStateComponent>();
             //从一个特殊效果配置中,拿到对应效果的BuffGroup,添加到角色的BuffMgrComponent中
             switch (buff.restrictionType)
             {
                 case RestrictionType.击退:
+                    unitState.Set(SpecialStateType.NotInControl, false);
+                    break;
                 case RestrictionType.眩晕:
-                    Property_NotInControl property_NotInControl = unitState.GetCurrState<Property_NotInControl>();
-                    property_NotInControl.Set(false);
+                    unitState.Set(SpecialStateType.CantDoAction, false);
                     break;
             }
         }

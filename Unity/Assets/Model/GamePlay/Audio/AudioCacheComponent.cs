@@ -33,6 +33,11 @@ public class AudioCacheComponent : ETModel.Component
 
     public void Add(string id, AudioClip clip)
     {
+        if (clip == null)
+        {
+            Log.Error("无法获取音频+"+ id);
+        }
+        if (string.IsNullOrEmpty(id)) return ;
         pool[id] = clip;
     }
 

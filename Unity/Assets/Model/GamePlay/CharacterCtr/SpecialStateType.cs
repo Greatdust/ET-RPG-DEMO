@@ -9,12 +9,17 @@ namespace ETModel
 {
     public enum SpecialStateType
     {
-        [LabelText("无法被打断")]
+        InBattle,
+
         UnStoppable,//无法被打断的状态,比如霸体
-        [LabelText("玩家无法控制")]
+
         NotInControl,//玩家无法操作的状态
-        [LabelText("无敌")]
-        Invincible,
+
+        Invincible, // 无敌
+
+        CantDoAction, // 无法做任何行动
+
+        Die // 死亡
         //后续什么沉默或者其他的状态,都可以在这里加. DEMO的话,这几个足够了
     }
 }

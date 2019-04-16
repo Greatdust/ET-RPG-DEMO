@@ -11,7 +11,7 @@ using UnityEngine;
 /// <summary>
 /// 一般是Buff携带特效
 /// </summary>
-[LabelText("伴随特效")]
+[LabelText("播放特效")]
 [LabelWidth(100)]
 [Serializable]
 public class Buff_PlayEffect : BaseBuffData
@@ -23,8 +23,10 @@ public class Buff_PlayEffect : BaseBuffData
 
     [LabelText("位置offset")]
     [LabelWidth(120)]
-    public Vector3 posOffset;//相对于使用者的位置,等于在使用者的位置和前方向上加上这个V3
+    public Vector3Serializer posOffset;//相对于使用者的位置,等于在使用者的位置和前方向上加上这个V3
 
+    public bool lockToTarget;
+    public float duration;
 
     public List<string> effectParams ;
 

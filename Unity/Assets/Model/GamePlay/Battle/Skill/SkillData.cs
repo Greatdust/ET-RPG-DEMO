@@ -56,9 +56,6 @@ public abstract class BaseSkillData
         bool MeetCondition(IActiveConditionData data, Unit source);
         void OnRemove(IActiveConditionData data, Unit source);
     }
-
-
- 
     [Serializable]
     public class BuffInSkill
     {
@@ -66,6 +63,8 @@ public abstract class BaseSkillData
         [InfoBox("获取哪些signal的输出作为处理自身BUFF时的输入,可以是Pipeline节点的,可以是其他Buff的")]
         [LabelWidth(100)]
         public string[] signals_GetInput;//获取哪些signal的输出作为处理自身BUFF时的输入,可以是Pipeline节点的,可以是其他Buff的
+
+
         [LabelText("初始启用")]
         [LabelWidth(100)]
         public bool enable = true;//是否处于启用状态

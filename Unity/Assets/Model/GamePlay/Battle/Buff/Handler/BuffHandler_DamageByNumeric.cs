@@ -25,7 +25,7 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
 
         damageData.damageType = buff.damageType;
 
-        damageData.damageValue = Mathf.RoundToInt(numericComponent.GetAsFloat(buff.numericType) * buff.baseCoff);
+        damageData.damageValue = Mathf.RoundToInt(numericComponent.GetAsInt(buff.numericType) * buff.baseCoff);
         if (buffHandlerVar.bufferValues.TryGetValue(typeof(BufferValue_DamageAddPct),out var damageAddPct))
         {
             damageData.damageValue = Mathf.RoundToInt((1 + ((BufferValue_DamageAddPct)damageAddPct).damageAddPct) * damageData.damageValue);
@@ -39,11 +39,18 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
             damageData.isCritical = effectData.critical;
         }
 
-
+        if (!SkillHelper.tempData.ContainsKey(buff.buffSignal))
+        {
+            SkillHelper.tempData[buff.buffSignal] = new Dictionary<Type, IBufferValue>();
+            SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)] = new BufferValue_AttackSuccess() { successDic = new Dictionary<long, bool>() };
+        }
+        var attackSuccess = (BufferValue_AttackSuccess)SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)];
         foreach (var v in targetUnits.targets)
         {
+            bool result = GameCalNumericTool.CalFinalDamage(buffHandlerVar.source.Id, v.Id, damageData);
+            attackSuccess.successDic[v.Id] = result;
 
-            Game.EventSystem.Run(EventIdType.CalDamage, buffHandlerVar.source.Id, v.Id, damageData);
+
         }
     }
 }
