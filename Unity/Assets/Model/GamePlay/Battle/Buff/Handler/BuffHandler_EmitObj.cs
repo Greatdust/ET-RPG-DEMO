@@ -58,6 +58,7 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
                 go.SetActive(true);
 #else
 
+                Unit unit = UnitFactory.CreateEmitObj(go, emitObjData);
 #endif
                 Vector3 dir = (v.Position - buffHandlerVar.source.Position).normalized;
                 Vector3 startPosOffset = buff.startPosOffset.ToV3();

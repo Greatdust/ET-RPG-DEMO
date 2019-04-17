@@ -45,7 +45,7 @@ namespace ETModel
         [ShowIf("triggerType", 2, true)]
         [LabelText("事件Id")]
         public string eventIdType = string.Empty;
-        [HideInInspector]
+        [HideInEditorMode]
         [NonSerialized]
         public bool haveTriggerd;//是否已经触发过了
         [LabelText("使用玩家队伍")]

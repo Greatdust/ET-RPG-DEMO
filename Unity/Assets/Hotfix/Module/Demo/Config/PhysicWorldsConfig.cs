@@ -10,8 +10,6 @@ namespace ETHotfix
 	public class PhysicWorldsConfig: IConfig
 	{
 		public long Id { get; set; }
-		public string TerrainDataPath;
-		public string TerrainConfigPath;
 		public string StaticObjs_Box;
 	}
 }

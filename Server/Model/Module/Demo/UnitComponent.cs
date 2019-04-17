@@ -5,13 +5,25 @@ using MongoDB.Bson.Serialization.Options;
 
 namespace ETModel
 {
-	public class UnitComponent: Component
+    [ObjectSystem]
+    public class UnitComponentAwakeSystem : AwakeSystem<UnitComponent>
+    {
+        public override void Awake(UnitComponent self)
+        {
+            UnitComponent.Instance = self;
+        }
+    }
+
+    public class UnitComponent: Component
 	{
 		[BsonElement]
 		[BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
 		private readonly Dictionary<long, Unit> idUnits = new Dictionary<long, Unit>();
 
-		public override void Dispose()
+        [BsonIgnore]
+        public static UnitComponent Instance;
+
+        public override void Dispose()
 		{
 			if (this.IsDisposed)
 			{

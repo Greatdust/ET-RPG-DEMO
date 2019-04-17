@@ -124,7 +124,7 @@ namespace ETModel
                 endTime = startTime + needTime;
             }
 
-            GetParent<Unit>().Rotation = Quaternion.Slerp(GetParent<Unit>().Rotation, aimRotation, Time.deltaTime * 5);
+            GetParent<Unit>().Rotation = Quaternion.Slerp(GetParent<Unit>().Rotation, aimRotation, EventSystem.FixedUpdateTime * 5);
 
             float amount = (timeNow - this.startTime) * 1f / needTime;
             GetParent<Unit>().Position = Vector3.Lerp(this.startPosition, this.moveTarget, amount);

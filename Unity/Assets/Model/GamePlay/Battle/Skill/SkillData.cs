@@ -77,7 +77,7 @@ public abstract class BaseSkillData
 
     }
 
-    [HideInInspector]
+    [HideInEditorMode]
     public string skillId;//在数据中存储的Id
     [TabGroup("基础信息")]
     [LabelText("技能名")]
@@ -86,7 +86,7 @@ public abstract class BaseSkillData
     [TabGroup("基础信息")]
     [LabelText("技能介绍")]
     [LabelWidth(100)]
-    [Multiline(5)]
+    [MultiLineProperty(5)]
     public string skillDesc;//技能介绍
     [TabGroup("基础信息")]
     [LabelText("资源AB包名")]

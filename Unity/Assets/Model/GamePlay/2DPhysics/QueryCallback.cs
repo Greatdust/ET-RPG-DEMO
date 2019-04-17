@@ -70,6 +70,7 @@ namespace ETModel
                 Hit = true;
                 Point = point;
                 Normal = normal;
+                //找到最近的点
                 return fraction;
             }
 

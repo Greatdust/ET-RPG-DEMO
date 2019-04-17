@@ -47,9 +47,11 @@
     <Compile Include="..\..\Unity\Assets\Model\Base\Async\MoveNextRunner.cs">
       <Link>Base\Async\MoveNextRunner.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\Base\Event\EventIdType.cs" Link="Base\Event\EventIdType.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Helper\MongoHelper.cs">
       <Link>Base\Helper\MongoHelper.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\Base\Helper\SerializeHelper.cs" Link="Base\Helper\SerializeHelper.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Base\Object\IDeserializeSystem.cs">
       <Link>Base\Base\IDeserializeSystem.cs</Link>
     </Compile>
@@ -59,6 +61,66 @@
     <Compile Include="..\..\Unity\Assets\Model\Component\Config\StartConfig.cs">
       <Link>Component\Config\StartConfig.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\FilterSetting.cs" Link="GamePlay\Physics\FilterSetting.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\P2DBodyComponent.cs" Link="GamePlay\Physics\P2DBodyComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\PhysicCollisionListenerComponent.cs" Link="GamePlay\Physics\PhysicCollisionListenerComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\PhysicWorldComponent.cs" Link="GamePlay\Physics\PhysicWorldComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\QueryCallback.cs" Link="GamePlay\Physics\QueryCallback.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PBaseData.cs" Link="GamePlay\Physics\Shape\PBaseData.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PBaseShape.cs" Link="GamePlay\Physics\Shape\PBaseShape.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PBoxData.cs" Link="GamePlay\Physics\Shape\PBoxData.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PBoxShape.cs" Link="GamePlay\Physics\Shape\PBoxShape.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PCircleData.cs" Link="GamePlay\Physics\Shape\PCircleData.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\2DPhysics\Shape\PCircleShape.cs" Link="GamePlay\Physics\Shape\PCircleShape.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\BuffGroup.cs" Link="GamePlay\Battle\Buff\BuffGroup.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\BuffHandlerComponent.cs" Link="GamePlay\Battle\Buff\BuffHandlerComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\BuffIdType.cs" Link="GamePlay\Battle\Buff\BuffIdType.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\BuffMgrComponent.cs" Link="GamePlay\Battle\Buff\BuffMgrComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\BuffTypeAttribute.cs" Link="GamePlay\Battle\Buff\BuffTypeAttribute.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_AddBuff.cs" Link="GamePlay\Battle\Buff\Data\Buff_AddBuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_CostHP_MP.cs" Link="GamePlay\Battle\Buff\Data\Buff_CostHP_MP.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_DamageByNumeric.cs" Link="GamePlay\Battle\Buff\Data\Buff_DamageByNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_DirectDamage.cs" Link="GamePlay\Battle\Buff\Data\Buff_DirectDamage.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_DOT.cs" Link="GamePlay\Battle\Buff\Data\Buff_DOT.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_EmitObj.cs" Link="GamePlay\Battle\Buff\Data\Buff_EmitObj.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_EnhanceSkillEffect.cs" Link="GamePlay\Battle\Buff\Data\Buff_EnhanceSkillEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_GiveNumeric.cs" Link="GamePlay\Battle\Buff\Data\Buff_GiveNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_GiveRecover.cs" Link="GamePlay\Battle\Buff\Data\Buff_GiveRecover.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_GiveSpecialDebuff.cs" Link="GamePlay\Battle\Buff\Data\Buff_GiveSpecialDebuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_HitEffect.cs" Link="GamePlay\Battle\Buff\Data\Buff_HitEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_Move.cs" Link="GamePlay\Battle\Buff\Data\Buff_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_PlayAnim.cs" Link="GamePlay\Battle\Buff\Data\Buff_PlayAnim.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_PlayEffect.cs" Link="GamePlay\Battle\Buff\Data\Buff_PlayEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_PlaySound.cs" Link="GamePlay\Battle\Buff\Data\Buff_PlaySound.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_PushBack.cs" Link="GamePlay\Battle\Buff\Data\Buff_PushBack.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_RangeDetection.cs" Link="GamePlay\Battle\Buff\Data\Buff_RangeDetection.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Data\Buff_UpdateNumeric.cs" Link="GamePlay\Battle\Buff\Data\Buff_UpdateNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBuffData.cs" Link="GamePlay\Battle\Buff\IBuffData.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBufferValue.cs" Link="GamePlay\Battle\Buff\IBufferValue.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBuffHandler.cs" Link="GamePlay\Battle\Buff\IBuffHandler.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\EmitObj\EmitObjMoveComponent.cs" Link="GamePlay\Battle\EmitObj\EmitObjMoveComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckBuff.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckBuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckNumeric.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckTiming.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckTiming.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CostHP_MP.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CostHP_MP.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Handler\SkillActiveConditionHandler_CheckBuff.cs" Link="GamePlay\Battle\ActiveCondition\Handler\SkillActiveConditionHandler_CheckBuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Handler\SkillActiveConditionHandler_CheckNumeric.cs" Link="GamePlay\Battle\ActiveCondition\Handler\SkillActiveConditionHandler_CheckNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Handler\SkillActiveConditionHandler_CheckTiming.cs" Link="GamePlay\Battle\ActiveCondition\Handler\SkillActiveConditionHandler_CheckTiming.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Handler\SkillActiveConditionHandler_CostHP_MP.cs" Link="GamePlay\Battle\ActiveCondition\Handler\SkillActiveConditionHandler_CostHP_MP.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\SkillActiveConditionAttribute.cs" Link="GamePlay\Battle\ActiveCondition\SkillActiveConditionAttribute.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\SkillActiveConditionHandlerComponent.cs" Link="GamePlay\Battle\ActiveCondition\SkillActiveConditionHandlerComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\SkillActiveConditionType.cs" Link="GamePlay\Battle\ActiveCondition\SkillActiveConditionType.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\ActiveSkillComponent.cs" Link="GamePlay\Battle\Skill\ActiveSkillComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\PassiveSkillComponent.cs" Link="GamePlay\Battle\Skill\PassiveSkillComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\PassiveSkillListenedEventType.cs" Link="GamePlay\Battle\Skill\PassiveSkillListenedEventType.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\ProgrammableNode\IPipeline_PmbNode.cs" Link="GamePlay\Battle\Skill\Programmable\IPipeline_PmbNode.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\ProgrammableNode\PmbNode_TEST001.cs" Link="GamePlay\Battle\Skill\Programmable\PmbNode_TEST001.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillData.cs" Link="GamePlay\Battle\Skill\SkillData.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillEffectComponent.cs" Link="GamePlay\Battle\Skill\SkillEffectComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillHelper.cs" Link="GamePlay\Battle\Skill\SkillHelper.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineNode.cs" Link="GamePlay\Battle\Skill\PipelineNode\PipelineNode.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\CharacterStateComponent.cs" Link="GamePlay\CharacterCtr\CharacterStateComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\SpecialStateType.cs" Link="GamePlay\CharacterCtr\SpecialStateType.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Command.cs" Link="Command\Command.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInputAttribute.cs" Link="Command\CommandInputAttribute.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_Move.cs" Link="Command\CommandInput\CommandInput_Move.cs" />
@@ -66,6 +128,7 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandSimulaterComponent.cs" Link="Command\CommandSimulaterComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_Move.cs" Link="Command\System\CommandInputSystem_Move.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\UnitStateDelta.cs" Link="Command\UnitStateDelta.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\Helper\TimeSpanHelper.cs" Link="Base\Helper\TimeSpanHelper.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\ActorLocation\IActorLocationMessage.cs">
       <Link>Module\ActorLocation\IActorLocationMessage.cs</Link>
     </Compile>
@@ -338,11 +401,18 @@
     <Folder Include="Command\Property\" />
     <Folder Include="Command\System\" />
     <Folder Include="Component\Config\" />
+    <Folder Include="GamePlay\Battle\ActiveCondition\Data\" />
+    <Folder Include="GamePlay\Battle\ActiveCondition\Handler\" />
+    <Folder Include="GamePlay\Battle\Buff\Data\" />
+    <Folder Include="GamePlay\Battle\Buff\Handler\" />
+    <Folder Include="GamePlay\Battle\Skill\PipelineNode\" />
+    <Folder Include="GamePlay\Battle\Skill\Programmable\" />
+    <Folder Include="GamePlay\Physics\Shape\" />
+    <Folder Include="GamePlay\Battle\EmitObj\" />
     <Folder Include="Module\Message\Network\KCP\" />
     <Folder Include="Module\Message\Network\TCP\" />
     <Folder Include="Module\Message\MessagePool\" />
     <Folder Include="Module\Numeric\" />
-    <Folder Include="Module\Bullet\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced, Version=1.9.1.9000, Culture=neutral, PublicKeyToken=null">

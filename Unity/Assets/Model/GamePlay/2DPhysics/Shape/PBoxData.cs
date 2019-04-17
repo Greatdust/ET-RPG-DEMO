@@ -8,11 +8,9 @@ namespace ETModel
 {
     //可序列化的导出数据
     [Serializable]
-    public class PBoxData
+    public class PBoxData : PBaseData
     {
-        public Vector3Serializer pos;
-        public Vector3Serializer offset;
         public Vector3Serializer size;
-        public float eulerAnglesY;
+        
     }
 }
