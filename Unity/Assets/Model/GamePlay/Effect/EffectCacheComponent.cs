@@ -57,7 +57,6 @@ public class EffectCacheComponent : ETModel.Component
 
     public void Add(string id, GameObject go)
     {
-        Log.Debug("添加了id是{0}的特效", id);
         go.SetActive(false);
         GameObject newGo = go;
         if (!prefabPool.ContainsKey(id))

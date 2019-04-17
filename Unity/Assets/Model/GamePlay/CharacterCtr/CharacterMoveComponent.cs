@@ -128,12 +128,23 @@ namespace ETModel
         public ETTask PushBackedTo(Vector3 target, float speed)
         {
             moveTarget = target;
+            RayCastStaticObjCallback rayCast = new RayCastStaticObjCallback();
+            Game.Scene.GetComponent<PhysicWorldComponent>().world.RayCast(rayCast, GetParent<Unit>().Position.ToVector2(), moveTarget.ToVector2());
+            if (rayCast.Hit)
+            {
+                var dir = moveTarget - GetParent<Unit>().Position;
+                moveTarget = (rayCast.Point - dir.normalized.ToVector2() * GetParent<Unit>().GetComponent<P2DBodyComponent>().fixture.Shape.Radius).ToVector3(moveTarget.y);
+
+                Log.Debug("射线检测点+{0}  ", moveTarget);
+            }
             float distance = Vector3.Distance(unit.Position, moveTarget);
             moveType = MoveType.PushedBack;
             moveSpeed = speed;
-            moveTcs = new ETTaskCompletionSource();
+
             startPosition = unit.Position;
             moveDir = (moveTarget - unit.Position).normalized;
+
+            moveTcs = new ETTaskCompletionSource();
             startTime = TimeHelper.Now();
             float time = distance / speed;
             needTime = (long)(time * 1000);
@@ -146,6 +157,7 @@ namespace ETModel
 
         private void CharacterMoveComponent_OnCollisionEnterHandler(Unit obj,Vector3 pos)
         {
+
             //撞到东西了就要停下来
             OnMoveEnd();
 
@@ -153,32 +165,38 @@ namespace ETModel
 
         public void FixedUpdate()
         {
-            if (moveTcs == null) return;
-
-            var property_CharacterState = GetParent<Unit>().GetComponent<CharacterStateComponent>();
-            if (property_CharacterState.Get(SpecialStateType.CantDoAction))
+            var Body = GetParent<Unit>().GetComponent<P2DBodyComponent>().body;
+            Vector3 aim = GetParent<Unit>().Position;
+            if (moveTcs != null)
             {
-                OnMoveEnd();
-                return;
-            }
 
-            long timeNow = TimeHelper.Now();
-            if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
-            {
-                OnMoveEnd();
-                return;
-            }
-            if (moveType == MoveType.Move)
-            {
-                float pitch = moveSpeed / baseMoveSpeed;
-                animatorComponent.SetAnimatorSpeed(pitch);
-                animatorComponent.SetBoolValue(CharacterAnim.Run, true);
-                GetParent<Unit>().GetComponent<AudioComponent>().PlayMoveSound(pitch);
-                unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, Time.deltaTime * 15);
-            }
+                var property_CharacterState = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+                if (property_CharacterState.Get(SpecialStateType.CantDoAction))
+                {
+                    OnMoveEnd();
+                    return;
+                }
 
-            float amount = (timeNow - this.startTime) * 1f / needTime;
-            unit.Position = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
+                long timeNow = TimeHelper.Now();
+                if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
+                {
+                    OnMoveEnd();
+                    return;
+                }
+                if (moveType == MoveType.Move)
+                {
+                    float pitch = moveSpeed / baseMoveSpeed;
+                    animatorComponent.SetAnimatorSpeed(pitch);
+                    animatorComponent.SetBoolValue(CharacterAnim.Run, true);
+                    GetParent<Unit>().GetComponent<AudioComponent>().PlayMoveSound(pitch);
+
+                    unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, Time.deltaTime * 15);
+                }
+                Body.SetLinearVelocity(moveDir.ToVector2() * moveSpeed);
+                float amount = (timeNow - this.startTime) * 1f / needTime;
+                aim = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
+            }
+            unit.Position = new Vector3(Body.GetPosition().X, aim.y, Body.GetPosition().Y);
         }
 
 
@@ -186,6 +204,8 @@ namespace ETModel
 
         public void OnMoveEnd()
         {
+            var Body = GetParent<Unit>().GetComponent<P2DBodyComponent>().body;
+            Body.SetLinearVelocity(System.Numerics.Vector2.Zero);
             switch (moveType)
             {
                 case MoveType.Move:

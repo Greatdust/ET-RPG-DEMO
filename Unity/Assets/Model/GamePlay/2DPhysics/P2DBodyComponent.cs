@@ -1,5 +1,6 @@
 ﻿using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Dynamics;
+using Box2DSharp.Dynamics.Joints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 namespace ETModel
 {
     [ObjectSystem]
-    public class PDynamicBodyComponentAwakeComponent : AwakeSystem<PDynamicBodyComponent, PBaseShape>
+    public class P2DBodyComponentAwakeComponent : AwakeSystem<P2DBodyComponent, PBaseShape>
     {
-        public override void Awake(PDynamicBodyComponent self, PBaseShape shape)
+        public override void Awake(P2DBodyComponent self, PBaseShape shape)
         {
 
             self.Awake(shape);
@@ -20,7 +21,7 @@ namespace ETModel
     }
 
 
-    public class PDynamicBodyComponent : Component
+    public class P2DBodyComponent : Component
     {
         public Body body;
         public Fixture fixture;
@@ -34,8 +35,7 @@ namespace ETModel
             Unit unit = GetParent<Unit>();
             unit.UnitData = pShape.unitData;
             unit.OffsetY = pShape.offset.y;
-            Log.Debug(pShape.offset.ToString());
-            Log.Debug("Unit的Offset Y是{0}", unit.OffsetY);
+           
             switch (pShape)
             {
                 case PBoxShape boxShape:
@@ -67,12 +67,22 @@ namespace ETModel
                 BodyType = pShape.bodyType,
                 FixedRotation = true,
                 
-                AllowSleep = false,
+             
                 
             };
+            if (bd.BodyType != BodyType.StaticBody)
+            {
+                bd.AllowSleep = false;
+            }
+            else
+            {
+
+                bd.AllowSleep = true;
+            }
 
             body = world.CreateBody(bd);
-            Log.Debug(GetParent<Unit>().GameObject.name + " 在2D物理世界的位置是" + body.GetPosition());
+            
+           // Log.Debug(GetParent<Unit>().GameObject.name + " 在2D物理世界的位置是" + body.GetPosition());
 
             var fd = new FixtureDef
             {
@@ -92,7 +102,7 @@ namespace ETModel
       
 
             fixture = body.CreateFixture(fd);
-            Log.Debug(fixture.GetAABB(0).LowerBound.ToString() + fixture.GetAABB(0).UpperBound.ToString());
+            //Log.Debug(fixture.GetAABB(0).LowerBound.ToString() + fixture.GetAABB(0).UpperBound.ToString());
 
             GetParent<Unit>().OnPositionUpdate += UpdatePos;
             GetParent<Unit>().OnRotationUpdate += UpdateRot;

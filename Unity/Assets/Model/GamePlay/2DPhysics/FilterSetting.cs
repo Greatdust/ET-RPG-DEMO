@@ -47,6 +47,7 @@ public enum UnitLayerMask
 
 public enum UnitTag
 {
+    Static = -1,
     Default = 0,
     Player = 1,
     Monster = 2, // 普通怪物

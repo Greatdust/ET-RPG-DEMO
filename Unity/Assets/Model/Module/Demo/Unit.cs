@@ -41,6 +41,7 @@ namespace ETModel
 
         public void OnCollisionEnter(Unit unit, Vector3 pos)
         {
+           // Log.Debug("和unit  {0} 碰撞了,碰撞点在{1}", unit.UnitData.unitTag, pos);
             OnCollisionEnterHandler?.Invoke(unit,pos);
         }
         public void OnCollisionStay(Unit unit)

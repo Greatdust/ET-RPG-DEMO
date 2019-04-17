@@ -102,7 +102,7 @@ public abstract class BaseSkillData
     [LabelText("使用条件")]
     [LabelWidth(100)]
     public List<IActiveConditionData> activeConditionDatas = new List<IActiveConditionData>();//技能是否可以执行的检测条件
-    [TabGroup("流程内容")]
+    [TabGroup("流程内容",Order = 2)]
     [LabelText("流程内容,排列顺序等于执行顺序")]
     [LabelWidth(100)]
     [ListDrawerSettings(ShowIndexLabels = true)]
@@ -207,6 +207,11 @@ public class ActiveSkillData : BaseSkillData
     [LabelText("技能标签")]
     [LabelWidth(120)]
     public ActiveSkillTag activeSkillTag;//规定技能的标签.一方面方便玩家了解技能,另一方面可以帮助怪物战斗时选择技能的AI
+    [TabGroup("流程内容",Order = 1)]
+    [LabelText("输入检测阶段,决定技能是否真的可以释放")]
+    [LabelWidth(100)]
+    [ListDrawerSettings(ShowIndexLabels = true)]
+    public List<BasePipelineData> inputCheck = new List<BasePipelineData>();
 }
 
 //挂在角色身上的技能附加数据

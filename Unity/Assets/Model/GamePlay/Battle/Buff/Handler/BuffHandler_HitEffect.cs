@@ -30,8 +30,6 @@ public class BuffHandler_HitEffect : BaseBuffHandler,IBuffActionWithGetInputHand
             }
             return;
         }
-
-
         if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos value_Pos))
         {
             return;

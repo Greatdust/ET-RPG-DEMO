@@ -14,8 +14,11 @@ namespace ETModel
             // 读取寻路配置
             self.AStarConfig = new AStarConfig(); //MongoHelper.FromJson<AStarConfig>(File.ReadAllText("./pathfinding.config"));
             self.AStarConfig.pathProcessor = self.PathProcessor;
+
+            Game.Scene.GetComponent<ResourcesComponent>().LoadBundle("pathfind.unity3d");
+            TextAsset textAsset = Game.Scene.GetComponent<ResourcesComponent>().GetAsset("pathfind.unity3d", "graph") as TextAsset;
             //测试
-            self.AStarConfig.graphs = DeserializeHelper.Load(Application.dataPath+ "/graph.bytes");
+            self.AStarConfig.graphs = DeserializeHelper.Load(textAsset.bytes);
         }
     }
     

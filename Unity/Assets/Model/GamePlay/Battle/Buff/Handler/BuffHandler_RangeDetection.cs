@@ -25,17 +25,17 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
         PolyshapeQueryCallback polyshapeQueryCallback = new PolyshapeQueryCallback();
         AABB ab = new AABB();
 
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
+        {
+            Log.Error("检测没有收到位置  " + buffHandlerVar.skillId);
+            return null;
+        }
         switch (buff_RangeDetection.shapeType)
         {
             case Buff_RangeDetection.CollisionShape.Box:
                 //根据传入进来的方向和位置计算做范围检测的区域
 
 
-                if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
-                {
-                    Log.Error("Box检测没有收到位置  " + buffHandlerVar.skillId);
-                    return null;
-                }
 
                 if (!buffHandlerVar.GetBufferValue(out BufferValue_Dir bufferValue_Dir))
                 {
@@ -73,13 +73,7 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
                 break;
             case Buff_RangeDetection.CollisionShape.Circle:
 
-                if (!buffHandlerVar.GetBufferValue(out bufferValue_Pos))
-                {
-                    Log.Error("Circle检测没有收到位置  " + buffHandlerVar.skillId);
-                    return null;
-                }
                 pos = bufferValue_Pos.aimPos.ToVector2();
-                Log.Debug("检测位置  " + pos);
                 transform = new Transform(in pos, 0);
                 var p = MathUtils.Mul(transform.Rotation, transform.Position);
                 float raidus = buff_RangeDetection.shapeValue.x;
@@ -97,18 +91,23 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
             return null;
         }
 
+
+
         for (int i = polyshapeQueryCallback.units.Count - 1; i >= 0; i--)
         {
             //默认层(一般是特效,墙壁等)
             if (polyshapeQueryCallback.units[i].UnitData.groupIndex ==  GroupIndex.Default)
             {
                 polyshapeQueryCallback.units.RemoveAt(i);
+                continue;
             }
+
             if (buff_RangeDetection.FindFriend)
             {
                 if (polyshapeQueryCallback.units[i].UnitData.groupIndex != buffHandlerVar.source.UnitData.groupIndex)
                 {
                     polyshapeQueryCallback.units.RemoveAt(i);
+                    continue;
                 }
             }
             else
@@ -116,7 +115,20 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
                 if (polyshapeQueryCallback.units[i].UnitData.groupIndex == buffHandlerVar.source.UnitData.groupIndex)
                 {
                     polyshapeQueryCallback.units.RemoveAt(i);
+                    continue;
                 }
+            }
+            //高度区域检测
+            if (Math.Abs((bufferValue_Pos.aimPos.y + buff_RangeDetection.halfHeight) - (polyshapeQueryCallback.units[i].Position.y + polyshapeQueryCallback.units[i].OffsetY))
+                > (buff_RangeDetection.halfHeight + polyshapeQueryCallback.units[i].HalfHeight))
+            {
+                polyshapeQueryCallback.units.RemoveAt(i);
+                Log.Debug("目前高度不在检测的范围内!");
+                continue;
+            }
+            else
+            {
+                Log.Debug("目前高度在检测的范围内!");
             }
         }
 

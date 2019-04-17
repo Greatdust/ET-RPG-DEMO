@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ETModel
 {
-    //玩家正式进入游戏时的资源和配置加载 (非热更层)
+    //玩家正式进入游戏场景后的资源和配置加载 (非热更层)
     [Event(EventIdType.LoadAssets)]
     public class GamePinpeline_LoadAssets : AEvent
     {
@@ -15,7 +15,7 @@ namespace ETModel
             Game.Scene.AddComponent<PathfindingComponent>();
             Game.Scene.AddComponent<PhysicWorldComponent>();
             Game.Scene.AddComponent<PhysicCollisionListenerComponent>();
-
+            Game.Scene.AddComponent<PStaticBodyMgrComponent>();
             Game.Scene.AddComponent<GlobalVariableComponent>();
             Game.Scene.AddComponent<BuffHandlerComponent>();
 

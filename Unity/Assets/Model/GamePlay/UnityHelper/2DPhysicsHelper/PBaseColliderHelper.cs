@@ -13,7 +13,7 @@ public class PBaseColliderHelper : MonoBehaviour
     public BodyType bodyType = BodyType.DynamicBody;
     public bool isSensor;
     [HideInInspector]
-    public ETModel.PDynamicBodyComponent bodyComponent;
+    public ETModel.P2DBodyComponent bodyComponent;
 
     private void OnDrawGizmos()
     {

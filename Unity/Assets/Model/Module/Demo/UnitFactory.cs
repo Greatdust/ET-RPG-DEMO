@@ -21,7 +21,6 @@ namespace ETModel
             unit.AddComponent<NumericComponent,int>(typeId);
             unit.AddComponent<AnimatorComponent>();
             unit.AddComponent<UnitStateComponent>();
-            unit.AddComponent<CharacterMoveComponent>();
             unit.AddComponent<UnitPathComponent>();
             unit.AddComponent<AudioComponent>();
             unit.AddComponent<BuffMgrComponent>();
@@ -32,6 +31,7 @@ namespace ETModel
             //添加碰撞体
             AddCollider(unit, unitData, true);
             unit.AddComponent<CharacterStateComponent>();
+            unit.AddComponent<CharacterMoveComponent>();
             unit.AddComponent<CalNumericComponent>();
 
             if (unitConfig.Skills != null && unitConfig.Skills.Length > 0)
@@ -70,10 +70,17 @@ namespace ETModel
             Unit unit = ComponentFactory.CreateWithId<Unit,GameObject>(IdGenerater.GenerateId(), go);
             AddCollider(unit, unitData, true);
             unit.AddComponent<EmitObjMoveComponent>();
-            
-            unitComponent.Add(unit);
+
             return unit;
         }
+
+        public static Unit CreateStaticObj(GameObject go,UnitData unitData)
+        {
+            Unit unit = ComponentFactory.CreateWithId<Unit,GameObject>(IdGenerater.GenerateId(), go);
+            AddCollider(unit, unitData, false);
+            return unit;
+        }
+
         public static void AddCollider(Unit unit, UnitData unitData,bool isSensor)
         {
             PBaseColliderHelper pBaseColliderHelper = unit.GameObject.GetComponentInChildren<PBaseColliderHelper>();
@@ -109,7 +116,7 @@ namespace ETModel
                     pBaseShape = pCircleShape;
                     break;
             }
-            var bodyCom = unit.AddComponent<PDynamicBodyComponent, PBaseShape>(pBaseShape);
+            var bodyCom = unit.AddComponent<P2DBodyComponent, PBaseShape>(pBaseShape);
             pBaseColliderHelper.bodyComponent = bodyCom;
         }
     }

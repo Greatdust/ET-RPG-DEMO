@@ -13,11 +13,18 @@ public class PBoxColliderHelper : PBaseColliderHelper
 {
     public Vector3 size = Vector3.one;
     public Vector3 offset;
+
+    private void Reset()
+    {
+        size = transform.localScale / 2;
+        offset = Vector3.zero;
+    }
+
     protected override void OnDrawGizmosEvent()
     {
         if (!Application.isPlaying)
         {
-            PGizmosUtility.DebugDrawBox(transform.position + offset, Quaternion.Euler(new Vector3(0, transform.eulerAngles.y, 0)), Vector3.one, size, Color.green);
+            PGizmosUtility.DebugDrawBox(transform.position + offset, Quaternion.Euler(new Vector3(0, transform.eulerAngles.y, 0)), Vector3.one, size, Color.red);
         }
         else
         {

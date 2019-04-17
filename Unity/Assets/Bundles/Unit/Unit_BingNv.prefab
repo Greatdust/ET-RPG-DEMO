@@ -292,7 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyType: 2
   isSensor: 0
-  radius: 1.23
+  radius: 0.96
   height: 1.18
   offset: {x: 0, y: 1.8, z: 0}
 --- !u!65 &8609208617429014921
@@ -1589,19 +1589,19 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 122738, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 140842, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 100858, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
+    - target: {fileID: 122738, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 125424, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100858, guid: b868c49bf8222d44d883b91369e3f7ce, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}

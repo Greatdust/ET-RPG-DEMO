@@ -30,7 +30,10 @@ public class Buff_RangeDetection : BaseBuffData
 
     public bool FindFriend;
 
-    //TODO: 后续还需要设置一个高度检测值. 用以模拟3D的检测效果.
+    //一个高度检测值. 用以模拟3D的检测效果.
+    [LabelText("检测区域半高")]
+    [LabelWidth(100)]
+    public float halfHeight;
 
     public override string GetBuffIdType()
     {

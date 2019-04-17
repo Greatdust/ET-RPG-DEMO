@@ -81,6 +81,45 @@ public static class SkillHelper
         await ExcuteSkillData(skillParams);
     }
 
+    public static async ETTask<bool> CheckInput(ExcuteSkillParams skillParams)
+    {
+        SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
+
+        var activeSkill = skillConfigComponent.GetActiveSkill(skillParams.skillId);
+        try
+        {
+            if (activeSkill.pipelineDatas != null && activeSkill.pipelineDatas.Count > 0)
+            {
+                //创建一个只有所有开启的PipelineData的LinkedList,方便执行. 另外需要碰撞才能触发的 不会加入到执行列表里
+                LinkedList<BasePipelineData> enablePipelineDataList = new LinkedList<BasePipelineData>();
+
+                foreach (var value in activeSkill.inputCheck)
+                {
+                    if (value.enable)
+                        enablePipelineDataList.AddLast(new LinkedListNode<BasePipelineData>(value));
+                }
+                var node = enablePipelineDataList.First;
+                skillParams.cancelToken = new CancellationTokenSource();
+                while (node != null)
+                {
+                    if (skillParams.cancelToken.Token.IsCancellationRequested) return false; //如果后续节点的执行已经取消了,那么这里就返回不执行了
+                    node = await ExcutePipeLineData(node, skillParams);
+                }
+                if (skillParams.cancelToken.Token.IsCancellationRequested) return false;
+                //
+                skillParams.Dispose();
+                return true;
+            }
+            Log.Error("技能没有配置输入检测阶段 " + skillParams.skillId);
+            return false; // 没有输入检测阶段,这是配置错了.
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.ToString());
+            return false;
+        }
+    }
+
     public static async void ExcutePassiveSkill(ExcuteSkillParams skillParams)
     {
         SkillConfigComponent skillConfigComponent = Game.Scene.GetComponent<SkillConfigComponent>();
@@ -122,7 +161,12 @@ public static class SkillHelper
     {
         try
         {
-
+            //一般来讲,这个是进入技能真正的执行阶段了,所以在这里计算冷却
+            TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer((skillParams.source, skillParams.skillId).GetHashCode());
+            timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
+            timer.timing = TimeHelper.ClientNow();
+            //TODO; 发出消息提示进入冷却
+            skillParams.playSpeed = 1;
             skillParams.cycleStartsStack = new Stack<(LinkedListNode<BasePipelineData>, int, int)>();
 
             if (skillParams.baseSkillData.pipelineDatas != null && skillParams.baseSkillData.pipelineDatas.Count > 0)
@@ -247,7 +291,6 @@ public static class SkillHelper
                         tempData[pipeline_WaitForInput.pipelineSignal][typeof(BufferValue_Dir)] = bufferValue_Dir;
                         //直接改变使用技能时角色的转向
                         skillParams.source.Rotation = UnityEngine.Quaternion.LookRotation(bufferValue_Dir.dir, UnityEngine.Vector3.up);
-                        Log.Debug("添加 " + pipeline_WaitForInput.pipelineSignal + "  施法方向");
                         break;
                     case InputType.Pos:
                         BufferValue_Pos bufferValue_Pos = new BufferValue_Pos();
@@ -267,21 +310,15 @@ public static class SkillHelper
                     case InputType.Charge:
                         break;
                     case InputType.Spell:
-                        SpellForTime(pipeline_WaitForInput.value, skillParams).Coroutine();
+               
                         break;
                     case InputType.ContinualSpell:
-                        //这个持续引导,需要一个专门的使用持续引导Effect的Handler来配合. 如果游戏内这样的技能比较少,干脆用可编程节点实现,然后抽离出数据 ,让对应节点可复用
-
+                    
+                        SpellForTime(pipeline_WaitForInput.value, skillParams).Coroutine();
                         break;
                 }
                 return node.Next;
             case Pipeline_FixedTime pipeline_DelayTime:
-                //一般来讲,这个是进入技能真正的执行阶段了,所以在这里计算冷却
-                TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer((skillParams.source, skillParams.skillId).GetHashCode());
-                timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
-                timer.timing = TimeHelper.ClientNow();
-                //TODO; 发出消息提示进入冷却
-                skillParams.playSpeed = 1;
                 if (pipeline_DelayTime.delayTime > 0)
                 {
                     await TimerComponent.Instance.WaitAsync((long)(pipeline_DelayTime.delayTime * skillParams.playSpeed * 1000), skillParams.cancelToken.Token);

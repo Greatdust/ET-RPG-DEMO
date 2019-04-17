@@ -48,7 +48,9 @@ public class ActiveSkillComponent : ETModel.Component
             excuteSkillParams.skillId = skillId;
             excuteSkillParams.source = GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
-
+            bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
+            if (!canUse) return;
+            
             //TODO: 暂时先让使用技能的取消之前的行动. 后续需要根据情况判断是否处于前一个技能的硬直/引导等状态
             cancelToken?.Cancel();
             Game.EventSystem.Run(EventIdType.CancelPreAction,GetParent<Unit>());

@@ -52,7 +52,7 @@ namespace ETModel
             {
                 //创建怪物
                 Unit v = UnitFactory.Create(IdGenerater.GenerateId(), 1001, monsterData);
-                v.Position = new UnityEngine.Vector3(4.2f, 2, -15);
+                v.Position = new UnityEngine.Vector3(4.2f, 4, -15);
                 v.Rotation = UnityEngine.Quaternion.LookRotation(v.Position - UnitComponent.Instance.MyUnit.Position, Vector3.up);
                 //v.AddComponent<PDynamicBodyComponent, Shape>(new CircleShape() { Radius = 0.5f });
 

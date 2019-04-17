@@ -7,10 +7,9 @@ namespace ETModel
 {
     public static class DeserializeHelper
     {
-        public static NavGraph[] Load(string filePath)
+        public static NavGraph[] Load(byte[] bytes)
         {
-            byte[] bytes = AstarSerializer.LoadFromFile(filePath);
-            
+
             AstarSerializer sr = new AstarSerializer();
 
             if (!sr.OpenDeserialize(bytes))
@@ -25,14 +24,14 @@ namespace ETModel
             sr.SetGraphIndexOffset(gr.Count);
 
             gr.AddRange(sr.DeserializeGraphs());
-            
+
             NavGraph[] graphs = gr.ToArray();
 
             sr.DeserializeEditorSettingsCompatibility();
             sr.DeserializeExtraInfo();
 
             //Assign correct graph indices.
-            for (int i = 0; i < graphs.Length; i++) 
+            for (int i = 0; i < graphs.Length; i++)
             {
                 if (graphs[i] == null)
                 {
@@ -42,11 +41,11 @@ namespace ETModel
                 graphs[i].GetNodes(node => node.GraphIndex = (uint)i1);
             }
 
-            for (int i = 0; i < graphs.Length; i++) 
+            for (int i = 0; i < graphs.Length; i++)
             {
-                for (int j = i+1; j < graphs.Length; j++) 
+                for (int j = i + 1; j < graphs.Length; j++)
                 {
-                    if (graphs[i] != null && graphs[j] != null && graphs[i].guid == graphs[j].guid) 
+                    if (graphs[i] != null && graphs[j] != null && graphs[i].guid == graphs[j].guid)
                     {
                         graphs[i].guid = Guid.NewGuid();
                         break;
@@ -55,9 +54,18 @@ namespace ETModel
             }
 
             sr.PostDeserialization();
-            
+
             sr.CloseDeserialize();
             return graphs;
         }
+
+
+
+        public static NavGraph[] Load(string filePath)
+        {
+            byte[] bytes = AstarSerializer.LoadFromFile(filePath);
+            return Load(bytes);
+        }
+
     }
 }

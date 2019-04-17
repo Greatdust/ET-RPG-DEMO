@@ -78,52 +78,10 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
-      Data: 4
+      Data: 2
     - Name: 
       Entry: 7
-      Data: 5|Pipeline_FindTarget, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: P_101928014315524
-    - Name: findTargetType
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 6|Pipeline_WaitForInput, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: P_101927724843010
-    - Name: inputType
-      Entry: 3
-      Data: 1
-    - Name: chargeDatas
-      Entry: 6
-      Data: 
-    - Name: value
-      Entry: 4
-      Data: 0
-    - Name: findFriend
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 7|Pipeline_FixedTime, Unity.Model
+      Data: 5|Pipeline_FixedTime, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -132,17 +90,17 @@ MonoBehaviour:
       Data: P_101927727202307
     - Name: buffs
       Entry: 7
-      Data: 8|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
+      Data: 6|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 3
     - Name: 
       Entry: 7
-      Data: 9|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 7|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 10|System.String[], mscorlib
+      Data: 8|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -163,7 +121,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 11|Buff_PlayAnim, Unity.Model
+      Data: 9|Buff_PlayAnim, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101927729364996
@@ -187,10 +145,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 12|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 10|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 13|System.String[], mscorlib
+      Data: 11|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -211,7 +169,7 @@ MonoBehaviour:
       Data: 0.2
     - Name: buffData
       Entry: 7
-      Data: 14|Buff_EmitObj, Unity.Model
+      Data: 12|Buff_EmitObj, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101927775109125
@@ -268,10 +226,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 15|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 13|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 16|System.String[], mscorlib
+      Data: 14|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -292,7 +250,7 @@ MonoBehaviour:
       Data: 0.05
     - Name: buffData
       Entry: 7
-      Data: 17|Buff_PlaySound, Unity.Model
+      Data: 15|Buff_PlaySound, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101927780941830
@@ -328,7 +286,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 18|Pipeline_Collision, Unity.Model
+      Data: 16|Pipeline_Collision, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -337,14 +295,14 @@ MonoBehaviour:
       Data: P_101927850344449
     - Name: buffs
       Entry: 7
-      Data: 19|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
+      Data: 17|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 5
     - Name: 
       Entry: 7
-      Data: 20|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 18|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 6
       Data: 
@@ -356,7 +314,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 21|Buff_RangeDetection, Unity.Model
+      Data: 19|Buff_RangeDetection, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101927853424642
@@ -378,6 +336,9 @@ MonoBehaviour:
     - Name: FindFriend
       Entry: 5
       Data: false
+    - Name: halfHeight
+      Entry: 4
+      Data: 0.5
     - Name: 
       Entry: 8
       Data: 
@@ -386,10 +347,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 22|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 20|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 23|System.String[], mscorlib
+      Data: 21|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -410,7 +371,7 @@ MonoBehaviour:
       Data: 0.02
     - Name: buffData
       Entry: 7
-      Data: 24|Buff_DamageByNumeric, Unity.Model
+      Data: 22|Buff_DamageByNumeric, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101927860371459
@@ -434,10 +395,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 25|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 23|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 26|System.String[], mscorlib
+      Data: 24|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -461,7 +422,7 @@ MonoBehaviour:
       Data: 0.02
     - Name: buffData
       Entry: 7
-      Data: 27|Buff_HitEffect, Unity.Model
+      Data: 25|Buff_HitEffect, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: B_101928561737740
@@ -494,10 +455,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 28|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 26|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 29|System.String[], mscorlib
+      Data: 27|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 3
@@ -524,7 +485,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 30|Buff_PushBack, Unity.Model
+      Data: 28|Buff_PushBack, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u51FB\u9000_101934170570753"
@@ -542,10 +503,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 31|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 29|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 32|System.String[], mscorlib
+      Data: 30|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -569,7 +530,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 33|Buff_PlaySound, Unity.Model
+      Data: 31|Buff_PlaySound, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u97F3\u6548_101936513744938"
@@ -615,6 +576,61 @@ MonoBehaviour:
     - Name: activeSkillTag
       Entry: 3
       Data: 2
+    - Name: inputCheck
+      Entry: 7
+      Data: 32|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 33|Pipeline_WaitForInput, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: P_101927724843010
+    - Name: inputType
+      Entry: 3
+      Data: 1
+    - Name: chargeDatas
+      Entry: 6
+      Data: 
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: findFriend
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 34|Pipeline_FindTarget, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: P_101928014315524
+    - Name: findTargetType
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -629,7 +645,7 @@ MonoBehaviour:
       Data: test_002
     - Name: 
       Entry: 7
-      Data: 34|ActiveSkillData, Unity.Model
+      Data: 35|ActiveSkillData, Unity.Model
     - Name: skillId
       Entry: 1
       Data: test_002
@@ -647,7 +663,7 @@ MonoBehaviour:
       Data: 2
     - Name: activeConditionDatas
       Entry: 7
-      Data: 35|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
+      Data: 36|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
         Unity.Model]], mscorlib
     - Name: 
       Entry: 12
@@ -660,56 +676,14 @@ MonoBehaviour:
       Data: 
     - Name: pipelineDatas
       Entry: 7
-      Data: 36|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+      Data: 37|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 8
+      Data: 6
     - Name: 
       Entry: 7
-      Data: 37|Pipeline_FindTarget, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: "P_\u81EA\u52A8\u5BFB\u627E\u76EE\u6807_101935567077464"
-    - Name: findTargetType
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 38|Pipeline_WaitForInput, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: "P_\u7B49\u5F85\u7528\u6237\u8F93\u5165_101935550824532"
-    - Name: inputType
-      Entry: 3
-      Data: 2
-    - Name: chargeDatas
-      Entry: 6
-      Data: 
-    - Name: value
-      Entry: 4
-      Data: 0
-    - Name: findFriend
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 39|Pipeline_FixedTime, Unity.Model
+      Data: 38|Pipeline_FixedTime, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -718,17 +692,17 @@ MonoBehaviour:
       Data: "P_\u56FA\u5B9A\u65F6\u95F4_101935552528469"
     - Name: buffs
       Entry: 7
-      Data: 40|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
+      Data: 39|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 3
     - Name: 
       Entry: 7
-      Data: 41|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 40|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 42|System.String[], mscorlib
+      Data: 41|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -749,7 +723,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 43|Buff_PlayAnim, Unity.Model
+      Data: 42|Buff_PlayAnim, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u89D2\u8272\u52A8\u753B_101935554953302"
@@ -773,10 +747,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 44|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 43|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 45|System.String[], mscorlib
+      Data: 44|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -797,7 +771,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 46|Buff_PlaySound, Unity.Model
+      Data: 45|Buff_PlaySound, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u97F3\u6548_101935563931735"
@@ -818,10 +792,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 47|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 46|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 48|System.String[], mscorlib
+      Data: 47|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -842,7 +816,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 49|Buff_PlayEffect, Unity.Model
+      Data: 48|Buff_PlayEffect, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u7279\u6548_101935608102913"
@@ -869,7 +843,7 @@ MonoBehaviour:
       Data: false
     - Name: duration
       Entry: 4
-      Data: 3
+      Data: 3.6
     - Name: effectParams
       Entry: 6
       Data: 
@@ -896,7 +870,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 50|Pipeline_WaitForInput, Unity.Model
+      Data: 49|Pipeline_WaitForInput, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -905,7 +879,7 @@ MonoBehaviour:
       Data: "P_\u7B49\u5F85\u7528\u6237\u8F93\u5165_101935652536322"
     - Name: inputType
       Entry: 3
-      Data: 4
+      Data: 5
     - Name: chargeDatas
       Entry: 6
       Data: 
@@ -920,7 +894,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 51|Pipeline_CycleStart, Unity.Model
+      Data: 50|Pipeline_CycleStart, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -935,7 +909,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 52|Pipeline_FixedTime, Unity.Model
+      Data: 51|Pipeline_FixedTime, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -944,17 +918,17 @@ MonoBehaviour:
       Data: "P_\u56FA\u5B9A\u65F6\u95F4_101935657582596"
     - Name: buffs
       Entry: 7
-      Data: 53|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
+      Data: 52|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 3
     - Name: 
       Entry: 7
-      Data: 54|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 53|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 55|System.String[], mscorlib
+      Data: 54|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -975,7 +949,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 56|Buff_RangeDetection, Unity.Model
+      Data: 55|Buff_RangeDetection, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u8303\u56F4\u76EE\u6807\u68C0\u6D4B_101935662891013"
@@ -987,7 +961,7 @@ MonoBehaviour:
       Data: ETModel.Vector2Serializer, Unity.Model
     - Name: x
       Entry: 4
-      Data: 2
+      Data: 4
     - Name: y
       Entry: 4
       Data: 0
@@ -997,6 +971,9 @@ MonoBehaviour:
     - Name: FindFriend
       Entry: 5
       Data: false
+    - Name: halfHeight
+      Entry: 4
+      Data: 0.8
     - Name: 
       Entry: 8
       Data: 
@@ -1005,10 +982,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 57|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 56|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 58|System.String[], mscorlib
+      Data: 57|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -1029,7 +1006,7 @@ MonoBehaviour:
       Data: 0.1
     - Name: buffData
       Entry: 7
-      Data: 59|Buff_DamageByNumeric, Unity.Model
+      Data: 58|Buff_DamageByNumeric, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u76F4\u63A5\u4F24\u5BB3_101935666561030"
@@ -1053,10 +1030,10 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 60|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 59|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 61|System.String[], mscorlib
+      Data: 60|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 2
@@ -1080,7 +1057,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 62|Buff_PlaySound, Unity.Model
+      Data: 61|Buff_PlaySound, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u97F3\u6548_101936521805825"
@@ -1116,7 +1093,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 63|Pipeline_CycleEnd, Unity.Model
+      Data: 62|Pipeline_CycleEnd, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -1128,7 +1105,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 64|Pipeline_FixedTime, Unity.Model
+      Data: 63|Pipeline_FixedTime, Unity.Model
     - Name: enable
       Entry: 5
       Data: true
@@ -1137,17 +1114,17 @@ MonoBehaviour:
       Data: "P_\u56FA\u5B9A\u65F6\u95F4_101935844556829"
     - Name: buffs
       Entry: 7
-      Data: 65|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
+      Data: 64|System.Collections.Generic.List`1[[BaseSkillData+BuffInSkill, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 66|BaseSkillData+BuffInSkill, Unity.Model
+      Data: 65|BaseSkillData+BuffInSkill, Unity.Model
     - Name: signals_GetInput
       Entry: 7
-      Data: 67|System.String[], mscorlib
+      Data: 66|System.String[], mscorlib
     - Name: 
       Entry: 12
       Data: 1
@@ -1168,7 +1145,7 @@ MonoBehaviour:
       Data: 0
     - Name: buffData
       Entry: 7
-      Data: 68|Buff_PlayAnim, Unity.Model
+      Data: 67|Buff_PlayAnim, Unity.Model
     - Name: buffSignal
       Entry: 1
       Data: "B_\u64AD\u653E\u89D2\u8272\u52A8\u753B_101935845343262"
@@ -1223,6 +1200,61 @@ MonoBehaviour:
     - Name: activeSkillTag
       Entry: 3
       Data: 130
+    - Name: inputCheck
+      Entry: 7
+      Data: 68|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 69|Pipeline_WaitForInput, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: "P_\u7B49\u5F85\u7528\u6237\u8F93\u5165_101935550824532"
+    - Name: inputType
+      Entry: 3
+      Data: 2
+    - Name: chargeDatas
+      Entry: 6
+      Data: 
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: findFriend
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 70|Pipeline_FindTarget, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: "P_\u81EA\u52A8\u5BFB\u627E\u76EE\u6807_101935567077464"
+    - Name: findTargetType
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -1237,7 +1269,7 @@ MonoBehaviour:
       Data: test_003
     - Name: 
       Entry: 7
-      Data: 69|ActiveSkillData, Unity.Model
+      Data: 71|ActiveSkillData, Unity.Model
     - Name: skillId
       Entry: 1
       Data: test_003
@@ -1255,7 +1287,7 @@ MonoBehaviour:
       Data: 2
     - Name: activeConditionDatas
       Entry: 7
-      Data: 70|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
+      Data: 72|System.Collections.Generic.List`1[[BaseSkillData+IActiveConditionData,
         Unity.Model]], mscorlib
     - Name: 
       Entry: 12
@@ -1268,53 +1300,11 @@ MonoBehaviour:
       Data: 
     - Name: pipelineDatas
       Entry: 7
-      Data: 71|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+      Data: 73|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 3
-    - Name: 
-      Entry: 7
-      Data: 72|Pipeline_WaitForInput, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: "P_\u7B49\u5F85\u7528\u6237\u8F93\u5165_101936606019590"
-    - Name: inputType
-      Entry: 3
-      Data: 0
-    - Name: chargeDatas
-      Entry: 6
-      Data: 
-    - Name: value
-      Entry: 4
-      Data: 0
-    - Name: findFriend
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 73|Pipeline_FindTarget, Unity.Model
-    - Name: enable
-      Entry: 5
-      Data: true
-    - Name: pipelineSignal
-      Entry: 1
-      Data: "P_\u81EA\u52A8\u5BFB\u627E\u76EE\u6807_101936606674951"
-    - Name: findTargetType
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
+      Data: 1
     - Name: 
       Entry: 7
       Data: 74|Pipeline_FixedTime, Unity.Model
@@ -1568,6 +1558,61 @@ MonoBehaviour:
     - Name: activeSkillTag
       Entry: 3
       Data: 2
+    - Name: inputCheck
+      Entry: 7
+      Data: 88|System.Collections.Generic.List`1[[BasePipelineData, Unity.Model]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 89|Pipeline_WaitForInput, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: "P_\u7B49\u5F85\u7528\u6237\u8F93\u5165_101936606019590"
+    - Name: inputType
+      Entry: 3
+      Data: 0
+    - Name: chargeDatas
+      Entry: 6
+      Data: 
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: findFriend
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 90|Pipeline_FindTarget, Unity.Model
+    - Name: enable
+      Entry: 5
+      Data: true
+    - Name: pipelineSignal
+      Entry: 1
+      Data: "P_\u81EA\u52A8\u5BFB\u627E\u76EE\u6807_101936606674951"
+    - Name: findTargetType
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -1582,7 +1627,7 @@ MonoBehaviour:
       Data: 
     - Name: passiveSkillDataDic
       Entry: 7
-      Data: 88|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[PassiveSkillData,
+      Data: 91|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[PassiveSkillData,
         Unity.Model]], mscorlib
     - Name: comparer
       Entry: 9

@@ -39,11 +39,11 @@ namespace ETModel
 
             Unit a = contact.FixtureA.UserData as Unit;
             Unit b = contact.FixtureB.UserData as Unit;
-            Log.Debug("碰撞了,但是需要判断高度!");
+            //Log.Debug("碰撞了,但是需要判断高度!");
 
-            Log.Debug("a的实际Y位置{0}" ,a.Position.y + a.OffsetY);
-            Log.Debug("b的实际Y位置{0}", b.Position.y + b.OffsetY);
-            Log.Debug("a和b的半高之和{0}", a.HalfHeight + b.HalfHeight);
+            //Log.Debug("a的实际Y位置{0}" ,a.Position.y + a.OffsetY);
+            //Log.Debug("b的实际Y位置{0}", b.Position.y + b.OffsetY);
+            //Log.Debug("a和b的半高之和{0}", a.HalfHeight + b.HalfHeight);
             //模拟高度,判断双方在高度上没有碰撞
             
             if (Mathf.Abs(a.Position.y +a.OffsetY  - b.Position.y - b.OffsetY) - (a.HalfHeight + b.HalfHeight)  > 0)
@@ -55,7 +55,7 @@ namespace ETModel
             Game.Scene.GetComponent<PhysicWorldComponent>().world.RayCast(rayCastAimUnitCallback, a.Position.ToVector2(), b.Position.ToVector2());
             Vector3 hitPoint = rayCastAimUnitCallback.Point.ToVector3((a.Position.y + a.OffsetY + b.Position.y + b.OffsetY) / 2);
 
-            Log.Debug("确定碰撞!{0}  {1}",a.GameObject.name , b.GameObject.name);
+            //Log.Debug("确定碰撞!{0}  {1}",a.GameObject.name , b.GameObject.name);
             a.OnCollisionEnter(b, hitPoint);
             b.OnCollisionEnter(a, hitPoint);
             collisionStateRecorder[(a, b)] = true;
