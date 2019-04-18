@@ -12,6 +12,13 @@ public class BuffHandler_GiveNumeric : BaseBuffHandler, IBuffActionWithGetInputH
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         Buff_GiveNumeric buff = (Buff_GiveNumeric)buffHandlerVar.data;
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {

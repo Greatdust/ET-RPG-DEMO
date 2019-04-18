@@ -13,6 +13,13 @@ public class BuffHandler_PushBack : BaseBuffHandler, IBuffActionWithGetInputHand
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         try
         {
             Buff_PushBack buff = (Buff_PushBack)buffHandlerVar.data;
@@ -50,6 +57,8 @@ public class BuffHandler_PushBack : BaseBuffHandler, IBuffActionWithGetInputHand
         float moveSpeed = Vector3.Distance(unit.Position, target) / buff.moveDuration;
         CharacterStateComponent characterStateComponent = unit.GetComponent<CharacterStateComponent>();
         characterStateComponent.Set(SpecialStateType.NotInControl, true);
+        //先让击退强制打断任意技能.以后可能要增加状态判断.
+        unit.GetComponent<ActiveSkillComponent>().Interrupt();
         await characterMoveComponent.PushBackedTo(target, moveSpeed);
         characterStateComponent.Set(SpecialStateType.NotInControl, false);
     }

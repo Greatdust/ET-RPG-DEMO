@@ -16,6 +16,13 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
 
     public IBufferValue[] ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return null;
+        }
+#endif
         //主要目的是返回多个群体目标对象
         BufferValue_TargetUnits bufferValue_TargetUnits = new BufferValue_TargetUnits();
 
@@ -82,7 +89,7 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
 
                 break;
         }
-        Log.Debug(ab.LowerBound.ToString() + ab.UpperBound.ToString());
+        //Log.Debug(ab.LowerBound.ToString() + ab.UpperBound.ToString());
         PhysicWorldComponent.Instance.world.QueryAABB(polyshapeQueryCallback, ab);
 
         if (polyshapeQueryCallback.units == null || polyshapeQueryCallback.units.Count == 0)
@@ -96,7 +103,8 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
         for (int i = polyshapeQueryCallback.units.Count - 1; i >= 0; i--)
         {
             //默认层(一般是特效,墙壁等)
-            if (polyshapeQueryCallback.units[i].UnitData.groupIndex ==  GroupIndex.Default)
+            if (polyshapeQueryCallback.units[i].UnitData.groupIndex ==  GroupIndex.Default ||
+                polyshapeQueryCallback.units[i].UnitData.unitLayer == UnitLayer.Default)
             {
                 polyshapeQueryCallback.units.RemoveAt(i);
                 continue;
@@ -136,7 +144,7 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
         bufferValue_TargetUnits.targets = polyshapeQueryCallback.units.ToArray();
         
 
-        Log.Debug("范围检测到了  " + bufferValue_TargetUnits.targets.Length+ "  个目标");
+       // Log.Debug("范围检测到了  " + bufferValue_TargetUnits.targets.Length+ "  个目标");
         return new IBufferValue[] { bufferValue_TargetUnits };
     }
 }

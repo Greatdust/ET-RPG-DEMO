@@ -33,7 +33,7 @@ public class GameGlobalDataTool
         {
             if (pct > 0)
             {
-                Unit unit = UnitComponent.Instance.MyUnit;
+                Unit unit = UnitComponent.Instance.Get(unitId);
                 float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.HPMax_Final);
                 Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, unitId, maxValue * pct);
             }
@@ -54,7 +54,7 @@ public class GameGlobalDataTool
         {
             if (pct > 0)
             {
-                Unit unit = UnitComponent.Instance.MyUnit;
+                Unit unit = UnitComponent.Instance.Get(unitId);
                 float maxValue = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.HPMax_Final);
                 Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.MP, unitId, maxValue * pct);
             }

@@ -15,12 +15,16 @@ public class Buff_PlayAnim : BaseBuffData
 {
   
     [LabelText("BOOL变量名")]
-    [LabelWidth(150)]
+    [LabelWidth(120)]
     [HorizontalGroup]
     public string anim_boolValue;
+    [LabelText("可被打断")]
+    [LabelWidth(120)]
+    [HorizontalGroup]
+    public bool canBeInterrupted;
     [HorizontalGroup]
     [LabelText("BOOL值")]
-    [LabelWidth(150)]
+    [LabelWidth(100)]
     public bool boolValue;
     [LabelText("触发器变量名")]
     [LabelWidth(150)]

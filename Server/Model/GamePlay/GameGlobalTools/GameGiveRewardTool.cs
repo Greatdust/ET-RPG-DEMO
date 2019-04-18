@@ -21,7 +21,6 @@ public static class GameGiveRewardTool
             lvUp = false;
             return;
         }
-        Debug.LogFormat("单位{0}获得经验 {1}", unit.Id, num);
         int expMax = numericComponent.GetAsInt(NumericType.ExpMax);
         int preExp = numericComponent.GetAsInt(NumericType.Exp);
         preProgress = preExp / ((float)expMax);
@@ -48,11 +47,5 @@ public static class GameGiveRewardTool
 
     }
 
-    public static void GiveNumeric(NumericType numericType, float value)
-    {
-        Unit mUnit = UnitComponent.Instance.MyUnit;
-        NumericComponent numericComponent = mUnit.GetComponent<NumericComponent>();
-        numericComponent.Set(numericType, numericComponent.GetAsFloat(numericType) + value);
-    }
 }
 

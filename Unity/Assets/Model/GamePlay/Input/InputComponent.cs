@@ -153,7 +153,7 @@ namespace ETModel
 
         private void UseSkill(string skillId)
         {
-            ActiveSkillComponent.Excute(skillId).Coroutine();
+            ActiveSkillComponent.Execute(skillId).Coroutine();
         }
 
     }

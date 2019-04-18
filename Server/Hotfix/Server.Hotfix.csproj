@@ -18,6 +18,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Other\**" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_AddBuff.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_AddBuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_CostHPMP.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_CostHPMP.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_DamageByNumeric.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_DamageByNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_DirectDamage.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_DirectDamage.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_DOT.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_DOT.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_EmitObj.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_EmitObj.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_EnhanceSkillEffect.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_EnhanceSkillEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_GiveNumeric.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_GiveNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_GiveRecover.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_GiveRecover.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_GiveSpecialDebuff.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_GiveSpecialDebuff.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_HitEffect.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_HitEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_Move.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_PlayAnim.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_PlayAnim.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_PlayEffect.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_PlayEffect.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_PlaySound.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_PlaySound.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_PushBack.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_PushBack.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_RangeDetection.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_RangeDetection.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_UpdateNumeric.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_UpdateNumeric.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillHelper.cs" Link="Module\GamePlay\Battle\Skill\SkillHelper.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\Message\NetOuterComponentSystem.cs">
       <Link>Module\Message\NetOuterComponentSystem.cs</Link>
     </Compile>
@@ -31,7 +50,7 @@
     <ProjectReference Include="..\ThirdParty\MongoDBDriver\MongoDB.Driver\MongoDB.Driver.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Module\GamePlay\Battle\" />
+    <Folder Include="Module\GamePlay\Battle\Buff\Handler\" />
     <Folder Include="Module\Http\" />
   </ItemGroup>
 </Project>

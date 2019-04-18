@@ -31,16 +31,21 @@ public class ActiveSkillComponent : ETModel.Component
 
     public CancellationTokenSource cancelToken;//用以执行技能中断的
 
+    public ETTaskCompletionSource<bool> tcs;
+
+    public bool usingSkill;
+
     public void Awake()
     {
         skillList = new Dictionary<string, BaseSkill_AppendedData>();
     }
 
     #region 战斗流程
-    public async ETVoid Excute(string skillId)
+    public async ETVoid Execute(string skillId)
     {
         try
         {
+            if (usingSkill) return;
             if (!skillList.ContainsKey(skillId)) return;
             if (!SkillHelper.CheckIfSkillCanUse(skillId, GetParent<Unit>())) return;
             ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
@@ -49,19 +54,28 @@ public class ActiveSkillComponent : ETModel.Component
             excuteSkillParams.source = GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
             bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
-            if (!canUse) return;
-            
-            //TODO: 暂时先让使用技能的取消之前的行动. 后续需要根据情况判断是否处于前一个技能的硬直/引导等状态
+            if (GetParent<Unit>() == UnitComponent.Instance.MyUnit)
+            {
+                //联网模式玩家主动使用技能需要等待服务器确认消息,以决定技能是否真的可以使用
+
+                tcs = new ETTaskCompletionSource<bool>();
+                canUse = await tcs.Task;
+                tcs = null;
+                if (!canUse) return;
+            }
+            // 联网模式非玩家单位使用技能直接跳过检测,因为是收到使用技能的确定消息了才开始执行技能.
+            //TODO: 暂时先直接取消之前的行动
             cancelToken?.Cancel();
-            Game.EventSystem.Run(EventIdType.CancelPreAction,GetParent<Unit>());
+            Game.EventSystem.Run(EventIdType.CancelPreAction, GetParent<Unit>());
             CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
             characterStateComponent.Set(SpecialStateType.NotInControl, true);
             cancelToken = new CancellationTokenSource();
             excuteSkillParams.cancelToken = cancelToken;
+            usingSkill = true;
             await SkillHelper.ExcuteActiveSkill(excuteSkillParams);
-            cancelToken?.Dispose();
             cancelToken = null;
             characterStateComponent.Set(SpecialStateType.NotInControl, false);
+            usingSkill = false;
         }
         catch (Exception e)
         {
@@ -70,6 +84,15 @@ public class ActiveSkillComponent : ETModel.Component
 
     }
 
+    //中断可能正在执行的技能
+    public void Interrupt()
+    {
+        CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+        if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
+        cancelToken?.Cancel();
+        cancelToken = null;
+        usingSkill = false;
+    }
 
 
     #endregion

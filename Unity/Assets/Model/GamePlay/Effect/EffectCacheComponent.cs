@@ -19,6 +19,8 @@ public class EffectCacheComponent : ETModel.Component
     public Dictionary<string, Queue<GameObject>> gameObjPool;
     public Dictionary<string, GameObject> prefabPool;
 
+    private const int InitEffectCount = 3;
+
     public void Awake()
     {
         gameObjPool = new Dictionary<string, Queue<GameObject>>();
@@ -59,10 +61,11 @@ public class EffectCacheComponent : ETModel.Component
     {
         go.SetActive(false);
         GameObject newGo = go;
+        bool firstAdd = false;
         if (!prefabPool.ContainsKey(id))
         {
             prefabPool[id] = go;
-            newGo = GetCopy(go);
+            newGo = GetCopy(go); firstAdd = true;
         }
 
         if (!gameObjPool.ContainsKey(id))
@@ -70,6 +73,13 @@ public class EffectCacheComponent : ETModel.Component
             gameObjPool[id] = new Queue<GameObject>();
         }
         gameObjPool[id].Enqueue(newGo);
+        if (firstAdd)
+        {
+            for (int i = 0; i < InitEffectCount; i++)
+            {
+                gameObjPool[id].Enqueue(GetCopy(go));
+            }
+        }
     }
 
     public void Recycle(string id, GameObject go)

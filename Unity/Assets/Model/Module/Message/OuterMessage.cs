@@ -804,6 +804,38 @@ namespace ETModel {
       }
     }
 
+    private int groupIndex_;
+    public int GroupIndex {
+      get { return groupIndex_; }
+      set {
+        groupIndex_ = value;
+      }
+    }
+
+    private int layerMask_;
+    public int LayerMask {
+      get { return layerMask_; }
+      set {
+        layerMask_ = value;
+      }
+    }
+
+    private int unitLayer_;
+    public int UnitLayer {
+      get { return unitLayer_; }
+      set {
+        unitLayer_ = value;
+      }
+    }
+
+    private int unitTag_;
+    public int UnitTag {
+      get { return unitTag_; }
+      set {
+        unitTag_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (UnitId != 0L) {
         output.WriteRawTag(8);
@@ -816,6 +848,22 @@ namespace ETModel {
       if (dir_ != null) {
         output.WriteRawTag(26);
         output.WriteMessage(Dir);
+      }
+      if (GroupIndex != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(GroupIndex);
+      }
+      if (LayerMask != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(LayerMask);
+      }
+      if (UnitLayer != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(UnitLayer);
+      }
+      if (UnitTag != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(UnitTag);
       }
     }
 
@@ -830,6 +878,18 @@ namespace ETModel {
       if (dir_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Dir);
       }
+      if (GroupIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(GroupIndex);
+      }
+      if (LayerMask != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(LayerMask);
+      }
+      if (UnitLayer != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UnitLayer);
+      }
+      if (UnitTag != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UnitTag);
+      }
       return size;
     }
 
@@ -837,6 +897,10 @@ namespace ETModel {
       unitId_ = 0;
       if (position_ != null) MessagePool.Instance.Recycle(position_); position_ = null;
       if (dir_ != null) MessagePool.Instance.Recycle(dir_); dir_ = null;
+      groupIndex_ = 0;
+      layerMask_ = 0;
+      unitLayer_ = 0;
+      unitTag_ = 0;
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -859,6 +923,22 @@ namespace ETModel {
               dir_ = new global::ETModel.Vector3Info();
             }
             input.ReadMessage(dir_);
+            break;
+          }
+          case 32: {
+            GroupIndex = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            LayerMask = input.ReadInt32();
+            break;
+          }
+          case 48: {
+            UnitLayer = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            UnitTag = input.ReadInt32();
             break;
           }
         }
@@ -1093,9 +1173,9 @@ namespace ETModel {
 
   }
 
-  public partial class CommandResultInfo_Move : pb::IMessage {
-    private static readonly pb::MessageParser<CommandResultInfo_Move> _parser = new pb::MessageParser<CommandResultInfo_Move>(() => (CommandResultInfo_Move)MessagePool.Instance.Fetch(typeof(CommandResultInfo_Move)));
-    public static pb::MessageParser<CommandResultInfo_Move> Parser { get { return _parser; } }
+  public partial class InputResult_Move : pb::IMessage {
+    private static readonly pb::MessageParser<InputResult_Move> _parser = new pb::MessageParser<InputResult_Move>(() => (InputResult_Move)MessagePool.Instance.Fetch(typeof(InputResult_Move)));
+    public static pb::MessageParser<InputResult_Move> Parser { get { return _parser; } }
 
     private long actorId_;
     public long ActorId {
@@ -1194,9 +1274,9 @@ namespace ETModel {
 
   }
 
-  public partial class CommandInputInfo_Move : pb::IMessage {
-    private static readonly pb::MessageParser<CommandInputInfo_Move> _parser = new pb::MessageParser<CommandInputInfo_Move>(() => (CommandInputInfo_Move)MessagePool.Instance.Fetch(typeof(CommandInputInfo_Move)));
-    public static pb::MessageParser<CommandInputInfo_Move> Parser { get { return _parser; } }
+  public partial class Input_Move : pb::IMessage {
+    private static readonly pb::MessageParser<Input_Move> _parser = new pb::MessageParser<Input_Move>(() => (Input_Move)MessagePool.Instance.Fetch(typeof(Input_Move)));
+    public static pb::MessageParser<Input_Move> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1306,6 +1386,632 @@ namespace ETModel {
           }
           case 720: {
             RpcId = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class Input_UseSkill_Pos : pb::IMessage {
+    private static readonly pb::MessageParser<Input_UseSkill_Pos> _parser = new pb::MessageParser<Input_UseSkill_Pos>(() => (Input_UseSkill_Pos)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Pos)));
+    public static pb::MessageParser<Input_UseSkill_Pos> Parser { get { return _parser; } }
+
+    private int rpcId_;
+    public int RpcId {
+      get { return rpcId_; }
+      set {
+        rpcId_ = value;
+      }
+    }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private string skillId_ = "";
+    public string SkillId {
+      get { return skillId_; }
+      set {
+        skillId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private string pipelineSignal_ = "";
+    public string PipelineSignal {
+      get { return pipelineSignal_; }
+      set {
+        pipelineSignal_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private global::ETModel.Vector3Info aimPos_;
+    public global::ETModel.Vector3Info AimPos {
+      get { return aimPos_; }
+      set {
+        aimPos_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Frame != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Frame);
+      }
+      if (SkillId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(PipelineSignal);
+      }
+      if (aimPos_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(AimPos);
+      }
+      if (RpcId != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(RpcId);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Id);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (RpcId != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (SkillId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PipelineSignal);
+      }
+      if (aimPos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AimPos);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      frame_ = 0;
+      skillId_ = "";
+      pipelineSignal_ = "";
+      if (aimPos_ != null) MessagePool.Instance.Recycle(aimPos_); aimPos_ = null;
+      rpcId_ = 0;
+      actorId_ = 0;
+      id_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            SkillId = input.ReadString();
+            break;
+          }
+          case 26: {
+            PipelineSignal = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (aimPos_ == null) {
+              aimPos_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(aimPos_);
+            break;
+          }
+          case 720: {
+            RpcId = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class Input_UseSkill_Tar : pb::IMessage {
+    private static readonly pb::MessageParser<Input_UseSkill_Tar> _parser = new pb::MessageParser<Input_UseSkill_Tar>(() => (Input_UseSkill_Tar)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Tar)));
+    public static pb::MessageParser<Input_UseSkill_Tar> Parser { get { return _parser; } }
+
+    private int rpcId_;
+    public int RpcId {
+      get { return rpcId_; }
+      set {
+        rpcId_ = value;
+      }
+    }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private string skillId_ = "";
+    public string SkillId {
+      get { return skillId_; }
+      set {
+        skillId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private string pipelineSignal_ = "";
+    public string PipelineSignal {
+      get { return pipelineSignal_; }
+      set {
+        pipelineSignal_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private long unitId_;
+    public long UnitId {
+      get { return unitId_; }
+      set {
+        unitId_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Frame != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Frame);
+      }
+      if (SkillId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(PipelineSignal);
+      }
+      if (UnitId != 0L) {
+        output.WriteRawTag(32);
+        output.WriteInt64(UnitId);
+      }
+      if (RpcId != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(RpcId);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Id);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (RpcId != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (SkillId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PipelineSignal);
+      }
+      if (UnitId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UnitId);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      frame_ = 0;
+      skillId_ = "";
+      pipelineSignal_ = "";
+      unitId_ = 0;
+      rpcId_ = 0;
+      actorId_ = 0;
+      id_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            SkillId = input.ReadString();
+            break;
+          }
+          case 26: {
+            PipelineSignal = input.ReadString();
+            break;
+          }
+          case 32: {
+            UnitId = input.ReadInt64();
+            break;
+          }
+          case 720: {
+            RpcId = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class Input_UseSkill_Dir : pb::IMessage {
+    private static readonly pb::MessageParser<Input_UseSkill_Dir> _parser = new pb::MessageParser<Input_UseSkill_Dir>(() => (Input_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Dir)));
+    public static pb::MessageParser<Input_UseSkill_Dir> Parser { get { return _parser; } }
+
+    private int rpcId_;
+    public int RpcId {
+      get { return rpcId_; }
+      set {
+        rpcId_ = value;
+      }
+    }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private string skillId_ = "";
+    public string SkillId {
+      get { return skillId_; }
+      set {
+        skillId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private string pipelineSignal_ = "";
+    public string PipelineSignal {
+      get { return pipelineSignal_; }
+      set {
+        pipelineSignal_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private global::ETModel.Vector3Info aimDir_;
+    public global::ETModel.Vector3Info AimDir {
+      get { return aimDir_; }
+      set {
+        aimDir_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Frame != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Frame);
+      }
+      if (SkillId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(PipelineSignal);
+      }
+      if (aimDir_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(AimDir);
+      }
+      if (RpcId != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(RpcId);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Id);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (RpcId != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(RpcId);
+      }
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (SkillId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillId);
+      }
+      if (PipelineSignal.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PipelineSignal);
+      }
+      if (aimDir_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AimDir);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      frame_ = 0;
+      skillId_ = "";
+      pipelineSignal_ = "";
+      if (aimDir_ != null) MessagePool.Instance.Recycle(aimDir_); aimDir_ = null;
+      rpcId_ = 0;
+      actorId_ = 0;
+      id_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            SkillId = input.ReadString();
+            break;
+          }
+          case 26: {
+            PipelineSignal = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (aimDir_ == null) {
+              aimDir_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(aimDir_);
+            break;
+          }
+          case 720: {
+            RpcId = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+          case 752: {
+            Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class InputResult_UseSkill : pb::IMessage {
+    private static readonly pb::MessageParser<InputResult_UseSkill> _parser = new pb::MessageParser<InputResult_UseSkill>(() => (InputResult_UseSkill)MessagePool.Instance.Fetch(typeof(InputResult_UseSkill)));
+    public static pb::MessageParser<InputResult_UseSkill> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private string skillId_ = "";
+    public string SkillId {
+      get { return skillId_; }
+      set {
+        skillId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private bool success_;
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Frame != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Frame);
+      }
+      if (SkillId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(SkillId);
+      }
+      if (Success != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Success);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(240, 5);
+        output.WriteInt64(Id);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (Frame != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (SkillId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillId);
+      }
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      frame_ = 0;
+      skillId_ = "";
+      success_ = false;
+      actorId_ = 0;
+      id_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            SkillId = input.ReadString();
+            break;
+          }
+          case 24: {
+            Success = input.ReadBool();
             break;
           }
           case 744: {

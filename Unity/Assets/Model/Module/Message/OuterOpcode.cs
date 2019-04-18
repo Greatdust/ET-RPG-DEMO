@@ -39,11 +39,23 @@ namespace ETModel
 	[Message(OuterOpcode.Frame_ClickMap)]
 	public partial class Frame_ClickMap : IActorLocationMessage {}
 
-	[Message(OuterOpcode.CommandResultInfo_Move)]
-	public partial class CommandResultInfo_Move : IActorMessage {}
+	[Message(OuterOpcode.InputResult_Move)]
+	public partial class InputResult_Move : IActorMessage {}
 
-	[Message(OuterOpcode.CommandInputInfo_Move)]
-	public partial class CommandInputInfo_Move : IActorLocationMessage {}
+	[Message(OuterOpcode.Input_Move)]
+	public partial class Input_Move : IActorLocationMessage {}
+
+	[Message(OuterOpcode.Input_UseSkill_Pos)]
+	public partial class Input_UseSkill_Pos : IActorLocationMessage {}
+
+	[Message(OuterOpcode.Input_UseSkill_Tar)]
+	public partial class Input_UseSkill_Tar : IActorLocationMessage {}
+
+	[Message(OuterOpcode.Input_UseSkill_Dir)]
+	public partial class Input_UseSkill_Dir : IActorLocationMessage {}
+
+	[Message(OuterOpcode.InputResult_UseSkill)]
+	public partial class InputResult_UseSkill : IActorMessage {}
 
 	[Message(OuterOpcode.Vector3Info)]
 	public partial class Vector3Info {}
@@ -83,14 +95,18 @@ namespace ETModel
 		 public const ushort UnitInfo = 110;
 		 public const ushort M2C_CreateUnits = 111;
 		 public const ushort Frame_ClickMap = 112;
-		 public const ushort CommandResultInfo_Move = 113;
-		 public const ushort CommandInputInfo_Move = 114;
-		 public const ushort Vector3Info = 115;
-		 public const ushort M2C_PathfindingResult = 116;
-		 public const ushort C2R_Ping = 117;
-		 public const ushort R2C_Ping = 118;
-		 public const ushort G2C_Test = 119;
-		 public const ushort C2M_Reload = 120;
-		 public const ushort M2C_Reload = 121;
+		 public const ushort InputResult_Move = 113;
+		 public const ushort Input_Move = 114;
+		 public const ushort Input_UseSkill_Pos = 115;
+		 public const ushort Input_UseSkill_Tar = 116;
+		 public const ushort Input_UseSkill_Dir = 117;
+		 public const ushort InputResult_UseSkill = 118;
+		 public const ushort Vector3Info = 119;
+		 public const ushort M2C_PathfindingResult = 120;
+		 public const ushort C2R_Ping = 121;
+		 public const ushort R2C_Ping = 122;
+		 public const ushort G2C_Test = 123;
+		 public const ushort C2M_Reload = 124;
+		 public const ushort M2C_Reload = 125;
 	}
 }

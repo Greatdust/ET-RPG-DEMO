@@ -32,7 +32,13 @@ namespace ETModel
             AddCollider(unit, unitData, true);
             unit.AddComponent<CharacterStateComponent>();
             unit.AddComponent<CharacterMoveComponent>();
-            unit.AddComponent<CalNumericComponent>();
+#if !SERVER
+            if (!Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+            {
+                unit.AddComponent<CalNumericComponent>();
+            }
+#endif
+       
 
             if (unitConfig.Skills != null && unitConfig.Skills.Length > 0)
             {

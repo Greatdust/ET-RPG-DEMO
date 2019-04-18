@@ -53,7 +53,7 @@ namespace ETModel
             }
            // this.Entity.GetComponent<AnimatorComponent>().SetTrigger(CharacterAnim.Hit); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
 
-            Log.Debug("受到伤害  " + (-total));
+           // Log.Debug("受到伤害  " + (-total));
             Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, GetParent<Unit>().Id, -(float)total); //受到伤害,所以是负数
         }
 
@@ -124,6 +124,13 @@ namespace ETModel
     {
         public override void Run(long a, GameCalNumericTool.DamageData[] b)
         {
+#if !SERVER
+            if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+            {
+                //联网模式是服务器发消息,才执行
+                return;
+            }
+#endif
             var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
             
             calNumeric.GetDamage(b);
@@ -136,6 +143,13 @@ namespace ETModel
     {
         public override void Run(long a)
         {
+#if !SERVER
+            if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+            {
+                //联网模式是服务器发消息,才执行
+                return;
+            }
+#endif
             var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
 
             calNumeric.GetDie();
@@ -148,6 +162,13 @@ namespace ETModel
     {
         public override void Run(long a,int b)
         {
+#if !SERVER
+            if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+            {
+                //联网模式是服务器发消息,才执行
+                return;
+            }
+#endif
             var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
 
             calNumeric.GetHP(b);
@@ -160,6 +181,13 @@ namespace ETModel
     {
         public override void Run(long a, int b)
         {
+#if !SERVER
+            if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+            {
+                //联网模式是服务器发消息,才执行
+                return;
+            }
+#endif
             var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
 
             calNumeric.GetMP(b);

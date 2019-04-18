@@ -27,6 +27,7 @@ public class Buff_PlayEffect : BaseBuffData
 
     public bool lockToTarget;
     public float duration;
+    public bool canBeInterrupted;
 
     public List<string> effectParams ;
 

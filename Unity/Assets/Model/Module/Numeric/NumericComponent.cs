@@ -17,9 +17,11 @@ namespace ETModel
 	{
 		public readonly Dictionary<int, float> NumericDic = new Dictionary<int, float>();
 
-		public void Awake(int typeId)
-		{
-            // 这里初始化base值
+        public void Awake(int typeId)
+        {
+#if !SERVER
+            if (GlobalConfigComponent.Instance.networkPlayMode) return;
+            //这里初始化base值
             UnitConfig unitConfig = Game.Scene.GetComponent<ConfigComponent>().Get(typeof(UnitConfig), typeId) as UnitConfig;
 
             Set(NumericType.ArmorResist, unitConfig.ArmorResist);
@@ -28,7 +30,7 @@ namespace ETModel
             Set(NumericType.CritRate, unitConfig.CritRate);
             Set(NumericType.DodgeRate, unitConfig.DodgeRate);
 
- 
+
             Set(NumericType.HitRate, unitConfig.HitRate);
             Set(NumericType.HP, unitConfig.HPMax);
             Set(NumericType.HPMax_Base, unitConfig.HPMax);
@@ -45,10 +47,11 @@ namespace ETModel
             Set(NumericType.MPMax_Base, unitConfig.MPMax);
             Set(NumericType.MP_LeechRate, unitConfig.MP_LeechRate);
             Set(NumericType.MP_Restore, unitConfig.MP_Restore);
+#endif
 
         }
 
-		public float GetAsFloat(NumericType numericType)
+        public float GetAsFloat(NumericType numericType)
 		{
 			return (float)GetByKey((int)numericType);
 		}

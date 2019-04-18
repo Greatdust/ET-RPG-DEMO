@@ -10,10 +10,10 @@ using static BaseSkillData;
 public static class SkillHelper
 {
 
-    public static readonly Dictionary<string, Action<BuffHandlerVar>> collisionActions = new Dictionary<string, Action<BuffHandlerVar>>();// 存储技能执行中的飞行道具碰撞时会触发的逻辑
+    public static readonly Dictionary<(Unit, string), Action<BuffHandlerVar>> collisionActions = new Dictionary<(Unit, string), Action<BuffHandlerVar>>();// 存储技能执行中的飞行道具碰撞时会触发的逻辑
 
     //存储技能执行过程中产生的中间数据,一般在切换场景的时候清理一下就好
-    public static Dictionary<string, Dictionary<Type, IBufferValue>> tempData = new Dictionary<string, Dictionary<Type, IBufferValue>>();
+    public static Dictionary<(Unit,string), Dictionary<Type, IBufferValue>> tempData = new Dictionary<(Unit, string), Dictionary<Type, IBufferValue>>();
 
     
 
@@ -106,7 +106,7 @@ public static class SkillHelper
                     node = await ExcutePipeLineData(node, skillParams);
                 }
                 if (skillParams.cancelToken.Token.IsCancellationRequested) return false;
-                //
+                
                 skillParams.Dispose();
                 return true;
             }
@@ -161,11 +161,6 @@ public static class SkillHelper
     {
         try
         {
-            //一般来讲,这个是进入技能真正的执行阶段了,所以在这里计算冷却
-            TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer((skillParams.source, skillParams.skillId).GetHashCode());
-            timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
-            timer.timing = TimeHelper.ClientNow();
-            //TODO; 发出消息提示进入冷却
             skillParams.playSpeed = 1;
             skillParams.cycleStartsStack = new Stack<(LinkedListNode<BasePipelineData>, int, int)>();
 
@@ -183,21 +178,28 @@ public static class SkillHelper
                     if (value.GetTriggerType() == Pipeline_TriggerType.碰撞检测)
                     {
                         // 向CollisionAction中添加Action,由其他可以触发碰撞事件的buff来触发
-                        if (!collisionActions.ContainsKey(value.pipelineSignal))
+                        if (!collisionActions.ContainsKey((skillParams.source,value.pipelineSignal)))
                         {
-                            collisionActions[value.pipelineSignal] = (var) => { ExcutePipeLine_Collision(value as Pipeline_Collision, var); };
+                            collisionActions[(skillParams.source, value.pipelineSignal)] = (var) => { ExcutePipeLine_Collision(value as Pipeline_Collision, var); };
                         }
 
                     }
                 }
                 var node = enablePipelineDataList.First;
 
+                //进入技能的执行阶段了,被打断就要计算冷却了.
+                skillParams.cancelToken.Token.Register(() =>
+                {
+                    CalCoolDown(skillParams);
+                });
                 while (node != null)
                 {
                     if (skillParams.cancelToken.Token.IsCancellationRequested) return; //如果后续节点的执行已经取消了,那么这里就返回不执行了
                     node = await ExcutePipeLineData(node, skillParams);
                 }
-
+                //技能使用结束,在这里计算冷却
+                CalCoolDown(skillParams);
+                //TODO; 发出消息提示进入冷却
                 //
                 skillParams.Dispose();
             }
@@ -209,6 +211,13 @@ public static class SkillHelper
 
     }
 
+    static void CalCoolDown(ExcuteSkillParams skillParams)
+    {
+        TimeSpanHelper.Timer timer = TimeSpanHelper.GetTimer((skillParams.source, skillParams.skillId).GetHashCode());
+        timer.interval = (long)(skillParams.baseSkillData.coolDown * 1000);
+        timer.timing = TimeHelper.ClientNow();
+    }
+
     /// <summary>
     ///
     /// </summary>
@@ -217,11 +226,7 @@ public static class SkillHelper
     static async ETTask<LinkedListNode<BasePipelineData>> ExcutePipeLineData(LinkedListNode<BasePipelineData> node, ExcuteSkillParams skillParams)
     {
         if (node == null) return null;
-        if (tempData.ContainsKey(node.Value.pipelineSignal))
-        {
-            //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
-            tempData.Remove(node.Value.pipelineSignal);
-        }
+
         BuffHandlerVar buffHandlerVar = new BuffHandlerVar();
         buffHandlerVar.playSpeed = skillParams.playSpeed;
         buffHandlerVar.skillId = skillParams.skillId;
@@ -233,8 +238,8 @@ public static class SkillHelper
                 switch (findTarget.findTargetType)
                 {
                     case FindTargetType.自身:
-                        tempData[findTarget.pipelineSignal] = new Dictionary<Type, IBufferValue>();
-                        tempData[findTarget.pipelineSignal][typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { skillParams.source } };
+                        tempData[(skillParams.source, findTarget.pipelineSignal)] = new Dictionary<Type, IBufferValue>();
+                        tempData[(skillParams.source, findTarget.pipelineSignal)][typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { skillParams.source } };
                         break;
                     case FindTargetType.我方N人:
                         break;
@@ -254,69 +259,13 @@ public static class SkillHelper
                 return node.Next;
 
             case Pipeline_WaitForInput pipeline_WaitForInput:
-
-                switch (pipeline_WaitForInput.inputType)
+                bool result = await pipeline_WaitForInput.Execute(skillParams);
+                if (!result)
                 {
-                    //等待用户输入,可能有正确输入/取消/输入超时三种情况
-
-                    case InputType.Tar:
-
-                        BufferValue_TargetUnits bufferValue_TargetUnits = new BufferValue_TargetUnits();
-                        bufferValue_TargetUnits.targets = new Unit[1];
-                        if (UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputTarget(out bufferValue_TargetUnits.targets[0], pipeline_WaitForInput.findFriend, skillParams.source.UnitData.groupIndex))
-                        {
-                            if (!tempData.ContainsKey(pipeline_WaitForInput.pipelineSignal))
-                            {
-                                tempData[pipeline_WaitForInput.pipelineSignal] = new Dictionary<Type, IBufferValue>();
-                            }
-                            tempData[pipeline_WaitForInput.pipelineSignal][typeof(BufferValue_TargetUnits)] = bufferValue_TargetUnits;
-                            UnityEngine.Vector3 _forward1 = bufferValue_TargetUnits.targets[0].Position - skillParams.source.Position;
-                            skillParams.source.Rotation = UnityEngine.Quaternion.LookRotation(new UnityEngine.Vector3(_forward1.x, 0, _forward1.z), UnityEngine.Vector3.up);
-                        }
-                        else
-                        {
-                            Log.Debug("找不到目标! 技能终止!");
-                            skillParams.cancelToken?.Cancel();
-                            return null;
-                        }
-                        break;
-                    case InputType.Dir:
-                        //直接智能施法模式
-                        BufferValue_Dir bufferValue_Dir = new BufferValue_Dir();
-                        bufferValue_Dir.dir = UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputDir();
-                        if (!tempData.ContainsKey(pipeline_WaitForInput.pipelineSignal))
-                        {
-                            tempData[pipeline_WaitForInput.pipelineSignal] = new Dictionary<Type, IBufferValue>();
-                        }
-                        tempData[pipeline_WaitForInput.pipelineSignal][typeof(BufferValue_Dir)] = bufferValue_Dir;
-                        //直接改变使用技能时角色的转向
-                        skillParams.source.Rotation = UnityEngine.Quaternion.LookRotation(bufferValue_Dir.dir, UnityEngine.Vector3.up);
-                        break;
-                    case InputType.Pos:
-                        BufferValue_Pos bufferValue_Pos = new BufferValue_Pos();
-                        if (!UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputPos(out bufferValue_Pos.aimPos))
-                        {
-                            break;
-                        }
-                        if (!tempData.ContainsKey(pipeline_WaitForInput.pipelineSignal))
-                        {
-                            tempData[pipeline_WaitForInput.pipelineSignal] = new Dictionary<Type, IBufferValue>();
-                        }
-                        //直接改变使用技能时角色的转向
-                        UnityEngine.Vector3 forward = bufferValue_Pos.aimPos - skillParams.source.Position;
-                        skillParams.source.Rotation = UnityEngine.Quaternion.LookRotation(new UnityEngine.Vector3(forward.x, 0, forward.z), UnityEngine.Vector3.up);
-                        tempData[pipeline_WaitForInput.pipelineSignal][typeof(BufferValue_Pos)] = bufferValue_Pos;
-                        break;
-                    case InputType.Charge:
-                        break;
-                    case InputType.Spell:
-               
-                        break;
-                    case InputType.ContinualSpell:
-                    
-                        SpellForTime(pipeline_WaitForInput.value, skillParams).Coroutine();
-                        break;
+                    skillParams.cancelToken?.Cancel();
+                    return null;
                 }
+
                 return node.Next;
             case Pipeline_FixedTime pipeline_DelayTime:
                 if (pipeline_DelayTime.delayTime > 0)
@@ -373,19 +322,6 @@ public static class SkillHelper
         return null;
     }
 
-    async static ETVoid SpellForTime(float value, ExcuteSkillParams skillParams)
-    {
-        CharacterStateComponent characterStateComponent = skillParams.source.GetComponent<CharacterStateComponent>();
-        characterStateComponent.Set(SpecialStateType.NotInControl, true);
-        skillParams.cancelToken.Token.Register(() =>
-        {
-            characterStateComponent.Set(SpecialStateType.NotInControl, false);
-        });
-
-        await TimerComponent.Instance.WaitAsync((long)(value * 1000), skillParams.cancelToken.Token);
-        characterStateComponent.Set(SpecialStateType.NotInControl, false);
-    }
-
     static void ExcutePipeLine_Collision(Pipeline_Collision pipeline_Collision, BuffHandlerVar buffHandlerVar)
     {
 
@@ -428,6 +364,8 @@ public static class SkillHelper
                 if (!v.enable) continue;
                 if (v.delayTime > 0)
                     await TimerComponent.Instance.WaitAsync((long)(1000 * v.delayTime), skillParams.cancelToken.Token);
+                if (skillParams.cancelToken == null || skillParams.cancelToken.IsCancellationRequested) return;
+                buffHandlerVar.cancelToken = skillParams.cancelToken.Token;
                 BuffHandlerVar newVar = buffHandlerVar;
                 newVar.bufferValues = new Dictionary<Type, IBufferValue>();
                 if (buffHandlerVar.bufferValues != null)
@@ -449,14 +387,15 @@ public static class SkillHelper
         {
             foreach (var signal in buff.signals_GetInput)
             {
-                if (tempData.ContainsKey(signal))
-                    foreach (var v in tempData[signal])
+                if (tempData.ContainsKey((buffHandlerVar.source,signal)))
+                    foreach (var v in tempData[(buffHandlerVar.source, signal)])
                     {
                         buffHandlerVar.bufferValues[v.Key] = v.Value;
                     }
             }
         }
         buffHandlerVar.data = buff.buffData;
+
 
         IBuffActionWithGetInputHandler buffActionWithGetInput = baseBuffHandler as IBuffActionWithGetInputHandler;
         if (buffActionWithGetInput != null)
@@ -468,10 +407,10 @@ public static class SkillHelper
         if (buffActionWithSetOutputHandler != null)
         {
             var newBuffReturnedValue = buffActionWithSetOutputHandler.ActionHandle(buffHandlerVar);
-            if (tempData.ContainsKey(buff.buffData.buffSignal))
+            if (tempData.ContainsKey((buffHandlerVar.source, buff.buffData.buffSignal)))
             {
                 //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
-                tempData.Remove(buff.buffData.buffSignal);
+                tempData.Remove((buffHandlerVar.source, buff.buffData.buffSignal));
             }
            
 
@@ -480,10 +419,10 @@ public static class SkillHelper
                 
                 return;
             } 
-            if (!tempData.TryGetValue(buff.buffData.buffSignal, out var Dic))
+            if (!tempData.TryGetValue((buffHandlerVar.source, buff.buffData.buffSignal), out var Dic))
             {
                 Dic = new Dictionary<Type, IBufferValue>();
-                tempData[buff.buffData.buffSignal] = Dic;
+                tempData[(buffHandlerVar.source, buff.buffData.buffSignal)] = Dic;
             }
             foreach (var v in newBuffReturnedValue)
             {

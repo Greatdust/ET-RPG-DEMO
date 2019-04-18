@@ -18,11 +18,23 @@ namespace ETModel
         }
     }
 
+    [ObjectSystem]
+    public class BattleTestComponentFixedUpdateSystem : FixedUpdateSystem<BattleTestComponent>
+    {
+        public override void FixedUpdate(BattleTestComponent self)
+        {
+            self.FixedUpdate();
+        }
+    }
+
 
     public class BattleTestComponent :Component
     {
+        public List<Unit> otherPlayers;
+
         public void Awake()
         {
+            otherPlayers = new List<Unit>();
             Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode = false;
             Game.EventSystem.Run(EventIdType.LoadAssets);
             {
@@ -57,6 +69,7 @@ namespace ETModel
                 //v.AddComponent<PDynamicBodyComponent, Shape>(new CircleShape() { Radius = 0.5f });
 
                 BattleEventHandler.LoadAssets(v);
+                otherPlayers.Add(v);
             }
             {
                 //创建怪物
@@ -66,6 +79,7 @@ namespace ETModel
                 //v.AddComponent<PDynamicBodyComponent, Shape>(new CircleShape() { Radius = 0.5f });
 
                 BattleEventHandler.LoadAssets(v);
+                otherPlayers.Add(v);
             }
             {
                 //创建怪物
@@ -75,6 +89,60 @@ namespace ETModel
                 //v.AddComponent<PDynamicBodyComponent, Shape>(new CircleShape() { Radius = 0.5f });
 
                 BattleEventHandler.LoadAssets(v);
+                otherPlayers.Add(v);
+            }
+
+            //这里准备其他角色施放技能的参数
+        }
+
+        void GetInput(Unit unit, Pipeline_WaitForInput pipeline_WaitForInput)
+        {
+            if (!SkillHelper.tempData.ContainsKey((unit, pipeline_WaitForInput.pipelineSignal)))
+            {
+                SkillHelper.tempData[(unit, pipeline_WaitForInput.pipelineSignal)] = new Dictionary<Type, IBufferValue>();
+            }
+   
+            switch (pipeline_WaitForInput.inputType)
+            {
+
+                //等待用户输入,可能有正确输入/取消/输入超时三种情况
+
+                case InputType.Tar:
+                    //SkillHelper.tempData[(unit, pipeline_WaitForInput.pipelineSignal)][typeof(BufferValue_TargetUnits)] = ;
+
+                    break;
+                case InputType.Dir:
+                    
+                    break;
+                case InputType.Pos:
+                    Log.Debug("获得输入的位置");
+                    SkillHelper.tempData[(unit, pipeline_WaitForInput.pipelineSignal)][typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = unit.Position };
+                    break;
+                case InputType.Charge:
+                    break;
+                case InputType.Spell:
+
+                    break;
+                case InputType.ContinualSpell:
+
+ 
+                    break;
+
+
+            }
+        }
+
+        public void FixedUpdate()
+        {
+            foreach (var v in otherPlayers)
+            {
+                var list = v.GetComponent<ActiveSkillComponent>().skillList.Keys.ToArray();
+                if (!SkillHelper.CheckIfSkillCanUse(list[1], v)) continue;
+                var activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(list[1]);
+                Pipeline_WaitForInput pipeline_WaitForInput = activeSkillData.inputCheck.Find(p => p.GetTriggerType() == Pipeline_TriggerType.等待用户输入) as Pipeline_WaitForInput;
+                if (pipeline_WaitForInput != null)
+                    GetInput(v, pipeline_WaitForInput);
+                v.GetComponent<ActiveSkillComponent>().Execute(list[1]).Coroutine();
             }
         }
     }

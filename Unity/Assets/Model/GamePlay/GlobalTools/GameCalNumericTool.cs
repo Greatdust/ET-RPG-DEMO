@@ -42,6 +42,7 @@ public static class GameCalNumericTool
     {
         try
         {
+            
             CharacterStateComponent unitState = UnitComponent.Instance.Get(destUnitId).GetComponent<CharacterStateComponent>();
             if (unitState.Get( SpecialStateType.Die)) return false;
 

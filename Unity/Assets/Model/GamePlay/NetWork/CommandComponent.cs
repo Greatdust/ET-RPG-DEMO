@@ -35,7 +35,10 @@ namespace ETModel
         private CommandSimulaterComponent simulaterComponent;
 
 
-        private CommandInputInfo_Move inputInfo_Move = new CommandInputInfo_Move();
+        private Input_Move inputInfo_Move = new Input_Move();
+        private Input_UseSkill_Pos Input_UseSkill_Pos = new Input_UseSkill_Pos();
+        private Input_UseSkill_Dir Input_UseSkill_Dir = new Input_UseSkill_Dir();
+        private Input_UseSkill_Tar Input_UseSkill_Tar = new Input_UseSkill_Tar();
 
         public int simulateFrame;//预测帧
 
@@ -85,11 +88,55 @@ namespace ETModel
                             //再预测这一帧的结果
                             unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
 
+                            //单机模式不发送网络消息
                             if (!Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode) break;
                             Log.Debug("frame : " + simulateFrame + "  本地预测的路径: " + result_Move.Path.ListToString<Vector3>());
                             inputInfo_Move.Frame = simulateFrame;
-                            inputInfo_Move.AimPos = new Vector3Info() { X = input_Move.clickPos.x, Y = input_Move.clickPos.y, Z = input_Move.clickPos.z };
+                            inputInfo_Move.AimPos = input_Move.clickPos.ToV3Info();
                             ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(inputInfo_Move);
+
+                            break;
+                        case CommandInput_UseSkill input_UseSkill:
+
+                            CommandResult_UseSkill result_UseSkill = simulaterComponent.commandSimulaters[input_UseSkill.GetType()].Simulate(input_UseSkill, unit) as CommandResult_UseSkill;
+                            v.commandResult = result_UseSkill;
+
+                            if (!Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+                            {
+                                //单机的话本地直接做决定了
+                                unit.GetComponent<ActiveSkillComponent>().tcs?.SetResult(result_UseSkill.success);
+                                break;
+                            }
+
+                            switch (input_UseSkill.bufferValue)
+                            {
+                                case BufferValue_Pos value_Pos:
+                                    Input_UseSkill_Pos.Frame = simulateFrame;
+                                    Input_UseSkill_Pos.SkillId = input_UseSkill.skillId;
+                                    Input_UseSkill_Pos.PipelineSignal = input_UseSkill.pipelineSignal;
+             
+                                    Input_UseSkill_Pos.AimPos = value_Pos.aimPos.ToV3Info();
+                                    ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(Input_UseSkill_Pos);
+                                    break;
+                                case BufferValue_Dir value_Dir:
+                                    Input_UseSkill_Dir.Frame = simulateFrame;
+                                    Input_UseSkill_Dir.SkillId = input_UseSkill.skillId;
+                                    Input_UseSkill_Dir.PipelineSignal = input_UseSkill.pipelineSignal;
+
+                                    Input_UseSkill_Dir.AimDir = value_Dir.dir.ToV3Info();
+                                    ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(Input_UseSkill_Dir);
+                                    break;
+                                case BufferValue_TargetUnits value_TargetUnits:
+                                    Input_UseSkill_Tar.Frame = simulateFrame;
+                                    Input_UseSkill_Tar.SkillId = input_UseSkill.skillId;
+                                    Input_UseSkill_Tar.PipelineSignal = input_UseSkill.pipelineSignal;
+
+                                    Input_UseSkill_Tar.UnitId = value_TargetUnits.targets[0].Id;
+                                    ETModel.Game.Scene.GetComponent<SessionComponent>().Session.Send(Input_UseSkill_Tar);
+                                    break;
+                                default:
+                                    break;
+                            }
 
                             break;
                     }

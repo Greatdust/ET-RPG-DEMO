@@ -59,7 +59,9 @@ namespace ETModel
 
         public async void GetDie()
         {
+#if !SERVER
             this.Entity.GetComponent<AnimatorComponent>().SetBoolValue(CharacterAnim.Dead, true);
+#endif
             await TimerComponent.Instance.WaitAsync(2000); // 如果允许角色原地复活.这里就要加入取消了
            //TODO: 执行清理或者其他操作
         }
@@ -117,7 +119,7 @@ namespace ETModel
     }
 
 
-    #region Events
+#region Events
 
     [Event(EventIdType.GiveDamage)] 
     public class Unit_GiveDamageEvent : AEvent<long, GameCalNumericTool.DamageData[]>
@@ -168,5 +170,5 @@ namespace ETModel
     }
 
 
-    #endregion
+#endregion
 }

@@ -31,6 +31,13 @@ public class BuffHandler_PlayAnim : BaseBuffHandler,IBuffActionWithGetInputHandl
             AnimatorComponent animatorComponent = v.GetComponent<AnimatorComponent>();
             if (!string.IsNullOrEmpty(buff_PlayAnim.anim_boolValue))
             {
+                if (buff_PlayAnim.canBeInterrupted)
+                {
+                    buffHandlerVar.cancelToken.Register(() =>
+                    {
+                        animatorComponent.SetBoolValue(buff_PlayAnim.anim_boolValue, !buff_PlayAnim.boolValue);
+                    });
+                }
                 animatorComponent.SetBoolValue(buff_PlayAnim.anim_boolValue, buff_PlayAnim.boolValue);
             }
             if (!string.IsNullOrEmpty(buff_PlayAnim.anim_triggerValue))

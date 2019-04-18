@@ -58,7 +58,7 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
                 go.SetActive(true);
 #else
 
-                Unit unit = UnitFactory.CreateEmitObj(go, emitObjData);
+                Unit unit = ETHotfix.UnitFactory.CreateEmitObj(emitObjData,buff.emitObjId);
 #endif
                 Vector3 dir = (v.Position - buffHandlerVar.source.Position).normalized;
                 Vector3 startPosOffset = buff.startPosOffset.ToV3();
@@ -82,14 +82,14 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
             Unit unit = UnitFactory.CreateEmitObj(go, emitObjData);
             go.SetActive(true);
 #else
-
+            Unit unit = ETHotfix.UnitFactory.CreateEmitObj(emitObjData, buff.emitObjId);
 #endif
             Vector3 startPosOffset = buff.startPosOffset.ToV3();
             Vector3 dir = buffer_dir.dir.normalized;
 
             unit.Position = buffHandlerVar.source.Position + new Vector3(dir.x * startPosOffset.x, startPosOffset.y, dir.z * startPosOffset.z);
-            Log.Debug("{0}使用者位置 方向{1} 初始位置偏移量{2},计算出的最终位置{3}", buffHandlerVar.source.Position, dir, startPosOffset, unit.Position);
-            Log.Debug("飞行物体的高度{0}", unit.Position.y);
+            //Log.Debug(string.Format("{0}使用者位置 方向{1} 初始位置偏移量{2},计算出的最终位置{3}", buffHandlerVar.source.Position, dir, startPosOffset, unit.Position));
+            //Log.Debug(string.Format("飞行物体的高度{0}", unit.Position.y));
 
 
             Quaternion quaternion = Quaternion.LookRotation(buffer_dir.dir, Vector3.up);
@@ -114,12 +114,13 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
         newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 }; // 产出碰撞位置
         Vector3 dir = (result.Item2 - emitObj.Position).normalized;
         newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0, dir.z) }; // 产出方向,为了实现击退等效果
+#if !SERVER
         var go = emitObj.GameObject;
         emitObj.RemoveGameObject();
-        emitObj.Dispose();
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.emitObjId, go);
-
-        SkillHelper.collisionActions[buff.pipelineSignal](newVar);
+#endif
+        emitObj.Dispose();
+        SkillHelper.collisionActions[(buffHandlerVar.source,buff.pipelineSignal)](newVar);
 
 
     }
@@ -138,14 +139,14 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
         newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 };
         Vector3 dir = (result.Item2 - emitObj.Position).normalized;
         newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0,dir.z) };
-
+#if !SERVER
         var go = emitObj.GameObject;
         emitObj.RemoveGameObject();
-        emitObj.Dispose();
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.emitObjId, go);
+#endif
+        emitObj.Dispose();
 
-
-        SkillHelper.collisionActions[buff.pipelineSignal](newVar);
+        SkillHelper.collisionActions[(buffHandlerVar.source, buff.pipelineSignal)](newVar);
     }
 
 }

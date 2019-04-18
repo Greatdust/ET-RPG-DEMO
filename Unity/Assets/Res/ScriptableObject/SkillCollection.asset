@@ -128,6 +128,9 @@ MonoBehaviour:
     - Name: anim_boolValue
       Entry: 6
       Data: 
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: false
     - Name: boolValue
       Entry: 5
       Data: false
@@ -654,7 +657,7 @@ MonoBehaviour:
       Data: "\u66B4\u98CE\u96EA"
     - Name: skillDesc
       Entry: 1
-      Data: "\u5728\u6307\u5B9A\u533A\u57DF\u53EC\u5524\u4E00\u9635\u66B4\u98CE\u96EA.\n\u5BF9\u5904\u4E8E\u8BE5\u533A\u57DF\u7684\u654C\u65B9\u76EE\u6807\u6700\u591A\u9020\u62101.05*\u6CD5\u672F\u5F3A\u5EA6\u7684\u4F24\u5BB3"
+      Data: "\u5728\u6307\u5B9A\u533A\u57DF\u6301\u7EED\u5F15\u5BFC\u4E00\u9635\u66B4\u98CE\u96EA.\n\u5BF9\u5904\u4E8E\u8BE5\u533A\u57DF\u7684\u654C\u65B9\u76EE\u6807\u6700\u591A\u9020\u62101.05*\u6CD5\u672F\u5F3A\u5EA6\u7684\u4F24\u5BB3"
     - Name: skillAssetsABName
       Entry: 1
       Data: Skill_bingnv_Skill01
@@ -730,6 +733,9 @@ MonoBehaviour:
     - Name: anim_boolValue
       Entry: 1
       Data: Skill03
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: true
     - Name: boolValue
       Entry: 5
       Data: true
@@ -844,6 +850,9 @@ MonoBehaviour:
     - Name: duration
       Entry: 4
       Data: 3.6
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: true
     - Name: effectParams
       Entry: 6
       Data: 
@@ -1152,6 +1161,9 @@ MonoBehaviour:
     - Name: anim_boolValue
       Entry: 1
       Data: Skill03
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: false
     - Name: boolValue
       Entry: 5
       Data: false
@@ -1275,7 +1287,7 @@ MonoBehaviour:
       Data: test_003
     - Name: skillName
       Entry: 1
-      Data: "\u51B0\u7206\u672F"
+      Data: "\u51B0\u5C01\u9675\u5893"
     - Name: skillDesc
       Entry: 1
       Data: "\u5728\u76EE\u6807\u811A\u4E0B\u7206\u53D1\u5904\u4E00\u9635\u51B0\u7206,\u5728\u51B0\u7206\u6301\u7EED\u671F\u95F4\u4F7F\u5176\u65E0\u6CD5\u884C\u52A8!\n\u9020\u62101.5s\u51B0\u51BB\u6548\u679C,\u5E76\u9020\u62101.5*\u6CD5\u672F\u5F3A\u5EA6\u7684\u9B54\u6CD5\u4F24\u5BB3.\n"
@@ -1354,6 +1366,9 @@ MonoBehaviour:
     - Name: anim_boolValue
       Entry: 6
       Data: 
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: false
     - Name: boolValue
       Entry: 5
       Data: false
@@ -1423,6 +1438,9 @@ MonoBehaviour:
     - Name: duration
       Entry: 4
       Data: 2
+    - Name: canBeInterrupted
+      Entry: 5
+      Data: false
     - Name: effectParams
       Entry: 6
       Data: 

@@ -13,6 +13,13 @@ public class BuffHandler_DOT : BaseBuffHandler, IBuffActionWithGetInputHandler
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         Buff_DOT buff = (Buff_DOT)buffHandlerVar.data;
         NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
         //这里只是计算一下DOT的伤害(快照机制),实际DOT的处理是在BuffMgr中管理的

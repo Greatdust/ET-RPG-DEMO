@@ -54,8 +54,9 @@ namespace ETModel
 
         public MoveType moveType;
         public Unit unit;
+#if !SERVER
         public AnimatorComponent animatorComponent;
-
+#endif
         public Vector3 moveTarget;
         public Vector3 startPosition;
         public float moveSpeed;
@@ -73,15 +74,18 @@ namespace ETModel
         public void Awake()
         {
             unit = GetParent<Unit>();
+#if !SERVER
             animatorComponent = unit.GetComponent<AnimatorComponent>();
+#endif
         }
 
-        public async ETVoid MoveAsync( List<Vector3> path)
+        public async ETVoid MoveAsync(List<Vector3> path)
         {
             if (path.Count == 0)
             {
                 return;
             }
+      
             if (moveTcs != null)
             {
                 moveTcs = null;
@@ -120,7 +124,6 @@ namespace ETModel
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
 
-               
             return moveTcs.Task;
 
         }
@@ -135,7 +138,7 @@ namespace ETModel
                 var dir = moveTarget - GetParent<Unit>().Position;
                 moveTarget = (rayCast.Point - dir.normalized.ToVector2() * GetParent<Unit>().GetComponent<P2DBodyComponent>().fixture.Shape.Radius).ToVector3(moveTarget.y);
 
-                Log.Debug("射线检测点+{0}  ", moveTarget);
+                Log.Debug(string.Format("射线检测点+{0}  ", moveTarget));
             }
             float distance = Vector3.Distance(unit.Position, moveTarget);
             moveType = MoveType.PushedBack;
@@ -150,12 +153,14 @@ namespace ETModel
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
             GetParent<Unit>().OnCollisionEnterHandler += CharacterMoveComponent_OnCollisionEnterHandler;
+#if !SERVER
             animatorComponent.SetAnimatorSpeed(1);
             animatorComponent.SetTrigger(CharacterAnim.Hit);
+#endif
             return moveTcs.Task;
         }
 
-        private void CharacterMoveComponent_OnCollisionEnterHandler(Unit obj,Vector3 pos)
+        private void CharacterMoveComponent_OnCollisionEnterHandler(Unit obj, Vector3 pos)
         {
 
             //撞到东西了就要停下来
@@ -169,29 +174,33 @@ namespace ETModel
             Vector3 aim = GetParent<Unit>().Position;
             if (moveTcs != null)
             {
-
+        
                 var property_CharacterState = GetParent<Unit>().GetComponent<CharacterStateComponent>();
                 if (property_CharacterState.Get(SpecialStateType.CantDoAction))
                 {
                     OnMoveEnd();
                     return;
                 }
-
+             
                 long timeNow = TimeHelper.Now();
                 if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
                 {
                     OnMoveEnd();
                     return;
                 }
+          
                 if (moveType == MoveType.Move)
                 {
+#if !SERVER
                     float pitch = moveSpeed / baseMoveSpeed;
                     animatorComponent.SetAnimatorSpeed(pitch);
                     animatorComponent.SetBoolValue(CharacterAnim.Run, true);
                     GetParent<Unit>().GetComponent<AudioComponent>().PlayMoveSound(pitch);
+#endif
 
-                    unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, Time.deltaTime * 15);
+                    unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, EventSystem.FixedUpdateTime * 15);
                 }
+           
                 Body.SetLinearVelocity(moveDir.ToVector2() * moveSpeed);
                 float amount = (timeNow - this.startTime) * 1f / needTime;
                 aim = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
@@ -209,9 +218,11 @@ namespace ETModel
             switch (moveType)
             {
                 case MoveType.Move:
+#if !SERVER
                     animatorComponent.SetBoolValue(CharacterAnim.Run, false);
                     GetParent<Unit>().GetComponent<AudioComponent>().PauseMoveSound();
                     animatorComponent.SetAnimatorSpeed(1);
+#endif
                     break;
                 case MoveType.PushedBack:
                     GetParent<Unit>().OnCollisionEnterHandler -= CharacterMoveComponent_OnCollisionEnterHandler;

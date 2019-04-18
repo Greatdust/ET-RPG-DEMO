@@ -11,6 +11,13 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
 {
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
 
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
@@ -39,6 +46,13 @@ public class BuffHandler_GiveSpecialDebuff : BaseBuffHandler,IBuffActionWithGetI
 
     public void Remove(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         Buff_GiveSpecialDebuff buff = (Buff_GiveSpecialDebuff)buffHandlerVar.data;
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {

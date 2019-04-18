@@ -13,6 +13,13 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
+#if !SERVER
+        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        {
+            //联网模式是服务器发消息,才执行
+            return;
+        }
+#endif
         Buff_DamageByNumeric buff = (Buff_DamageByNumeric)buffHandlerVar.data;
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {
@@ -39,14 +46,15 @@ public class BuffHandler_DamageByNumeric : BaseBuffHandler, IBuffActionWithGetIn
             damageData.isCritical = effectData.critical;
         }
 
-        if (!SkillHelper.tempData.ContainsKey(buff.buffSignal))
+        if (!SkillHelper.tempData.ContainsKey((buffHandlerVar.source, buff.buffSignal)))
         {
-            SkillHelper.tempData[buff.buffSignal] = new Dictionary<Type, IBufferValue>();
-            SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)] = new BufferValue_AttackSuccess() { successDic = new Dictionary<long, bool>() };
+            SkillHelper.tempData[(buffHandlerVar.source, buff.buffSignal)] = new Dictionary<Type, IBufferValue>();
+            SkillHelper.tempData[(buffHandlerVar.source, buff.buffSignal)][typeof(BufferValue_AttackSuccess)] = new BufferValue_AttackSuccess() { successDic = new Dictionary<long, bool>() };
         }
-        var attackSuccess = (BufferValue_AttackSuccess)SkillHelper.tempData[buff.buffSignal][typeof(BufferValue_AttackSuccess)];
+        var attackSuccess = (BufferValue_AttackSuccess)SkillHelper.tempData[(buffHandlerVar.source, buff.buffSignal)][typeof(BufferValue_AttackSuccess)];
         foreach (var v in targetUnits.targets)
         {
+            if (v.UnitData.unitLayer == UnitLayer.Default) continue;
             bool result = GameCalNumericTool.CalFinalDamage(buffHandlerVar.source.Id, v.Id, damageData);
             attackSuccess.successDic[v.Id] = result;
 

@@ -19,28 +19,28 @@ namespace ETHotfix
             M2G_CreateUnit response = new M2G_CreateUnit();
             try
             {
-                Unit unit = ComponentFactory.CreateWithId<Unit>(IdGenerater.GenerateId());
+                UnitData playerData = new UnitData();
+                playerData.groupIndex = GroupIndex.Player;
+                playerData.layerMask = UnitLayerMask.ALL;
+                playerData.unitLayer = UnitLayer.Character;
+                playerData.unitTag = UnitTag.Player;
+                Unit unit = UnitFactory.Create(IdGenerater.GenerateId(),1001, playerData);
                 await unit.AddComponent<MailBoxComponent>().AddLocation();
                 unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
-                unit.AddComponent<NumericComponent>();
+
 
                 Dictionary<Type, IProperty> unitProperty = new Dictionary<Type, IProperty>();
                 Property_Position property_Position = new Property_Position();
-                property_Position.Set(new Vector3(-10, 0.5f, -10));
+                property_Position.Set(new Vector3(-10, 0, -10));
                 Property_Rotation property_Rotation = new Property_Rotation();
                 property_Rotation.Set(Quaternion.identity);
                 unitProperty.Add(typeof(Property_Position), property_Position);
                 unitProperty.Add(typeof(Property_Rotation), property_Rotation);
 
-                UnitStateComponent stateCom = unit.AddComponent<UnitStateComponent>();
+                UnitStateComponent stateCom = unit.GetComponent<UnitStateComponent>();
                 stateCom.Init(unitProperty);
                 Game.Scene.GetComponent<UnitStateMgrComponent>().Add(stateCom);
 
-                //BBoxShape bBoxShape = unit.AddComponent<BBoxShape>();
-                //bBoxShape.Extents = new Vector3(0.2f, 0.9f, 0.2f);
-                //unit.AddComponent<BCharacterController,BCollisionShape>(bBoxShape);
-                unit.AddComponent<CharacterMoveComponent>();
-                unit.AddComponent<UnitPathComponent>();
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
                 response.UnitId = unit.Id;
 
@@ -58,7 +58,12 @@ namespace ETHotfix
                     unitInfo.Position = new Vector3Info() { X = pos.x, Y = pos.y, Z = pos.z };
                     unitInfo.Dir = new Vector3Info() { X = 0, Y = 0, Z = 1 };
                     unitInfo.UnitId = u.Id;
-                    
+                    unitInfo.GroupIndex = (int)u.UnitData.groupIndex;
+                    unitInfo.LayerMask = (int)u.UnitData.layerMask;
+                    unitInfo.UnitLayer = (int)u.UnitData.unitLayer;
+                    unitInfo.UnitTag = (int)u.UnitData.unitTag;
+
+
                     createUnits.Units.Add(unitInfo);
                 }
                 MessageHelper.Broadcast(createUnits);

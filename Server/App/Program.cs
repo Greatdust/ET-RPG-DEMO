@@ -122,10 +122,14 @@ namespace App
 
                         Log.Debug("添加UnitStateMgrComponent");
                         Game.Scene.AddComponent<UnitStateMgrComponent>();
-
-                        Game.Scene.AddComponent<PhysicWorldComponent, int>(1001);
-                        // recast寻路组件
                         Game.Scene.AddComponent<PathfindingComponent>();
+                        Game.Scene.AddComponent<PhysicWorldComponent>();
+                        Game.Scene.AddComponent<PhysicCollisionListenerComponent>();
+                        Game.Scene.AddComponent<PStaticBodyMgrComponent>();
+                        Game.Scene.AddComponent<GlobalVariableComponent>();
+                        Game.Scene.AddComponent<BuffHandlerComponent>();
+
+                        Game.Scene.AddComponent<SkillConfigComponent>();
 
                         Game.Scene.AddComponent<PlayerComponent>();
                         Game.Scene.AddComponent<UnitComponent>();
