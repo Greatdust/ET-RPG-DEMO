@@ -33,7 +33,8 @@ public class ActiveSkillComponent : ETModel.Component
 
     public ETTaskCompletionSource<bool> tcs;
 
-    public bool usingSkill;
+    public bool usingSkill; // 判定是否尝试使用某个技能. 在此期间不允许使用其他技能.
+    public string currUsingSkillId; //当前正在使用的技能
 
     public void Awake()
     {
@@ -49,10 +50,11 @@ public class ActiveSkillComponent : ETModel.Component
             if (!skillList.ContainsKey(skillId)) return;
             if (!SkillHelper.CheckIfSkillCanUse(skillId, GetParent<Unit>())) return;
             ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
-            SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+            SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
             excuteSkillParams.skillId = skillId;
             excuteSkillParams.source = GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
+            usingSkill = true;
             bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
             if (GetParent<Unit>() == UnitComponent.Instance.MyUnit)
             {
@@ -61,8 +63,11 @@ public class ActiveSkillComponent : ETModel.Component
                 tcs = new ETTaskCompletionSource<bool>();
                 canUse = await tcs.Task;
                 tcs = null;
-                if (!canUse) return;
+                usingSkill = false;
             }
+            if (!canUse) return;
+            usingSkill = false;
+            currUsingSkillId = skillId;
             // 联网模式非玩家单位使用技能直接跳过检测,因为是收到使用技能的确定消息了才开始执行技能.
             //TODO: 暂时先直接取消之前的行动
             cancelToken?.Cancel();
@@ -71,11 +76,11 @@ public class ActiveSkillComponent : ETModel.Component
             characterStateComponent.Set(SpecialStateType.NotInControl, true);
             cancelToken = new CancellationTokenSource();
             excuteSkillParams.cancelToken = cancelToken;
-            usingSkill = true;
-            await SkillHelper.ExcuteActiveSkill(excuteSkillParams);
+
+            await SkillHelper.ExecuteActiveSkill(excuteSkillParams);
             cancelToken = null;
             characterStateComponent.Set(SpecialStateType.NotInControl, false);
-            usingSkill = false;
+            currUsingSkillId = string.Empty;
         }
         catch (Exception e)
         {
@@ -85,13 +90,14 @@ public class ActiveSkillComponent : ETModel.Component
     }
 
     //中断可能正在执行的技能
-    public void Interrupt()
+    public void Interrupt(TypeOfInterruption type)
     {
+        //TODO: 根据当前使用技能允许的可打断类型判定打断是否可以成功
+
         CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
         if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
         cancelToken?.Cancel();
         cancelToken = null;
-        usingSkill = false;
     }
 
 

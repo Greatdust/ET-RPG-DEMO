@@ -12,13 +12,6 @@ public class BuffHandler_AddBuff : BaseBuffHandler, IBuffActionWithGetInputHandl
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-#if !SERVER
-        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
-        {
-            //联网模式是服务器发消息,才添加BUFF
-            return;
-        }
-#endif
         if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits targetUnits))
         {
             return;

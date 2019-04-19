@@ -13,10 +13,15 @@ namespace ETModel
         public override void Run()
         {
             Game.Scene.AddComponent<PathfindingComponent>();
-            Game.Scene.AddComponent<PhysicWorldComponent>();
-            Game.Scene.AddComponent<PhysicCollisionListenerComponent>();
-            Game.Scene.AddComponent<PStaticBodyMgrComponent>();
-            Game.Scene.AddComponent<GlobalVariableComponent>();
+            //如果是联网模式,客户端不做物理检测
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+            {
+           
+                Game.Scene.AddComponent<PhysicWorldComponent>();
+                Game.Scene.AddComponent<PhysicCollisionListenerComponent>();
+                Game.Scene.AddComponent<PStaticBodyMgrComponent>();
+            }
+
             Game.Scene.AddComponent<BuffHandlerComponent>();
 
             Game.Scene.AddComponent<SkillConfigComponent>();
@@ -25,15 +30,6 @@ namespace ETModel
         }
     }
 
-    [Event(EventIdType.SceneChange)]
-    public class GamePipeline_ChangeScene : AEvent<string,Action>
-    {
-        public override void Run(string sceneId, Action action)
-        {
-            SceneChangeHelper.SceneChange(sceneId, action, null);
-
-        }
-    }
 
 
 

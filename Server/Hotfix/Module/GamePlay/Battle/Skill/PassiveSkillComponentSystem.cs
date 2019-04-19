@@ -15,7 +15,7 @@ namespace ETHotfix
             Unit source = self.GetParent<Unit>();
             if (!self.bufferDatas.ContainsKey(skillId))
                 self.bufferDatas[skillId] = new PassiveSkillBufferData();
-            SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+            SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
             excuteSkillParams.skillId = skillId;
             excuteSkillParams.source = self.GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
@@ -38,7 +38,7 @@ namespace ETHotfix
                               {
                                   self.tokenSource = new ETCancellationTokenSource();
 
-                                  SkillHelper.ExcutePassiveSkill(excuteSkillParams);
+                                  SkillHelper.ExecutePassiveSkill(excuteSkillParams);
                               }
                           }
                       }
@@ -54,7 +54,7 @@ namespace ETHotfix
             if (SkillHelper.CheckIfSkillCanUse(skillId, source))
             {
                 self.tokenSource = new ETCancellationTokenSource();
-                SkillHelper.ExcutePassiveSkill(excuteSkillParams);
+                SkillHelper.ExecutePassiveSkill(excuteSkillParams);
                 self.bufferDatas[skillId].apply = true;
             }
 

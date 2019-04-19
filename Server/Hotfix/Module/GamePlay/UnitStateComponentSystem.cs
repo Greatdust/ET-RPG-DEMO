@@ -73,34 +73,38 @@ namespace ETHotfix
         {
             try
             {
+                //unitStateComponent.collectInput = true;
+                //if (unitStateComponent.currGetInputFrame < frame)
+                //    unitStateComponent.currGetInputFrame = frame;
+                //UnitStateDelta unitStateDelta = new UnitStateDelta();
+                //unitStateDelta.frame = frame;
 
-                CommandInput_Move commandInput_Move = commandInput as CommandInput_Move;
-                unitStateComponent.collectInput = true;
-                if (unitStateComponent.currGetInputFrame < frame)
-                    unitStateComponent.currGetInputFrame = frame;
-                UnitStateDelta unitStateDelta = new UnitStateDelta();
-                unitStateDelta.frame = frame;
-
-                var result = Game.Scene.GetComponent<CommandSimulaterComponent>().commandSimulaters[typeof(CommandInput_Move)].Simulate(commandInput_Move, unitStateComponent.unit);
+                var result = Game.Scene.GetComponent<CommandSimulaterComponent>().commandSimulaters[typeof(CommandInput_Move)].Simulate(commandInput, unitStateComponent.unit);
                 switch (result)
                 {
                     case CommandResult_Move result_Move:
                         unitStateComponent.unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
-                        CommandResultInfo_Move commandResultInfo_Move = new CommandResultInfo_Move();
-                        commandResultInfo_Move.Frame = frame;
-                        commandResultInfo_Move.Id = unitStateComponent.unit.Id;
-                        commandResultInfo_Move.PathList = new Google.Protobuf.Collections.RepeatedField<Vector3Info>();
+                       
+                        unitStateComponent.inputResult_Move.Frame = frame;
+                        unitStateComponent.inputResult_Move.Id = unitStateComponent.unit.Id;
+                        unitStateComponent.inputResult_Move.PathList = new Google.Protobuf.Collections.RepeatedField<Vector3Info>();
                         for (int i = 0; i < result_Move.Path.Count; i++)
                         {
-                            commandResultInfo_Move.PathList.Add(new Vector3Info() {
+                            unitStateComponent.inputResult_Move.PathList.Add(new Vector3Info() {
                                 X = result_Move.Path[i].x, Y = result_Move.Path[i].y,  Z = result_Move.Path[i].z
                             });
                         }
-                        MessageHelper.Broadcast(commandResultInfo_Move);
+                        MessageHelper.Broadcast(unitStateComponent.inputResult_Move);
+                        break;
+                    case CommandResult_UseSkill result_UseSkill:
+                        unitStateComponent.unit.GetComponent<ActiveSkillComponent>().tcs?.SetResult(result_UseSkill.success);
+                        unitStateComponent.inputResult_UseSkill.SkillId = result_UseSkill.skillId;
+                        unitStateComponent.inputResult_UseSkill.Success = result_UseSkill.success;
+                        MessageHelper.Broadcast(unitStateComponent.inputResult_UseSkill);
                         break;
                 }
-                unitStateDelta.commandResults.Add(result.GetType(), result);
-                unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame] = unitStateDelta;
+                //unitStateDelta.commandResults.Add(result.GetType(), result);
+                //unitStateComponent.unitStatesDic[unitStateComponent.currGetInputFrame] = unitStateDelta;
             }
             catch (Exception e)
             {

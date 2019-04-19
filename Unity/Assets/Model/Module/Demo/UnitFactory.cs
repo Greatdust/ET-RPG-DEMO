@@ -27,17 +27,16 @@ namespace ETModel
             var activeSkillCom =  unit.AddComponent<ActiveSkillComponent>();
             var passiveSkillCom = unit.AddComponent<PassiveSkillComponent>();
             unit.AddComponent<SkillEffectComponent>();
-
-            //添加碰撞体
-            AddCollider(unit, unitData, true);
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+                //添加碰撞体
+                AddCollider(unit, unitData, true);
             unit.AddComponent<CharacterStateComponent>();
             unit.AddComponent<CharacterMoveComponent>();
-#if !SERVER
+
             if (!Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
             {
                 unit.AddComponent<CalNumericComponent>();
             }
-#endif
        
 
             if (unitConfig.Skills != null && unitConfig.Skills.Length > 0)

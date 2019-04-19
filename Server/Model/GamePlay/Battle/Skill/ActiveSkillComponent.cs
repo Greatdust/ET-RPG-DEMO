@@ -31,10 +31,28 @@ public class ActiveSkillComponent : ETModel.Component
 
     public CancellationTokenSource cancelToken;//用以执行技能中断的
 
+
+    public ETTaskCompletionSource<bool> tcs;
+
+    public bool usingSkill; // 判定是否尝试使用某个技能. 在此期间不允许使用其他技能.
+    public string currUsingSkillId; //当前正在使用的技能
+
+
     public void Awake()
     {
         skillList = new Dictionary<string, BaseSkill_AppendedData>();
     }
-   
+
+    //中断可能正在执行的技能
+    public void Interrupt(TypeOfInterruption type)
+    {
+        //TODO: 根据当前使用技能允许的可打断类型判定打断是否可以成功
+
+        CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+        if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
+        cancelToken?.Cancel();
+        cancelToken = null;
+    }
+
 }
 

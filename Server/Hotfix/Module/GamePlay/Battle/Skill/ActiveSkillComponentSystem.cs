@@ -14,27 +14,32 @@ namespace ETHotfix
         {
             try
             {
+                if (self.usingSkill) return;
                 if (!self.skillList.ContainsKey(skillId)) return;
                 if (!SkillHelper.CheckIfSkillCanUse(skillId, self.GetParent<Unit>())) return;
                 ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
-                SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+                SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
                 excuteSkillParams.skillId = skillId;
                 excuteSkillParams.source = self.GetParent<Unit>();
                 excuteSkillParams.skillLevel = 1;
+                self.usingSkill = true;
                 bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
+                self.usingSkill = false;
+                self.currUsingSkillId = skillId;
                 if (!canUse) return;
+                //TODO: 暂时先直接取消之前的行动
 
-                //TODO: 暂时先让使用技能的取消之前的行动. 后续需要根据情况判断是否处于前一个技能的硬直/引导等状态
                 self.cancelToken?.Cancel();
                 Game.EventSystem.Run(EventIdType.CancelPreAction, self.GetParent<Unit>());
                 CharacterStateComponent characterStateComponent = self.GetParent<Unit>().GetComponent<CharacterStateComponent>();
                 characterStateComponent.Set(SpecialStateType.NotInControl, true);
                 self.cancelToken = new CancellationTokenSource();
                 excuteSkillParams.cancelToken = self.cancelToken;
-                await SkillHelper.ExcuteActiveSkill(excuteSkillParams);
-                self.cancelToken?.Dispose();
+
+                await SkillHelper.ExecuteActiveSkill(excuteSkillParams);
                 self.cancelToken = null;
                 characterStateComponent.Set(SpecialStateType.NotInControl, false);
+                self.currUsingSkillId = string.Empty;
             }
             catch (Exception e)
             {
@@ -42,6 +47,7 @@ namespace ETHotfix
             }
 
         }
+
 
         public static void AddSkill(this ActiveSkillComponent self, string skillId)
         {

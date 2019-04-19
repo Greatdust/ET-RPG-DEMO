@@ -10,14 +10,24 @@ namespace ETHotfix
 		protected override void Run(ETModel.Session session, InputResult_Move message)
 		{
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
-            UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
-            CommandResult_Move commandResult_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
-            commandResult_Move.Path = new List<Vector3>();
-            for (int i = 0; i < message.PathList.Count; i++)
+            List<Vector3> vector3s = new List<Vector3>();
+            foreach (var v in message.PathList)
             {
-                commandResult_Move.Path.Add(new Vector3(message.PathList[i].X, message.PathList[i].Y, message.PathList[i].Z));
+                vector3s.Add(v.ToV3());
             }
-            unitStateComponent.ReceivedPacket(message.Frame, commandResult_Move);
+            if (unit != ETModel.Game.Scene.GetComponent<UnitComponent>().MyUnit)
+            {
+                unit.GetComponent<CharacterMoveComponent>().MoveAsync(vector3s).Coroutine();
+            }
+            else
+            {
+                UnitStateDelta unitStateDelta = new UnitStateDelta();
+                unitStateDelta.frame = message.Frame;
+                CommandResult_Move commandResult_Move = CommandGCHelper.GetCommandResult<CommandResult_Move>();
+                commandResult_Move.Path = vector3s;
+                unitStateDelta.commandResult = commandResult_Move;
+                unit.GetComponent<CommandComponent>().GetCommandResult(unitStateDelta);
+            }
 
 		}
 	}

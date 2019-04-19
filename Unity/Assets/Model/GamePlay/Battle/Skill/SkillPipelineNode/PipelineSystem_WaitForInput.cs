@@ -8,30 +8,30 @@ using System.Threading.Tasks;
 
 public static class PipelineSystem_WaitForInput
 {
-    public static async ETTask<bool> Execute(this Pipeline_WaitForInput pipeline_WaitForInput, SkillHelper.ExcuteSkillParams skillParams)
+    public static async ETTask<bool> Execute(this Pipeline_WaitForInput pipeline_WaitForInput, SkillHelper.ExecuteSkillParams skillParams)
     {
         await ETTask.CompletedTask;
 #if !SERVER
-        if (skillParams.source != UnitComponent.Instance.MyUnit)
-        {
-            //非玩家角色使用技能直接跳过等待输入步骤.
-            //非玩家角色使用技能的输入来自于其他地方(服务器下发)
-            return true;
-        }
-        CommandInput_UseSkill commandInput_UseSkill = new CommandInput_UseSkill();
-
-        if (SkillHelper.tempData.ContainsKey((skillParams.source, pipeline_WaitForInput.pipelineSignal)))
-        {
-            //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
-            SkillHelper.tempData.Remove((skillParams.source, pipeline_WaitForInput.pipelineSignal));
-        }
         switch (pipeline_WaitForInput.inputType)
         {
 
             //等待用户输入,可能有正确输入/取消/输入超时三种情况
 
             case InputType.Tar:
+                CommandInput_UseSkill commandInput_UseSkill = new CommandInput_UseSkill();
 
+                if (skillParams.source != UnitComponent.Instance.MyUnit)
+                {
+                    //非玩家角色使用技能直接跳过等待输入步骤.
+                    //非玩家角色使用技能的输入来自于其他地方(服务器下发)
+                    return true;
+                }
+
+                if (SkillHelper.tempData.ContainsKey((skillParams.source, pipeline_WaitForInput.pipelineSignal)))
+                {
+                    //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
+                    SkillHelper.tempData.Remove((skillParams.source, pipeline_WaitForInput.pipelineSignal));
+                }
                 BufferValue_TargetUnits bufferValue_TargetUnits = new BufferValue_TargetUnits();
                 bufferValue_TargetUnits.targets = new Unit[1];
                 if (UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputTarget(out bufferValue_TargetUnits.targets[0], pipeline_WaitForInput.findFriend, skillParams.source.UnitData.groupIndex))
@@ -53,6 +53,19 @@ public static class PipelineSystem_WaitForInput
 
                 break;
             case InputType.Dir:
+                commandInput_UseSkill = new CommandInput_UseSkill();
+                if (skillParams.source != UnitComponent.Instance.MyUnit)
+                {
+                    //非玩家角色使用技能直接跳过等待输入步骤.
+                    //非玩家角色使用技能的输入来自于其他地方(服务器下发)
+                    return true;
+                }
+
+                if (SkillHelper.tempData.ContainsKey((skillParams.source, pipeline_WaitForInput.pipelineSignal)))
+                {
+                    //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
+                    SkillHelper.tempData.Remove((skillParams.source, pipeline_WaitForInput.pipelineSignal));
+                }
                 //直接智能施法模式
                 BufferValue_Dir bufferValue_Dir = new BufferValue_Dir();
                 bufferValue_Dir.dir = UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputDir();
@@ -67,6 +80,19 @@ public static class PipelineSystem_WaitForInput
 
                 break;
             case InputType.Pos:
+                commandInput_UseSkill = new CommandInput_UseSkill();
+                if (skillParams.source != UnitComponent.Instance.MyUnit)
+                {
+                    //非玩家角色使用技能直接跳过等待输入步骤.
+                    //非玩家角色使用技能的输入来自于其他地方(服务器下发)
+                    return true;
+                }
+
+                if (SkillHelper.tempData.ContainsKey((skillParams.source, pipeline_WaitForInput.pipelineSignal)))
+                {
+                    //可能还存在着之前使用技能时找到的数据. 所以这里清理掉它
+                    SkillHelper.tempData.Remove((skillParams.source, pipeline_WaitForInput.pipelineSignal));
+                }
                 BufferValue_Pos bufferValue_Pos = new BufferValue_Pos();
                 if (!UnitComponent.Instance.MyUnit.GetComponent<InputComponent>().GetInputPos(out bufferValue_Pos.aimPos))
                 {
@@ -91,13 +117,15 @@ public static class PipelineSystem_WaitForInput
 
                 SpellForTime(pipeline_WaitForInput.value, skillParams).Coroutine();
                 break;
-#else
-#endif
 
-        }
+
+    }
+#else
+
+#endif
         return true;
     }
-    async static ETVoid SpellForTime(float value, SkillHelper.ExcuteSkillParams skillParams)
+    async static ETVoid SpellForTime(float value, SkillHelper.ExecuteSkillParams skillParams)
     {
         CharacterStateComponent characterStateComponent = skillParams.source.GetComponent<CharacterStateComponent>();
         characterStateComponent.Set(SpecialStateType.NotInControl, true);

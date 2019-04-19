@@ -18,28 +18,18 @@ namespace ETModel
 	public sealed class Unit: Entity
 	{
 
-        private Property_Position property_Position;
-        private Property_Rotation property_Rotation;
-		
+        private Vector3 position;
+        private Quaternion rotation;
+
 		public Vector3 Position {
             get
             {
-                if (property_Position == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                }
-                return property_Position.Get();
+                return position;
             }
             set
             {
-                if (property_Position == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    unitState.unitProperty[typeof(Property_Position)] = new Property_Position() { position = value };
-                    property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                }
-                property_Position.Set(value);
+                position = value;
+                OnPositionUpdate?.Invoke(position);
             }
         }
 
@@ -47,22 +37,12 @@ namespace ETModel
         {
             get 
             {
-                if (property_Rotation == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    property_Rotation = unitState.unitProperty[typeof(Property_Rotation)] as Property_Rotation;
-                }
-                return property_Rotation.Get();
+                return rotation;
             }
             set
             {
-                if (property_Rotation == null)
-                {
-                    UnitStateComponent unitState = GetComponent<UnitStateComponent>();
-                    unitState.unitProperty[typeof(Property_Rotation)] = new Property_Rotation() { value = value };
-                    property_Rotation = unitState.unitProperty[typeof(Property_Rotation)] as Property_Rotation;
-                }
-                property_Rotation.Set(value);
+                rotation = value;
+                OnRotationUpdate?.Invoke(rotation);
             }
         }
 
@@ -95,13 +75,13 @@ namespace ETModel
         //从Box2D的世界转换回3D空间
         public void UpdatePosFromPhysic(System.Numerics.Vector2 vector2)
         {
-            property_Position.Set(vector2.ToVector3(Position.y));
+            position = vector2.ToVector3(position.y);
         }
 
         //从Box2D的世界转换回3D空间
         public void UpdateRotFromPhysic(Rotation rotation)
         {
-            property_Rotation.Set(rotation.ToRotation3D());
+            this.rotation = rotation.ToRotation3D();
         }
 
         public UnitData UnitData

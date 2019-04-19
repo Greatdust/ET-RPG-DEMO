@@ -57,8 +57,8 @@ public class BuffHandler_PushBack : BaseBuffHandler, IBuffActionWithGetInputHand
         float moveSpeed = Vector3.Distance(unit.Position, target) / buff.moveDuration;
         CharacterStateComponent characterStateComponent = unit.GetComponent<CharacterStateComponent>();
         characterStateComponent.Set(SpecialStateType.NotInControl, true);
-        //先让击退强制打断任意技能.以后可能要增加状态判断.
-        unit.GetComponent<ActiveSkillComponent>().Interrupt();
+        //击退效果尝试打断. 以后这里要传参数,代表打断来源,然后下面这个方法里判断来源和技能允许被打断的类型
+        unit.GetComponent<ActiveSkillComponent>().Interrupt(TypeOfInterruption.FromNotInControl);
         await characterMoveComponent.PushBackedTo(target, moveSpeed);
         characterStateComponent.Set(SpecialStateType.NotInControl, false);
     }

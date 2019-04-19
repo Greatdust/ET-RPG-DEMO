@@ -5,9 +5,9 @@ using UnityEngine;
 namespace ETHotfix
 {
 	[ActorMessageHandler(AppType.Map)]
-	public class CommandInputInfo_MoveHandler : AMActorLocationHandler<Unit, CommandInputInfo_Move>
+	public class CommandInputInfo_MoveHandler : AMActorLocationHandler<Unit, Input_Move>
 	{
-		protected override void Run(Unit unit, CommandInputInfo_Move message)
+		protected override void Run(Unit unit, Input_Move message)
 		{
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
             

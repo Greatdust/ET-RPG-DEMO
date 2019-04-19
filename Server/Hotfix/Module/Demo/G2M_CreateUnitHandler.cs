@@ -29,16 +29,11 @@ namespace ETHotfix
                 unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
 
 
-                Dictionary<Type, IProperty> unitProperty = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position();
-                property_Position.Set(new Vector3(-10, 0, -10));
-                Property_Rotation property_Rotation = new Property_Rotation();
-                property_Rotation.Set(Quaternion.identity);
-                unitProperty.Add(typeof(Property_Position), property_Position);
-                unitProperty.Add(typeof(Property_Rotation), property_Rotation);
+                unit.Position = new Vector3(-10, 0, -10);
+           
 
                 UnitStateComponent stateCom = unit.GetComponent<UnitStateComponent>();
-                stateCom.Init(unitProperty);
+     
                 Game.Scene.GetComponent<UnitStateMgrComponent>().Add(stateCom);
 
                 Game.Scene.GetComponent<UnitComponent>().Add(unit);
@@ -54,9 +49,8 @@ namespace ETHotfix
                 {
                     UnitInfo unitInfo = new UnitInfo();
                     UnitStateComponent unitStateComponent = u.GetComponent<UnitStateComponent>();
-                    Vector3 pos = ((Property_Position)unitStateComponent.unitProperty[typeof(Property_Position)]).Get();
-                    unitInfo.Position = new Vector3Info() { X = pos.x, Y = pos.y, Z = pos.z };
-                    unitInfo.Dir = new Vector3Info() { X = 0, Y = 0, Z = 1 };
+                    unitInfo.Position = u.Position.ToV3Info();
+                    unitInfo.Dir = Vector3.forward.ToV3Info();
                     unitInfo.UnitId = u.Id;
                     unitInfo.GroupIndex = (int)u.UnitData.groupIndex;
                     unitInfo.LayerMask = (int)u.UnitData.layerMask;

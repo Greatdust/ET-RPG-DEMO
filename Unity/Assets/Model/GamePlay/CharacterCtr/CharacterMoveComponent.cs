@@ -56,6 +56,8 @@ namespace ETModel
         public Unit unit;
 #if !SERVER
         public AnimatorComponent animatorComponent;
+#else
+
 #endif
         public Vector3 moveTarget;
         public Vector3 startPosition;
@@ -110,7 +112,7 @@ namespace ETModel
 
         public ETTask MoveTo(Vector3 target, float speed)
         {
-            if (Vector3.Distance(target, GetParent<Unit>().Position) < 0.05f) return ETTask.CompletedTask;
+            if (Vector3.Distance(target, moveTarget) < 0.05f) return ETTask.CompletedTask;
             moveTarget = target;
             float distance = Vector3.Distance(unit.Position, moveTarget);
             moveType = MoveType.Move;
@@ -131,15 +133,15 @@ namespace ETModel
         public ETTask PushBackedTo(Vector3 target, float speed)
         {
             moveTarget = target;
-            RayCastStaticObjCallback rayCast = new RayCastStaticObjCallback();
-            Game.Scene.GetComponent<PhysicWorldComponent>().world.RayCast(rayCast, GetParent<Unit>().Position.ToVector2(), moveTarget.ToVector2());
-            if (rayCast.Hit)
+         
+#if !SERVER
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
             {
-                var dir = moveTarget - GetParent<Unit>().Position;
-                moveTarget = (rayCast.Point - dir.normalized.ToVector2() * GetParent<Unit>().GetComponent<P2DBodyComponent>().fixture.Shape.Radius).ToVector3(moveTarget.y);
-
-                Log.Debug(string.Format("射线检测点+{0}  ", moveTarget));
+                RaycastPushBackPos(ref moveTarget);
             }
+#else
+            RaycastPushBackPos(ref moveTarget);
+#endif
             float distance = Vector3.Distance(unit.Position, moveTarget);
             moveType = MoveType.PushedBack;
             moveSpeed = speed;
@@ -160,6 +162,19 @@ namespace ETModel
             return moveTcs.Task;
         }
 
+        void RaycastPushBackPos(ref Vector3 moveTarget)
+        {
+            RayCastStaticObjCallback rayCast = new RayCastStaticObjCallback();
+            Game.Scene.GetComponent<PhysicWorldComponent>().world.RayCast(rayCast, GetParent<Unit>().Position.ToVector2(), moveTarget.ToVector2());
+            if (rayCast.Hit)
+            {
+                var dir = moveTarget - GetParent<Unit>().Position;
+                moveTarget = (rayCast.Point - dir.normalized.ToVector2() * GetParent<Unit>().GetComponent<P2DBodyComponent>().fixture.Shape.Radius).ToVector3(moveTarget.y);
+
+                Log.Debug(string.Format("射线检测点+{0}  ", moveTarget));
+            }
+        }
+
         private void CharacterMoveComponent_OnCollisionEnterHandler(Unit obj, Vector3 pos)
         {
 
@@ -170,8 +185,6 @@ namespace ETModel
 
         public void FixedUpdate()
         {
-            var Body = GetParent<Unit>().GetComponent<P2DBodyComponent>().body;
-            Vector3 aim = GetParent<Unit>().Position;
             if (moveTcs != null)
             {
         
@@ -201,11 +214,9 @@ namespace ETModel
                     unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, EventSystem.FixedUpdateTime * 15);
                 }
            
-                Body.SetLinearVelocity(moveDir.ToVector2() * moveSpeed);
                 float amount = (timeNow - this.startTime) * 1f / needTime;
-                aim = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
+                unit.Position = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
             }
-            unit.Position = new Vector3(Body.GetPosition().X, aim.y, Body.GetPosition().Y);
         }
 
 

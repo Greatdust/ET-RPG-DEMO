@@ -102,11 +102,16 @@ public abstract class BaseSkillData
     [LabelText("使用条件")]
     [LabelWidth(100)]
     public List<IActiveConditionData> activeConditionDatas = new List<IActiveConditionData>();//技能是否可以执行的检测条件
-    [TabGroup("流程内容",Order = 2)]
+    [TabGroup("流程内容")]
     [LabelText("流程内容,排列顺序等于执行顺序")]
     [LabelWidth(100)]
     [ListDrawerSettings(ShowIndexLabels = true)]
     public List<BasePipelineData> pipelineDatas = new List<BasePipelineData>();
+    [TabGroup("流程内容")]
+    [LabelText("结果判定,伤害/特殊效果的结算应该在这里执行")]
+    [LabelWidth(100)]
+    [ListDrawerSettings(ShowIndexLabels = true)]
+    public List<BasePipelineData> applyDatas = new List<BasePipelineData>(); 
     [TabGroup("基础信息")]
     [LabelText("打断类型")]
     [LabelWidth(100)]
@@ -148,6 +153,23 @@ public abstract class BaseSkillData
         List<BaseBuffData> buffDatas = new List<BaseBuffData>();
 
         foreach (var v in pipelineDatas)
+        {
+            PipelineDataWithBuff withBuff = v as PipelineDataWithBuff;
+            if (withBuff != null)
+            {
+                foreach (var buff in withBuff.buffs)
+                {
+                    foreach (var type in types)
+                    {
+                        if (buff.buffData.GetBuffIdType() == type)
+                        {
+                            buffDatas.Add(buff.buffData);
+                        }
+                    }
+                }
+            }
+        }
+        foreach (var v in applyDatas)
         {
             PipelineDataWithBuff withBuff = v as PipelineDataWithBuff;
             if (withBuff != null)

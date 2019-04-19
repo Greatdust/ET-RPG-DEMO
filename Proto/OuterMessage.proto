@@ -164,6 +164,16 @@ message InputResult_UseSkill // IActorMessage
 	bool success = 3;
 }
 
+message M2C_Pushback // IActorMessage
+{
+	int64 ActorId = 93;
+	
+	int64 Id = 1;
+
+	Vector3Info moveTarget = 2;
+	float speed = 3;
+}
+
 
 message Vector3Info
 {

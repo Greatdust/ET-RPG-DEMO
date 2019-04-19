@@ -10,7 +10,7 @@ using UnityEngine;
 using Box2DSharp.Collision.Shapes;
 
 [BuffType(BuffIdType.EmitObj)]
-public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandler
+public class BuffHandler_EmitObj : BaseBuffHandler, IBuffActionWithGetInputHandler
 {
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
@@ -58,7 +58,7 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
                 go.SetActive(true);
 #else
 
-                Unit unit = ETHotfix.UnitFactory.CreateEmitObj(emitObjData,buff.emitObjId);
+                Unit unit = ETHotfix.UnitFactory.CreateEmitObj(emitObjData, buff.emitObjId);
 #endif
                 Vector3 dir = (v.Position - buffHandlerVar.source.Position).normalized;
                 Vector3 startPosOffset = buff.startPosOffset.ToV3();
@@ -103,33 +103,21 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
 
     async ETVoid CollisionEvent_LockTarget(BuffHandlerVar buffHandlerVar, Unit emitObj, Unit target, float speed)
     {
-        Buff_EmitObj buff = buffHandlerVar.data as Buff_EmitObj;
-
         var result = await emitObj.GetComponent<EmitObjMoveComponent>().MoveTo(target, speed);
-        BuffHandlerVar newVar = buffHandlerVar;
-
-        newVar.bufferValues = new Dictionary<Type, IBufferValue>();
-        //万一提前被其他人挡了
-        newVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { result.Item1 } }; // 产出目标单位
-        newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 }; // 产出碰撞位置
-        Vector3 dir = (result.Item2 - emitObj.Position).normalized;
-        newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0, dir.z) }; // 产出方向,为了实现击退等效果
-#if !SERVER
-        var go = emitObj.GameObject;
-        emitObj.RemoveGameObject();
-        Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.emitObjId, go);
-#endif
-        emitObj.Dispose();
-        SkillHelper.collisionActions[(buffHandlerVar.source,buff.pipelineSignal)](newVar);
-
+        ExecuteCollisionResult(buffHandlerVar, result, emitObj);
 
     }
 
     async ETVoid CollisionEvent(BuffHandlerVar buffHandlerVar, Unit emitObj, Vector3 targetPos, float speed)
     {
-        Buff_EmitObj buff = buffHandlerVar.data as Buff_EmitObj;
-
         var result = await emitObj.GetComponent<EmitObjMoveComponent>().MoveTo(targetPos, speed);
+        ExecuteCollisionResult(buffHandlerVar, result, emitObj);
+
+    }
+
+    void ExecuteCollisionResult(BuffHandlerVar buffHandlerVar, (Unit, Vector3) result, Unit emitObj)
+    {
+        Buff_EmitObj buff = buffHandlerVar.data as Buff_EmitObj;
         BuffHandlerVar newVar = buffHandlerVar;
 
         newVar.bufferValues = new Dictionary<Type, IBufferValue>();
@@ -138,15 +126,18 @@ public class BuffHandler_EmitObj : BaseBuffHandler,IBuffActionWithGetInputHandle
             newVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[] { result.Item1 } };
         newVar.bufferValues[typeof(BufferValue_Pos)] = new BufferValue_Pos() { aimPos = result.Item2 };
         Vector3 dir = (result.Item2 - emitObj.Position).normalized;
-        newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x,0,dir.z) };
+        newVar.bufferValues[typeof(BufferValue_Dir)] = new BufferValue_Dir() { dir = new Vector3(dir.x, 0, dir.z) };
 #if !SERVER
         var go = emitObj.GameObject;
         emitObj.RemoveGameObject();
         Game.Scene.GetComponent<EffectCacheComponent>().Recycle(buff.emitObjId, go);
 #endif
         emitObj.Dispose();
-
-        SkillHelper.collisionActions[(buffHandlerVar.source, buff.pipelineSignal)](newVar);
+#if !SERVER
+        if (GlobalConfigComponent.Instance.networkPlayMode) return;
+#endif
+        Log.Debug("碰撞事件");
+        SkillHelper.ExecuteApplyData(buff.pipelineSignal, SkillHelper.GetBaseSkillData(newVar.skillId), newVar).Coroutine();
     }
 
 }

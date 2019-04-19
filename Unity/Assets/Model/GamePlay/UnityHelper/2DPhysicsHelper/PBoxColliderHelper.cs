@@ -32,7 +32,7 @@ public class PBoxColliderHelper : PBaseColliderHelper
             {
                 System.Numerics.Vector2 pos = bodyComponent.body.GetPosition();
                 float angle = bodyComponent.body.GetAngle();
-                PGizmosUtility.DebugDrawBox(new Vector3(pos.X, bodyComponent.GetParent<Unit>().Position.y + bodyComponent.GetParent<Unit>().OffsetY, pos.Y), Quaternion.Euler(new Vector3(0, -angle * 180 / Settings.Pi, 0)), Vector3.one, size, Color.green);
+                PGizmosUtility.DebugDrawBox(new Vector3(pos.X, bodyComponent.GetParent<Unit>().Position.y + bodyComponent.GetParent<Unit>().OffsetY, pos.Y), Quaternion.Euler(new Vector3(0, -angle * 180 / Settings.Pi, 0)), Vector3.one, size, Color.red);
             }
         }
     }

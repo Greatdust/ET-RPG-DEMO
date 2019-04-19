@@ -116,13 +116,21 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\CharacterMoveComponent.cs" Link="GamePlay\CharacterCtr\CharacterMoveComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\CharacterStateComponent.cs" Link="GamePlay\CharacterCtr\CharacterStateComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\SpecialStateType.cs" Link="GamePlay\CharacterCtr\SpecialStateType.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Command.cs" Link="Command\Command.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInputAttribute.cs" Link="Command\CommandInputAttribute.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_Move.cs" Link="Command\CommandInput\CommandInput_Move.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_Move.cs" Link="Command\CommandResult\CommandResult_Move.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandSimulaterComponent.cs" Link="Command\CommandSimulaterComponent.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_Move.cs" Link="Command\System\CommandInputSystem_Move.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\UnitStateDelta.cs" Link="Command\UnitStateDelta.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Command.cs" Link="GamePlay\Command\Command.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInputAttribute.cs" Link="GamePlay\Command\CommandInputAttribute.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_Move.cs" Link="GamePlay\Command\CommandInput\CommandInput_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_UseSkill_Pos.cs" Link="GamePlay\Command\CommandInput\CommandInput_UseSkill_Pos.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_Move.cs" Link="GamePlay\Command\CommandResult\CommandResult_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_UseSkill.cs" Link="GamePlay\Command\CommandResult\CommandResult_UseSkill.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandSimulaterComponent.cs" Link="GamePlay\Command\CommandSimulaterComponent.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Math\NetworkDataConvert.cs" Link="GamePlay\Command\Math\NetworkDataConvert.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\CharacterState\P_NotInControl.cs" Link="GamePlay\Command\Property\CharacterState\P_NotInControl.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\CharacterState\P_UseSkill.cs" Link="GamePlay\Command\Property\CharacterState\P_UseSkill.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\IProperty.cs" Link="GamePlay\Command\Property\IProperty.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\P_Position.cs" Link="GamePlay\Command\Property\P_Position.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\P_Rotation.cs" Link="GamePlay\Command\Property\P_Rotation.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_Move.cs" Link="GamePlay\Command\System\CommandInputSystem_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\UnitStateDelta.cs" Link="GamePlay\Command\UnitStateDelta.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Helper\TimeSpanHelper.cs" Link="Base\Helper\TimeSpanHelper.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\ActorLocation\IActorLocationMessage.cs">
       <Link>Module\ActorLocation\IActorLocationMessage.cs</Link>
@@ -391,10 +399,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\RecyclableMemoryStream\" />
-    <Folder Include="Command\CommandInput\" />
-    <Folder Include="Command\CommandResult\" />
-    <Folder Include="Command\Property\" />
-    <Folder Include="Command\System\" />
+    <Folder Include="GamePlay\Command\CommandInput\" />
+    <Folder Include="GamePlay\Command\CommandResult\" />
+    <Folder Include="GamePlay\Command\Property\CharacterState\" />
+    <Folder Include="GamePlay\Command\System\" />
     <Folder Include="Component\Config\" />
     <Folder Include="GamePlay\Battle\ActiveCondition\Data\" />
     <Folder Include="GamePlay\Battle\ActiveCondition\Handler\" />
@@ -402,6 +410,7 @@
     <Folder Include="GamePlay\Battle\Buff\Handler\" />
     <Folder Include="GamePlay\Battle\Skill\PipelineNode\" />
     <Folder Include="GamePlay\Battle\Skill\Programmable\" />
+    <Folder Include="GamePlay\Command\Math\" />
     <Folder Include="GamePlay\Physics\Shape\" />
     <Folder Include="GamePlay\Battle\EmitObj\" />
     <Folder Include="Module\Message\Network\KCP\" />

@@ -16,27 +16,19 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
 
     public IBufferValue[] ActionHandle(BuffHandlerVar buffHandlerVar)
     {
-#if !SERVER
-        if (Game.Scene.GetComponent<GlobalConfigComponent>().networkPlayMode)
+        Buff_RangeDetection buff_RangeDetection = (Buff_RangeDetection)buffHandlerVar.data;
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
         {
-            //联网模式是服务器发消息,才执行
             return null;
         }
-#endif
         //主要目的是返回多个群体目标对象
         BufferValue_TargetUnits bufferValue_TargetUnits = new BufferValue_TargetUnits();
-
-        Buff_RangeDetection buff_RangeDetection = (Buff_RangeDetection)buffHandlerVar.data;
 
 
         PolyshapeQueryCallback polyshapeQueryCallback = new PolyshapeQueryCallback();
         AABB ab = new AABB();
 
-        if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos bufferValue_Pos))
-        {
-            Log.Error("检测没有收到位置  " + buffHandlerVar.skillId);
-            return null;
-        }
         switch (buff_RangeDetection.shapeType)
         {
             case Buff_RangeDetection.CollisionShape.Box:
@@ -62,7 +54,7 @@ public class BuffHandler_RangeDetection : BaseBuffHandler, IBuffActionWithSetOut
                 Vertices[1].Set(hx, -hy);
                 Vertices[2].Set(hx, hy);
                 Vertices[3].Set(-hx, hy);
-                // Transform vertices and normals.
+          
                 for (var i = 0; i < 4; ++i)
                 {
                     Vertices[i] = MathUtils.Mul(transform, Vertices[i]);

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace ETModel
 {
 
-    public class UnitStateDelta
+    public struct UnitStateDelta
     {
         public int frame;
-        public Dictionary<Type, ICommandResult> commandResults = new Dictionary<Type, ICommandResult>();
+        public ICommandResult commandResult;
         
     }
 }

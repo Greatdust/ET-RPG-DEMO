@@ -162,23 +162,6 @@ namespace ETModel
         public void GetCommandResult(UnitStateDelta unitStateDelta)
         {
 
-            //if (preActualFrame == 0)
-            //{
-            //    //考虑到初始位置需要经过一段时间降落在地
-            //    foreach (var v in unitStateDelta.commandResults.Values)
-            //    {
-            //        switch (v)
-            //        {
-            //            case CommandResult_Move result:
-            //                Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-            //                property_Position.Set(result.postion);
-            //                unit.Position = result.postion;
-            //                continue;
-            //        }
-            //    }
-
-            //}
-
             //延迟太高了,迟迟收不到服务器发过来的确认消息
             if (simulateFrame - unitStateDelta.frame > maxDiffFrame)
             {
@@ -186,19 +169,18 @@ namespace ETModel
                 simulateFrame = unitStateDelta.frame;
                 preActualFrame = simulateFrame;
                 //拉扯回来
-                foreach (var v in unitStateDelta.commandResults.Values)
+
+                switch (unitStateDelta.commandResult)
                 {
-                    switch (v)
-                    {
-                        case CommandResult_Move result:
-                            //设置当前位置
-                            unit.Position = result.Path[0];
-       
-                            //再预测这一帧的结果
-                            unit.GetComponent<CharacterMoveComponent>().MoveAsync(result.Path).Coroutine();
-                            continue;
-                    }
+                    case CommandResult_Move result:
+                        //设置当前位置
+                        unit.Position = result.Path[0];
+
+                        //再预测这一帧的结果
+                        unit.GetComponent<CharacterMoveComponent>().MoveAsync(result.Path).Coroutine();
+                        break;
                 }
+
                 return;
             }
             if (preActualFrame != unitStateDelta.frame)
@@ -218,29 +200,33 @@ namespace ETModel
             }
             bool needRecal = false;
             if (cacheCommands.ContainsKey(unitStateDelta.frame))
-                foreach (var v in cacheCommands[unitStateDelta.frame])
+            {
+                switch (unitStateDelta.commandResult)
                 {
-                    switch (v.commandResult)
-                    {
-                        case CommandResult_Move simulateMove:
+                    case CommandResult_Move actualMove:
+                        foreach (var v in cacheCommands[unitStateDelta.frame])
+                        {
+                            if (v.commandResult is CommandResult_Move simulateMove)
+                            {
+                                Log.Debug("frame : " + unitStateDelta.frame + "  收到服务器发过来的路径: " + actualMove.Path.ListToString<Vector3>());
+                                if (Vector3.Distance(simulateMove.Path[0], actualMove.Path[0]) < 0.05f
+                                    && Vector3.Distance(simulateMove.Path[simulateMove.Path.Count - 1], actualMove.Path[actualMove.Path.Count - 1]) < 0.05f)
+                                {
 
-                            CommandResult_Move actualMove = unitStateDelta.commandResults[v.commandResult.GetType()] as CommandResult_Move;
-                            Log.Debug("frame : "+ unitStateDelta.frame+  "  收到服务器发过来的路径: " + actualMove.Path.ListToString<Vector3>());
-                            //if (Vector3.Distance(simulateMove.postion, actualMove.postion) < 1f)
-                            //{
-                            //    continue;
-                            //}
-                            //else
-                            //{
+                                    break;
+                                }
+                                else
+                                {
+                                    needRecal = true;
+                                    unit.Position = actualMove.Path[0];
+                                    break;
+                                }
+                            }
+                        }
 
-                            //    simulateMove.postion = actualMove.postion;
-                            //    needRecal = true;
-                            //    Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-                            //    property_Position.Set(actualMove.postion);
-                            //}
-                            break;
-                    }
+                        break;
                 }
+            }
             
             preActualFrame = unitStateDelta.frame;
             if (needRecal)
@@ -254,27 +240,38 @@ namespace ETModel
         public void ReCal(int startFrame)
         {
 
-            for (int i = startFrame; i <= simulateFrame; i++)
+            //for (int i = startFrame; i <= simulateFrame; i++)
+            //{
+            //    if (cacheCommands.ContainsKey(i))
+            //        foreach (var v in cacheCommands[i])
+            //        {
+
+            //            switch (v.commandInput)
+            //            {
+            //                case CommandInput_Move input_Move:
+
+            //                    CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
+            //                    v.commandResult = result_Move;
+            //                    //直接拉扯
+            //                    break;
+            //            }
+            //        }
+            //}
+            //移动的话,直接取最后一次的目标作为目标就好了.
+            foreach (var v in cacheCommands[simulateFrame])
             {
-                if (cacheCommands.ContainsKey(i))
-                    foreach (var v in cacheCommands[i])
-                    {
 
-                        switch (v.commandInput)
-                        {
-                            case CommandInput_Move input_Move:
+                switch (v.commandInput)
+                {
+                    case CommandInput_Move input_Move:
 
-                                CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
-                                v.commandResult = result_Move;
-                                //直接拉扯
-                                break;
-                        }
-                    }
+                        CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
+                        v.commandResult = result_Move;
+                        //直接拉扯
+                        unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
+                        break;
+                }
             }
-            Property_Position property_Position = unitState.unitProperty[typeof(Property_Position)] as Property_Position;
-            //直接拉扯
-            unit.Position = property_Position.Get();
-
 
         }
 

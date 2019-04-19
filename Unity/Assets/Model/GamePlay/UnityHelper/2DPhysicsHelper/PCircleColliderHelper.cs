@@ -18,14 +18,14 @@ public class PCircleColliderHelper : PBaseColliderHelper
     protected override void OnDrawGizmosEvent()
     {
         if (!Application.isPlaying)
-            PGizmosUtility.DebugDrawCylinder(transform.position + offset, Quaternion.identity, Vector3.one, radius, height, 1, Color.green);
+            PGizmosUtility.DebugDrawCylinder(transform.position + offset, Quaternion.identity, Vector3.one, radius, height, 1, Color.red);
         else
         {
             if (bodyComponent != null && !bodyComponent.IsDisposed)
             {
                 System.Numerics.Vector2 pos = bodyComponent.body.GetPosition();
                 float angle = bodyComponent.body.GetAngle();
-                PGizmosUtility.DebugDrawCylinder(new Vector3(pos.X, bodyComponent.GetParent<Unit>().Position.y + bodyComponent.GetParent<Unit>().OffsetY, pos.Y), Quaternion.Euler(new Vector3(0, -angle * 180 / Settings.Pi, 0)), Vector3.one, radius, height, 1, Color.green);
+                PGizmosUtility.DebugDrawCylinder(new Vector3(pos.X, bodyComponent.GetParent<Unit>().Position.y + bodyComponent.GetParent<Unit>().OffsetY, pos.Y), Quaternion.Euler(new Vector3(0, -angle * 180 / Settings.Pi, 0)), Vector3.one, radius, height, 1, Color.red);
             }
         }
     }

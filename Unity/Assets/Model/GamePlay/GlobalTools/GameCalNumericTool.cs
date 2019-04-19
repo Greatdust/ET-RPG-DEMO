@@ -11,31 +11,15 @@ public static class GameCalNumericTool
 {
     public enum DamageType
     {
-        physic,
-        magic
+        Physic,
+        Magic,
+        //TODO 以后再加个真实伤害
     }
     public struct DamageData
     {
         public DamageType damageType;
         public int damageValue;//伤害值
         public bool isCritical;//是否是暴击伤害
-    }
-    /// <summary>
-    /// 返回实际上的下一次行动的行动周期时间
-    /// </summary>
-    /// <param name="baseInterval"></param>
-    /// <param name="unitSpeed"></param>
-    /// <param name="timeImpactByUnitAction"></param>
-    /// <returns></returns>
-    public static float GetActionInterval(float baseInterval,int unitSpeed,float timeImpactByUnitAction)
-    {
-        float minInterval = 0.3f;
-        float unitTime = (baseInterval + timeImpactByUnitAction) * (1 - (unitSpeed / (100 + unitSpeed)));
-        if (unitTime <= minInterval)
-        {
-            unitTime = minInterval;
-        }
-        return unitTime;
     }
 
     public static bool CalFinalDamage(long sourceUnitId,long destUnitId,DamageData skillDamageValue)
@@ -86,7 +70,7 @@ public static class GameCalNumericTool
 
             NumericType resistType  = NumericType.ArmorResist;
 
-            if (skillDamageValue.damageType != DamageType.physic)
+            if (skillDamageValue.damageType != DamageType.Physic)
             {
                 resistType = NumericType.MagicResist;
 
@@ -140,7 +124,7 @@ public static class GameCalNumericTool
         NumericComponent destUnitNumericCom = destUnit.GetComponent<NumericComponent>();
         NumericType resistType = NumericType.ArmorResist;
 
-        if (dot.damageType != DamageType.physic)
+        if (dot.damageType != DamageType.Physic)
         {
             resistType = NumericType.MagicResist;
 

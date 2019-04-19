@@ -37,6 +37,11 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_RangeDetection.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_RangeDetection.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\Handler\BuffHandler_UpdateNumeric.cs" Link="Module\GamePlay\Battle\Buff\Handler\BuffHandler_UpdateNumeric.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillHelper.cs" Link="Module\GamePlay\Battle\Skill\SkillHelper.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_Cycle.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_Cycle.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_FindTarget.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_FindTarget.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_FixedTime.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_FixedTime.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_Programmable.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_Programmable.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_WaitForInput.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_WaitForInput.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\Message\NetOuterComponentSystem.cs">
       <Link>Module\Message\NetOuterComponentSystem.cs</Link>
     </Compile>
@@ -51,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Module\GamePlay\Battle\Buff\Handler\" />
+    <Folder Include="Module\GamePlay\Battle\Skill\PipelineNode\" />
     <Folder Include="Module\Http\" />
   </ItemGroup>
 </Project>

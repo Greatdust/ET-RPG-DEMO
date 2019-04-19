@@ -41,6 +41,10 @@ namespace ETModel
 
         public ETCancellationTokenSource cancelToken;
 
+        public InputResult_Move inputResult_Move = new InputResult_Move();
+        public InputResult_UseSkill inputResult_UseSkill = new InputResult_UseSkill();
+
+
         public void Awake()
         {
             unitStatesDic = new Dictionary<int, UnitStateDelta>();

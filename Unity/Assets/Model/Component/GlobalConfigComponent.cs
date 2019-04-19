@@ -14,8 +14,6 @@
 		public static GlobalConfigComponent Instance;
 		public GlobalProto GlobalProto;
 
-        public GameGlobalConfig globalConfig;
-
         public bool networkPlayMode = true;//联网游戏模式
 
 

@@ -32,6 +32,7 @@ public class BuffHandler_PlayEffect : BaseBuffHandler,IBuffActionWithGetInputHan
         {
             if (!buffHandlerVar.GetBufferValue(out BufferValue_Pos pos))
             {
+                Log.Debug("找不到位置");
                 return;
             }
             PlayEffect(pos.aimPos, buff, buffHandlerVar).Coroutine();
@@ -80,7 +81,7 @@ public class BuffHandler_PlayEffect : BaseBuffHandler,IBuffActionWithGetInputHan
 
     public async ETVoid PlayEffect(Vector3 target, Buff_PlayEffect buff, BuffHandlerVar buffHandlerVar)
     {
-
+        Log.Debug("播放特效");
         UnityEngine.GameObject go = null;
         go = Game.Scene.GetComponent<EffectCacheComponent>().Get(buff.effectObjId);//先找到缓存的特效物体
 

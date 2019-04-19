@@ -10,15 +10,14 @@ using static BaseSkillData;
 
 public enum Pipeline_TriggerType
 {
-    碰撞检测,//该项的所有Buff被触发的条件是上一个的所有BUFF触发后,经过几个特殊的,比如碰撞的事件后,触发该项
     固定时间,//一定时间后触发,本身又持续一定的时间
     循环开始,//用以控制后续多少个pipeline节点重复执行多少次.主要目的是实现盖伦E,闪电链,暴风雪这种持续伤害的技能
     循环结束, // 标记循环结束的节点
     等待用户输入,  //这个目的是为了接收用户输入的数据,传输到后续Pipeline中. 比如选择一个目标/方向/范围使用技能,蓄力类技能,引导类技能等,
     自动寻找目标, //这个目的是为了处理一些BUFF直接作用于自身,以自身为中心的范围内的目标,或者敌方队伍全体,我方队伍全体这种情况
     可编程,// 这个目的是暴露全部可以支持的Buff作为借口供外部脚本使用.
-    条件判断 // 用以实现技能执行时满足一些条件执行A,满足另一些条件执行B的情况.比如一个技能的效果是发射一枚火球,但是有30%的概率连续发射两枚,或者周围环境是火焰环境,火球变成火龙
-     
+    条件判断, // 用以实现技能执行时满足一些条件执行A,满足另一些条件执行B的情况.比如一个技能的效果是发射一枚火球,但是有30%的概率连续发射两枚,或者周围环境是火焰环境,火球变成火龙
+    效果结算,//该项是技能的流程内容和结算节点联系起来的唯一渠道.
 }
 
 [Serializable]
@@ -70,17 +69,6 @@ public class Pipeline_FixedTime : PipelineDataWithBuff
     }
 }
 
-[LabelText("碰撞事件")]
-[LabelWidth(150)]
-[GUIColor(133 / 255.0f, 250 / 255.0f, 103 / 255.0f, 1f)]
-[Serializable]
-public class Pipeline_Collision : PipelineDataWithBuff
-{
-    public override Pipeline_TriggerType GetTriggerType()
-    {
-        return Pipeline_TriggerType.碰撞检测;
-    }
-}
 
 [LabelText("循环开始")]
 [LabelWidth(150)]
@@ -104,6 +92,7 @@ public class Pipeline_CycleStart : BasePipelineData
 [Serializable]
 public class Pipeline_CycleEnd : BasePipelineData
 {
+    public float waitTime; // 等待多少时间继续下一次循环(注意最后一次循环不等待这个时间了)
     public override Pipeline_TriggerType GetTriggerType()
     {
         return Pipeline_TriggerType.循环结束;
@@ -213,5 +202,20 @@ public class Pipeline_FindTarget : BasePipelineData
     public override Pipeline_TriggerType GetTriggerType()
     {
         return Pipeline_TriggerType.自动寻找目标;
+    }
+}
+
+
+[LabelText("效果结算")]
+[LabelWidth(150)]
+[GUIColor(133 / 255.0f, 250 / 255.0f, 103 / 255.0f, 1f)]
+[Serializable]
+public class Pipeline_ApplyData : BasePipelineData
+{
+    public string applyPipelineSignal;//执行哪个PipelineNode中的内容. 对应的PipelineNode位于 ActiveSkillData中的ApplyDatas中
+
+    public override Pipeline_TriggerType GetTriggerType()
+    {
+        return Pipeline_TriggerType.效果结算;
     }
 }

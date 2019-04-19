@@ -28,7 +28,7 @@ namespace ETModel
     //每个Unit身上挂的一个状态组件
     public class UnitStateComponent : Component
     {
-        public Dictionary<int, UnitStateDelta> unitStatesDic; // 存储的是对应帧玩家状态的增量更新
+        public Dictionary<int, List<ICommandResult>> unitStatesDic; // 存储的是对应帧玩家状态的增量更新
 
         public Dictionary<Type, IProperty> unitProperty; //存储玩家现在帧的所有状态数据
 
@@ -55,7 +55,7 @@ namespace ETModel
 
         public void Awake()
         {
-            unitStatesDic = new Dictionary<int, UnitStateDelta>();
+            unitStatesDic = new Dictionary<int, List<ICommandResult>>();
             unitProperty = new Dictionary<Type, IProperty>();
             simulaterComponent = Game.Scene.GetComponent<CommandSimulaterComponent>();
             AdjustRemoteEstimatedFrame();
@@ -103,7 +103,7 @@ namespace ETModel
             //float applyProgress = Mathf.Clamp01((float)(remoteEstimatedFrame - preActualFrame) / (remoteActualFrame - preActualFrame));//应用的进度,上一次实际帧和这一次实际帧之间
             
             //应用模拟的结果
-            foreach (var v in unitStatesDic[remoteActualFrame].commandResults.Values)
+            foreach (var v in unitStatesDic[remoteActualFrame])
             {
                 switch (v)
                 {
@@ -130,50 +130,38 @@ namespace ETModel
             haveInited = true;
         }
 
-        public void ReceivedPacket(int frame,ICommandResult commandResult)
+        public void ReceivedPacket(int frame, ICommandResult commandResult)
         {
-            UnitStateDelta unitState;
-            if (unitStatesDic.ContainsKey(frame))
+
+            if (frame <= remoteActualFrame)
             {
-                unitState = unitStatesDic[frame];
-                unitState.commandResults[commandResult.GetType()] = commandResult;
+                //这是包顺序错了,目前处理是直接丢掉
+                return;
             }
-            else
+            //重置上一个快照的属性
+            foreach (var v in pre_unitProperty)
             {
 
-                unitState = new UnitStateDelta();
-                unitState.frame = frame;
-                unitState.commandResults.Add(commandResult.GetType(), commandResult);
-                if (unitState.frame <= remoteActualFrame)
+                switch (v.Value)
                 {
-                    //这是包顺序错了,目前处理是直接丢掉
-                    return;
+                    case P_Position position:
+                        position.Value = ((P_Position)unitProperty[v.Key]).Value;
+                        break;
                 }
-                //重置上一个快照的属性
-                foreach (var v in pre_unitProperty)
-                {
-                    switch (v.Value)
-                    {
-                        case Property_Position position:
-                            position.Set(((Property_Position)unitProperty[v.Key]).Get());
-                            break;
-                    }
-                }
-                if (unitStatesDic.ContainsKey(preActualFrame))
-                    //收到新的实际帧了,上上个实际帧的数据可以清理掉了
-                    unitStatesDic.Remove(preActualFrame);
+            }
+            if (unitStatesDic.ContainsKey(preActualFrame))
+                //收到新的实际帧了,上上个实际帧的数据可以清理掉了
+                unitStatesDic.Remove(preActualFrame);
 
-                packetsReceived++;
-                preActualFrame = remoteActualFrame;
-                remoteEstimatedFrame = remoteActualFrame = unitState.frame;
-                unitStatesDic[remoteActualFrame] = unitState;
-            }
-            //等待上一帧的所有信息全收到了,再发上一帧的数据
-            if (unit.GetComponent<CommandComponent>() != null)
+            packetsReceived++;
+            preActualFrame = remoteActualFrame;
+            remoteEstimatedFrame = remoteActualFrame = frame;
+            if (!unitStatesDic.ContainsKey(frame))
             {
-                GetParent<Unit>().GetComponent<CommandComponent>().simulateFrame = remoteActualFrame;
-                unit.GetComponent<CommandComponent>().GetCommandResult(unitState);
+                unitStatesDic[remoteActualFrame] = new List<ICommandResult>();
             }
+            unitStatesDic[remoteActualFrame].Add(commandResult);
+
         }
          
         

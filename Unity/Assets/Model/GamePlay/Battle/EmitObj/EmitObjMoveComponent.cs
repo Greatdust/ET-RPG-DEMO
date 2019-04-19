@@ -83,7 +83,7 @@ namespace ETModel
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
             isInFollow = true;
-
+            //联网模式,客户端的这里没用.得靠服务器发过来的消息才能确定是否和什么碰撞了
             GetParent<Unit>().OnCollisionEnterHandler += OnCollisionEnterHandler;
 
 
@@ -130,13 +130,13 @@ namespace ETModel
             GetParent<Unit>().Position = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
         }
 
-        void OnEnd((Unit, Vector3) unit)
+        public void OnEnd((Unit, Vector3) unit)
         {
             GetParent<Unit>().OnCollisionEnterHandler -= OnCollisionEnterHandler;
             var t = moveTCS;
             moveTCS = null;
 
-            t.SetResult(unit);
+            t?.SetResult(unit);
         }
     }
 

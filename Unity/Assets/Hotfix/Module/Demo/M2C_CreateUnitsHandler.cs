@@ -27,9 +27,9 @@ namespace ETHotfix
                 unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);
                 unit.Position = postion + new Vector3(0, 0.5f, 0);// 防止掉下去
                 Dictionary<Type, IProperty> unitStateList = new Dictionary<Type, IProperty>();
-                Property_Position property_Position = new Property_Position(unit);
-                property_Position.Set(postion );// 防止掉下去
-                unitStateList.Add(typeof(Property_Position), property_Position);
+                P_Position property_Position = new P_Position();
+                property_Position.Value = postion ;// 防止掉下去
+                unitStateList.Add(typeof(P_Position), property_Position);
                 unit.GetComponent<UnitStateComponent>().Init(unitStateList);
                 
             }

@@ -56,7 +56,7 @@ public class PassiveSkillComponent : ETModel.Component
         Unit source = GetParent<Unit>();
         if (!bufferDatas.ContainsKey(skillId))
             bufferDatas[skillId] = new PassiveSkillBufferData();
-        SkillHelper.ExcuteSkillParams excuteSkillParams = new SkillHelper.ExcuteSkillParams();
+        SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
         excuteSkillParams.skillId = skillId;
         excuteSkillParams.source = GetParent<Unit>();
         excuteSkillParams.skillLevel = 1;
@@ -79,7 +79,7 @@ public class PassiveSkillComponent : ETModel.Component
                             {
                                 tokenSource = new ETCancellationTokenSource();
 
-                                SkillHelper.ExcutePassiveSkill(excuteSkillParams);
+                                SkillHelper.ExecutePassiveSkill(excuteSkillParams);
                             }
                         }
                     }
@@ -95,7 +95,7 @@ public class PassiveSkillComponent : ETModel.Component
         if (SkillHelper.CheckIfSkillCanUse(skillId, source))
         {
             tokenSource = new ETCancellationTokenSource();
-            SkillHelper.ExcutePassiveSkill(excuteSkillParams);
+            SkillHelper.ExecutePassiveSkill(excuteSkillParams);
             bufferDatas[skillId].apply = true;
         }
 
