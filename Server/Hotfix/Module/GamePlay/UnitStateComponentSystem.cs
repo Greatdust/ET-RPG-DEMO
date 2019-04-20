@@ -69,7 +69,7 @@ namespace ETHotfix
             unitStateComponent.preSendMsgFrame = -3;
         }
 
-        public static void GetInput(this UnitStateComponent unitStateComponent, int frame, ICommandInput commandInput)
+        public static async void GetInput(this UnitStateComponent unitStateComponent, int frame, ICommandInput commandInput)
         {
             try
             {
@@ -97,9 +97,11 @@ namespace ETHotfix
                         MessageHelper.Broadcast(unitStateComponent.inputResult_Move);
                         break;
                     case CommandResult_UseSkill result_UseSkill:
-                        unitStateComponent.unit.GetComponent<ActiveSkillComponent>().tcs?.SetResult(result_UseSkill.success);
+                        ETTaskCompletionSource<bool> tcs = new ETTaskCompletionSource<bool>();
+                        unitStateComponent.unit.GetComponent<ActiveSkillComponent>().Execute(result_UseSkill.skillId, tcs).Coroutine();
+                        bool checkResult = await tcs.Task;
                         unitStateComponent.inputResult_UseSkill.SkillId = result_UseSkill.skillId;
-                        unitStateComponent.inputResult_UseSkill.Success = result_UseSkill.success;
+                        unitStateComponent.inputResult_UseSkill.Success = checkResult;
                         MessageHelper.Broadcast(unitStateComponent.inputResult_UseSkill);
                         break;
                 }

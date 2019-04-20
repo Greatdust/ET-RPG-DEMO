@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [BuffType(BuffIdType.UpdateNumeric)]
-public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInputHandler, IBuffRemoveHanlder
+public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInputHandler, IBuffRemoveHanlder, IBuffUpdateHanlder
 {
 
     public void ActionHandle(BuffHandlerVar buffHandlerVar)
@@ -51,6 +51,33 @@ public class BuffHandler_UpdateNumeric : BaseBuffHandler, IBuffActionWithGetInpu
             Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, -(float)BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)]);
         }
         BuffHandlerVar.cacheDatas_float.Remove((buffHandlerVar.source.Id, buff.buffSignal));
+    }
+
+    public void Update(BuffHandlerVar buffHandlerVar)
+    {
+        Buff_UpdateNumeric buff = (Buff_UpdateNumeric)buffHandlerVar.data;
+
+        if (!buffHandlerVar.GetBufferValue(out BufferValue_TargetUnits bufferValue_TargetUnits))
+        {
+            Log.Error("找不到目标!");
+            return;
+        }
+        NumericComponent numericComponent = buffHandlerVar.source.GetComponent<NumericComponent>();
+        foreach (var v in bufferValue_TargetUnits.targets)
+        {
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, -(float)BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)]);
+            if (buff.addValueByNumeric)
+            {
+                float value = numericComponent.GetAsFloat(buff.sourceNumeric) * buff.coefficient + buff.valueAdd;
+
+                BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)] = value;
+            }
+            else
+            {
+                BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)] = buff.valueAdd;
+            }
+            Game.EventSystem.Run(EventIdType.NumbericChange, buff.targetNumeric, v.Id, (float)BuffHandlerVar.cacheDatas_float[(buffHandlerVar.source.Id, buff.buffSignal)]);
+        }
     }
 }
 

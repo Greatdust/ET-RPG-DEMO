@@ -10,41 +10,44 @@ namespace ETHotfix
     {
 
 
-        public static async ETVoid Excute(this ActiveSkillComponent self, string skillId)
+        public static async ETVoid Execute(this ActiveSkillComponent self, string skillId, ETTaskCompletionSource<bool> tcs)
         {
-            try
-            {
-                if (self.usingSkill) return;
-                if (!self.skillList.ContainsKey(skillId)) return;
-                if (!SkillHelper.CheckIfSkillCanUse(skillId, self.GetParent<Unit>())) return;
-                ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
-                SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
-                excuteSkillParams.skillId = skillId;
-                excuteSkillParams.source = self.GetParent<Unit>();
-                excuteSkillParams.skillLevel = 1;
-                self.usingSkill = true;
-                bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
-                self.usingSkill = false;
-                self.currUsingSkillId = skillId;
-                if (!canUse) return;
-                //TODO: 暂时先直接取消之前的行动
 
-                self.cancelToken?.Cancel();
-                Game.EventSystem.Run(EventIdType.CancelPreAction, self.GetParent<Unit>());
-                CharacterStateComponent characterStateComponent = self.GetParent<Unit>().GetComponent<CharacterStateComponent>();
-                characterStateComponent.Set(SpecialStateType.NotInControl, true);
-                self.cancelToken = new CancellationTokenSource();
-                excuteSkillParams.cancelToken = self.cancelToken;
-
-                await SkillHelper.ExecuteActiveSkill(excuteSkillParams);
-                self.cancelToken = null;
-                characterStateComponent.Set(SpecialStateType.NotInControl, false);
-                self.currUsingSkillId = string.Empty;
-            }
-            catch (Exception e)
+            if (self.usingSkill
+            || !self.skillList.ContainsKey(skillId)
+            || !SkillHelper.CheckIfSkillCanUse(skillId, self.GetParent<Unit>()))
             {
-                Log.Error(e.ToString());
+                tcs.SetResult(false);
+                return;
+            } 
+            ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
+            SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
+            excuteSkillParams.skillId = skillId;
+            excuteSkillParams.source = self.GetParent<Unit>();
+            excuteSkillParams.skillLevel = 1;
+            self.usingSkill = true;
+            bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
+            self.usingSkill = false;
+            self.currUsingSkillId = skillId;
+            if (!canUse)
+            {
+                tcs.SetResult(false);
+                return;
             }
+            //TODO: 暂时先直接取消之前的行动
+            tcs.SetResult(true);
+            self.cancelToken?.Cancel();
+            Game.EventSystem.Run(EventIdType.CancelPreAction, self.GetParent<Unit>());
+            CharacterStateComponent characterStateComponent = self.GetParent<Unit>().GetComponent<CharacterStateComponent>();
+            characterStateComponent.Set(SpecialStateType.NotInControl, true);
+            self.cancelToken = new CancellationTokenSource();
+            excuteSkillParams.cancelToken = self.cancelToken;
+            
+            await SkillHelper.ExecuteActiveSkill(excuteSkillParams);
+            self.cancelToken = null;
+            characterStateComponent.Set(SpecialStateType.NotInControl, false);
+            self.currUsingSkillId = string.Empty;
+
 
         }
 

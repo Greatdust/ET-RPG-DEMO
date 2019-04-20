@@ -64,3 +64,8 @@ public interface IBuffRemoveHanlder
 {
     void Remove(BuffHandlerVar buffHandlerVar);//主动中断/打断或者正常的效果移除之类,会调用该方法
 }
+
+public interface IBuffUpdateHanlder
+{
+    void Update(BuffHandlerVar buffHandlerVar);//一些buff的效果更新/刷新. 用这个
+}

@@ -42,6 +42,8 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_FixedTime.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_FixedTime.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_Programmable.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_Programmable.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineSystem_WaitForInput.cs" Link="Module\GamePlay\Battle\Skill\PipelineNode\PipelineSystem_WaitForInput.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_Move.cs" Link="Module\GamePlay\Network\System\CommandInputSystem_Move.cs" />
+    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\System\CommandInputSystem_UseSkill.cs" Link="Module\GamePlay\Network\System\CommandInputSystem_UseSkill.cs" />
     <Compile Include="..\..\Unity\Assets\Model\Module\Message\NetOuterComponentSystem.cs">
       <Link>Module\Message\NetOuterComponentSystem.cs</Link>
     </Compile>
@@ -57,6 +59,7 @@
   <ItemGroup>
     <Folder Include="Module\GamePlay\Battle\Buff\Handler\" />
     <Folder Include="Module\GamePlay\Battle\Skill\PipelineNode\" />
+    <Folder Include="Module\GamePlay\Network\System\" />
     <Folder Include="Module\Http\" />
   </ItemGroup>
 </Project>
