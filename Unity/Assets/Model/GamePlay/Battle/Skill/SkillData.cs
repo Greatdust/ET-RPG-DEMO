@@ -46,6 +46,12 @@ public enum TypeOfInterruption
 [Serializable]
 public abstract class BaseSkillData
 {
+
+    [MessagePack.Union(0, typeof(SkillActiveCondition_CheckBuff))]
+    [MessagePack.Union(1, typeof(SkillActiveCondition_CheckHPMP))]
+    [MessagePack.Union(2, typeof(SkillActiveCondition_CheckNumeric))]
+    [MessagePack.Union(3, typeof(SkillActiveCondition_CheckTiming))]
+
     public interface IActiveConditionData
     {
         string GetBuffActiveConditionType();
@@ -229,7 +235,7 @@ public class ActiveSkillData : BaseSkillData
     [LabelText("技能标签")]
     [LabelWidth(120)]
     public ActiveSkillTag activeSkillTag;//规定技能的标签.一方面方便玩家了解技能,另一方面可以帮助怪物战斗时选择技能的AI
-    [TabGroup("流程内容",Order = 1)]
+    [TabGroup("流程内容")]
     [LabelText("输入检测阶段,决定技能是否真的可以释放")]
     [LabelWidth(100)]
     [ListDrawerSettings(ShowIndexLabels = true)]

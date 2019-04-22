@@ -22,9 +22,9 @@ namespace ETModel
     }
 
     [Event(EventIdType.AttackMissing)]
-    public class UIHUDText_AttackMissingEvent : AEvent<long, long>
+    public class UIHUDText_AttackMissingEvent : AEvent<long>
     {
-        public override async void Run(long a, long b)
+        public override async void Run(long b)
         {
             Unit unit = Game.Scene.GetComponent<UnitComponent>().Get(b);
             var ui = await Game.Scene.GetComponent<UIComponent>().Create(UIType.UIHUDText, false);

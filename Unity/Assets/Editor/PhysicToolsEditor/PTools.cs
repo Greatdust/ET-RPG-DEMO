@@ -124,15 +124,13 @@ public class PTools
         Log.Debug("导出成功!");
     }
 
-    static void Serialize(string path, object obj)
+    static void Serialize<T>(string path, T obj)
     {
-        using (FileStream file = File.Create(path))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            bf.Serialize(file, obj);
-            file.Close();
-        }
+
+        var bin = MessagePack.MessagePackSerializer.Serialize(obj, MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+        File.WriteAllBytes(path, bin);
+
+
     }
 
 }

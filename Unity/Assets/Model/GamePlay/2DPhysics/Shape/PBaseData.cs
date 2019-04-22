@@ -9,6 +9,9 @@ namespace ETModel
 {
     //可序列化的导出数据
     [Serializable]
+    [MessagePack.Union(0, typeof(PBoxData))]
+    [MessagePack.Union(1, typeof(PCircleData))]
+
     public abstract class PBaseData
     {
         public Vector3Serializer pos;

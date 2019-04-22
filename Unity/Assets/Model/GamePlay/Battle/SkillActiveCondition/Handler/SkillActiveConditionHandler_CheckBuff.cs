@@ -17,7 +17,7 @@ public class SkillActiveConditionHandler_CheckBuff : BaseSkillData.IActiveCondit
         BuffMgrComponent buffMgrComponent = source.GetComponent<BuffMgrComponent>();
         foreach (var v in buffMgrComponent.buffGroupDic)
         {
-            if (v.Value.buffGroupName == CheckBuff.buffName)
+            if (v.Value.buffTypeId == CheckBuff.buffTypeId)
             {
                 return true;
             }

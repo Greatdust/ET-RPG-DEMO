@@ -112,9 +112,11 @@ namespace ETModel
 
         public ETTask MoveTo(Vector3 target, float speed)
         {
-            if (Vector3.Distance(target, moveTarget) < 0.05f) return ETTask.CompletedTask;
             moveTarget = target;
             float distance = Vector3.Distance(unit.Position, moveTarget);
+
+            if (distance < 0.02f) return ETTask.CompletedTask;
+
             moveType = MoveType.Move;
             moveSpeed = speed;
             moveTcs = new ETTaskCompletionSource();
@@ -133,15 +135,13 @@ namespace ETModel
         public ETTask PushBackedTo(Vector3 target, float speed)
         {
             moveTarget = target;
-         
-#if !SERVER
+
+
             if (!GlobalConfigComponent.Instance.networkPlayMode)
             {
                 RaycastPushBackPos(ref moveTarget);
             }
-#else
-            RaycastPushBackPos(ref moveTarget);
-#endif
+
             float distance = Vector3.Distance(unit.Position, moveTarget);
             moveType = MoveType.PushedBack;
             moveSpeed = speed;
@@ -154,11 +154,11 @@ namespace ETModel
             float time = distance / speed;
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
-            GetParent<Unit>().OnCollisionEnterHandler += CharacterMoveComponent_OnCollisionEnterHandler;
-#if !SERVER
+
             animatorComponent.SetAnimatorSpeed(1);
             animatorComponent.SetTrigger(CharacterAnim.Hit);
-#endif
+
+            Log.Debug("击退到"+ target);
             return moveTcs.Task;
         }
 
@@ -191,6 +191,7 @@ namespace ETModel
                 var property_CharacterState = GetParent<Unit>().GetComponent<CharacterStateComponent>();
                 if (property_CharacterState.Get(SpecialStateType.CantDoAction))
                 {
+                    Log.Debug("角色无法行动!");
                     OnMoveEnd();
                     return;
                 }
@@ -198,23 +199,25 @@ namespace ETModel
                 long timeNow = TimeHelper.Now();
                 if (timeNow >= endTime || Vector3.Distance(unit.Position, this.moveTarget) < 0.01f)
                 {
+                    Log.Debug("行动结束!");
                     OnMoveEnd();
                     return;
                 }
           
                 if (moveType == MoveType.Move)
                 {
-#if !SERVER
+
                     float pitch = moveSpeed / baseMoveSpeed;
                     animatorComponent.SetAnimatorSpeed(pitch);
                     animatorComponent.SetBoolValue(CharacterAnim.Run, true);
                     GetParent<Unit>().GetComponent<AudioComponent>().PlayMoveSound(pitch);
-#endif
+
 
                     unit.Rotation = Quaternion.Slerp(unit.Rotation, aimRotation, EventSystem.FixedUpdateTime * 15);
                 }
            
                 float amount = (timeNow - this.startTime) * 1f / needTime;
+    
                 unit.Position = Vector3.Lerp(this.startPosition, this.moveTarget, amount);
             }
         }
@@ -224,19 +227,19 @@ namespace ETModel
 
         public void OnMoveEnd()
         {
-            var Body = GetParent<Unit>().GetComponent<P2DBodyComponent>().body;
-            Body.SetLinearVelocity(System.Numerics.Vector2.Zero);
+            //var Body = GetParent<Unit>().GetComponent<P2DBodyComponent>().body;
+            //Body.SetLinearVelocity(System.Numerics.Vector2.Zero);
             switch (moveType)
             {
                 case MoveType.Move:
-#if !SERVER
+
                     animatorComponent.SetBoolValue(CharacterAnim.Run, false);
                     GetParent<Unit>().GetComponent<AudioComponent>().PauseMoveSound();
                     animatorComponent.SetAnimatorSpeed(1);
-#endif
+
                     break;
                 case MoveType.PushedBack:
-                    GetParent<Unit>().OnCollisionEnterHandler -= CharacterMoveComponent_OnCollisionEnterHandler;
+                   // GetParent<Unit>().OnCollisionEnterHandler -= CharacterMoveComponent_OnCollisionEnterHandler;
                     break;
                 case MoveType.Launched:
                     break;

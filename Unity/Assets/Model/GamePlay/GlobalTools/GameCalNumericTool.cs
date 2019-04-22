@@ -43,7 +43,7 @@ public static class GameCalNumericTool
             rateCharge = RandomHelper.RandomNumber(0, 100);
             if (rateCharge / 100.0f > hitRate)
             {
-                Game.EventSystem.Run(EventIdType.AttackMissing, sourceUnitId, destUnitId);
+                Game.EventSystem.Run(EventIdType.AttackMissing, destUnitId);
                 Log.Debug("Miss!  命中率 "+ hitRate);
                 return false;
             }

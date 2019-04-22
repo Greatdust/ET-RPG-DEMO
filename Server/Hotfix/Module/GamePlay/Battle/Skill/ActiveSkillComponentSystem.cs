@@ -4,38 +4,34 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace ETHotfix
-{
+
     public static class ActiveSkillComponentSystem
     {
 
-
-        public static async ETVoid Execute(this ActiveSkillComponent self, string skillId, ETTaskCompletionSource<bool> tcs)
+        public static bool CheckCanUse(this ActiveSkillComponent self, string skillId)
         {
-
             if (self.usingSkill
-            || !self.skillList.ContainsKey(skillId)
-            || !SkillHelper.CheckIfSkillCanUse(skillId, self.GetParent<Unit>()))
+          || !self.skillList.ContainsKey(skillId)
+          || !SkillHelper.CheckIfSkillCanUse(skillId, self.GetParent<Unit>()))
             {
-                tcs.SetResult(false);
-                return;
-            } 
+
+                return false;
+            }
+            return true;
+        }
+
+        public static async ETVoid Execute(this ActiveSkillComponent self, string skillId)
+        {
             ActiveSkillData activeSkillData = Game.Scene.GetComponent<SkillConfigComponent>().GetActiveSkill(skillId);
             SkillHelper.ExecuteSkillParams excuteSkillParams = new SkillHelper.ExecuteSkillParams();
             excuteSkillParams.skillId = skillId;
             excuteSkillParams.source = self.GetParent<Unit>();
             excuteSkillParams.skillLevel = 1;
-            self.usingSkill = true;
-            bool canUse = await SkillHelper.CheckInput(excuteSkillParams);
-            self.usingSkill = false;
+
             self.currUsingSkillId = skillId;
-            if (!canUse)
-            {
-                tcs.SetResult(false);
-                return;
-            }
+
             //TODO: 暂时先直接取消之前的行动
-            tcs.SetResult(true);
+ 
             self.cancelToken?.Cancel();
             Game.EventSystem.Run(EventIdType.CancelPreAction, self.GetParent<Unit>());
             CharacterStateComponent characterStateComponent = self.GetParent<Unit>().GetComponent<CharacterStateComponent>();
@@ -50,6 +46,23 @@ namespace ETHotfix
 
 
         }
+
+
+    //中断可能正在执行的技能
+    public static void Interrupt(this ActiveSkillComponent self, TypeOfInterruption type)
+    {
+        //TODO: 根据当前使用技能允许的可打断类型判定打断是否可以成功
+
+        CharacterStateComponent characterStateComponent = self.GetParent<Unit>().GetComponent<CharacterStateComponent>();
+        if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
+        self.cancelToken?.Cancel();
+        self.cancelToken = null;
+        M2C_InterruptSkill m2c = new M2C_InterruptSkill();
+        m2c.Frame = Game.Scene.GetComponent<UnitStateMgrComponent>().currFrame;
+        m2c.Id = self.GetParent<Unit>().Id;
+        ETHotfix.MessageHelper.Broadcast(m2c);
+
+    }
 
 
         public static void AddSkill(this ActiveSkillComponent self, string skillId)
@@ -80,4 +93,4 @@ namespace ETHotfix
                 return null;
         }
     }
-}
+

@@ -240,38 +240,28 @@ namespace ETModel
         public void ReCal(int startFrame)
         {
 
-            //for (int i = startFrame; i <= simulateFrame; i++)
-            //{
-            //    if (cacheCommands.ContainsKey(i))
-            //        foreach (var v in cacheCommands[i])
-            //        {
-
-            //            switch (v.commandInput)
-            //            {
-            //                case CommandInput_Move input_Move:
-
-            //                    CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
-            //                    v.commandResult = result_Move;
-            //                    //直接拉扯
-            //                    break;
-            //            }
-            //        }
-            //}
-            //移动的话,直接取最后一次的目标作为目标就好了.
-            foreach (var v in cacheCommands[simulateFrame])
+            for (int i = simulateFrame; i >= startFrame; i--)
             {
+                if (cacheCommands.ContainsKey(i))
+                    foreach (var v in cacheCommands[i])
+                    {
 
-                switch (v.commandInput)
-                {
-                    case CommandInput_Move input_Move:
+                        switch (v.commandInput)
+                        {
+                            //移动的话,直接取最后一次的目标作为目标就好了.
+                            case CommandInput_Move input_Move:
 
-                        CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
-                        v.commandResult = result_Move;
-                        //直接拉扯
-                        unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
-                        break;
-                }
+                                CommandResult_Move result_Move = simulaterComponent.commandSimulaters[input_Move.GetType()].Simulate(input_Move, unit) as CommandResult_Move;
+                                v.commandResult = result_Move;
+                                //直接拉扯
+                                unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
+                                break;
+                        }
+                        return;
+                    }
             }
+     
+
 
         }
 

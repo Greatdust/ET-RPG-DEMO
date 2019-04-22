@@ -40,14 +40,8 @@ public class SkillConfigComponent : ETModel.Component
 
     void TestDeserialize()
     {
-        using (FileStream file = File.OpenRead(Application.dataPath + "../../../Config/ActiveSkillData.bytes"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            
-            activeDatas = bf.Deserialize(file) as Dictionary<string, ActiveSkillData>;
-            file.Close();
-
-        }
+        activeDatas = MessagePack.MessagePackSerializer.Deserialize<Dictionary<string, ActiveSkillData>>(File.ReadAllBytes(Application.dataPath+"../../../Config/ActiveSkillData.bytes"),
+           MessagePack.Resolvers.ContractlessStandardResolver.Instance);
     }
 
     public ActiveSkillData GetActiveSkill(string skillId)

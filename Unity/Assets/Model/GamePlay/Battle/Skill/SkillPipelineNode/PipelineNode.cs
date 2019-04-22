@@ -20,6 +20,14 @@ public enum Pipeline_TriggerType
     效果结算,//该项是技能的流程内容和结算节点联系起来的唯一渠道.
 }
 
+
+[MessagePack.Union(0, typeof(Pipeline_ApplyData))]
+[MessagePack.Union(1, typeof(Pipeline_CycleEnd))]
+[MessagePack.Union(2, typeof(Pipeline_CycleStart))]
+[MessagePack.Union(3, typeof(Pipeline_FindTarget))]
+[MessagePack.Union(4, typeof(Pipeline_FixedTime))]
+[MessagePack.Union(5, typeof(Pipeline_Programmable))]
+[MessagePack.Union(6, typeof(Pipeline_WaitForInput))]
 [Serializable]
 public abstract class BasePipelineData
 {

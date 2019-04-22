@@ -78,6 +78,13 @@ message UnitInfo
 	int32 unitLayer = 6;
 	int32 unitTag = 7;
 	
+	repeated UnitNumeric unitNumerics = 8;
+}
+
+message UnitNumeric
+{
+    int32 type = 1;
+	float value = 2;
 }
 
 message M2C_CreateUnits // IActorMessage
@@ -154,7 +161,7 @@ message Input_UseSkill_Dir // IActorLocationMessage
 	Vector3Info aimDir = 4;	
 }
 
-message InputResult_UseSkill // IActorMessage
+message InputResult_UseSkill_Dir // IActorMessage
 {
 	int64 ActorId = 93;
 	int64 Id = 94;
@@ -162,16 +169,102 @@ message InputResult_UseSkill // IActorMessage
 	int32 frame = 1; 
 	string skillId = 2;
 	bool success = 3;
+	string pipelineSignal = 4;
+	Vector3Info dir = 5;
 }
 
 message M2C_Pushback // IActorMessage
 {
 	int64 ActorId = 93;
+	int32 frame = 90;
 	
 	int64 Id = 1;
 
 	Vector3Info moveTarget = 2;
-	float speed = 3;
+	float time = 3;
+}
+
+message M2C_HitEffect // IActorMessage
+{
+    int64 ActorId = 93;
+
+	Vector3Info pos = 1;
+	string hitObjId = 2;
+	float duration = 3;
+}
+
+message M2C_PlayEffect // IActorMessage
+{
+    int64 ActorId = 93;
+	int32 frame = 90;
+	
+	int64 Id = 91;
+	Vector3Info pos = 1;
+	string effectObjId = 2;
+	float duration = 3;
+	string buffSignal = 4;
+	bool lockTarget = 5;
+	bool canBeInterupt = 6;
+}
+
+message M2C_PlaySound // IActorMessage
+{
+    int64 ActorId = 93;	
+	int32 frame = 90;
+	
+	int64 Id = 1;
+	string audioClipName = 2;
+	float playSpeed = 3;
+	float duration = 4;
+}
+
+message M2C_GiveDamage // IActorMessage
+{
+    int64 ActorId = 93;	
+	
+	int64 Id = 1;
+	repeated DamageData damageDatas = 2;
+}
+
+message M2C_GiveAttackMissing // IActorMessage
+{
+    int64 ActorId = 93;	
+	
+	int64 Id = 1;
+}
+
+message DamageData
+{
+	int32 damageType = 1;
+	int32 damageValue = 2;
+}
+
+message M2C_GiveHealth // IActorMessage
+{
+    int64 ActorId = 93;	
+	
+	int64 Id = 1;
+	int32 healthValue = 2;
+}
+
+
+message M2C_InterruptSkill // IActorMessage
+{
+    int64 ActorId = 93;	
+	int32 frame = 90;
+	
+	int64 Id = 1;	
+}
+
+
+message M2C_DisposeEmitObj // IActorMessage
+{
+    int64 ActorId = 93;	
+	int32 frame = 90;
+	
+	int64 Id = 1;	
+	int64 unitId = 2;
+	Vector3Info pos = 3;
 }
 
 

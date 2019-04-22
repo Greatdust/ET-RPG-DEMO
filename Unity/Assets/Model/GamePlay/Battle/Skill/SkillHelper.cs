@@ -361,7 +361,7 @@ public static class SkillHelper
                                         {
                                             newVar.bufferValues[buffValue.Key] = buffValue.Value;
                                         }
-
+                                    Log.Debug("Buff参数数量" + newVar.bufferValues.Count);
                                     HandleBuff(v, newVar);
                                 }
                             }
@@ -419,7 +419,7 @@ public static class SkillHelper
         }
         buffHandlerVar.data = buff.buffData;
 
-
+        Log.Debug("Buff参数数量_2" + buffHandlerVar.bufferValues.Count);
         IBuffActionWithGetInputHandler buffActionWithGetInput = baseBuffHandler as IBuffActionWithGetInputHandler;
         if (buffActionWithGetInput != null)
         {
@@ -439,7 +439,7 @@ public static class SkillHelper
 
             if (newBuffReturnedValue == null)
             {
-                
+                Log.Debug("该Buff没有寻找到任何参数");
                 return;
             } 
             if (!tempData.TryGetValue((buffHandlerVar.source, buff.buffData.buffSignal), out var Dic))

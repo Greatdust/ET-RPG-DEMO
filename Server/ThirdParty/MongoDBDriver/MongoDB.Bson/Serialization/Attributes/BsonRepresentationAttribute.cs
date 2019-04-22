@@ -27,7 +27,7 @@ namespace MongoDB.Bson.Serialization.Attributes
         // private fields
         private BsonType _representation;
         private bool _allowOverflow;
-        private bool _allowTruncation;
+        private bool _allowTruncation = true;
 
         // constructors
         /// <summary>
@@ -64,7 +64,7 @@ namespace MongoDB.Bson.Serialization.Attributes
         {
             get { return _allowTruncation; }
             set { _allowTruncation = value; }
-        }
+        } 
 
         // protected methods
         /// <summary>

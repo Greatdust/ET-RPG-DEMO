@@ -62,7 +62,7 @@ namespace ETModel
             needTime = (long)(time * 1000);
             endTime = startTime + needTime;
             isInFollow = false;
-
+            if(!GlobalConfigComponent.Instance.networkPlayMode)
             GetParent<Unit>().OnCollisionEnterHandler += OnCollisionEnterHandler;
 
 
@@ -84,7 +84,8 @@ namespace ETModel
             endTime = startTime + needTime;
             isInFollow = true;
             //联网模式,客户端的这里没用.得靠服务器发过来的消息才能确定是否和什么碰撞了
-            GetParent<Unit>().OnCollisionEnterHandler += OnCollisionEnterHandler;
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+                GetParent<Unit>().OnCollisionEnterHandler += OnCollisionEnterHandler;
 
 
             return moveTCS.Task;
@@ -132,7 +133,8 @@ namespace ETModel
 
         public void OnEnd((Unit, Vector3) unit)
         {
-            GetParent<Unit>().OnCollisionEnterHandler -= OnCollisionEnterHandler;
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+                GetParent<Unit>().OnCollisionEnterHandler -= OnCollisionEnterHandler;
             var t = moveTCS;
             moveTCS = null;
 

@@ -20,12 +20,24 @@ namespace ETHotfix
 					continue;
 				}
                 UnitData unitData = new UnitData();
-                //TODO: 这个服务器要发
-				Unit unit = UnitFactory.Create(unitInfo.UnitId,1001, unitData);
+            
+                unitData.groupIndex = (GroupIndex)unitInfo.GroupIndex;
+                unitData.layerMask = (UnitLayerMask)unitInfo.LayerMask;
+                unitData.unitLayer = (UnitLayer)unitInfo.UnitLayer;
+                unitData.unitTag = (UnitTag)unitInfo.UnitTag;
+                Unit unit = UnitFactory.Create(unitInfo.UnitId,1001, unitData);
+
+                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+                foreach (var v in unitInfo.UnitNumerics)
+                {
+                    numericComponent.Set((NumericType)v.Type, v.Value);
+                }
+                BattleEventHandler.LoadAssets(unit);
+
 
                 Vector3 postion = new Vector3(unitInfo.Position.X, unitInfo.Position.Y, unitInfo.Position.Z);
                 unit.GameObject.transform.forward = new Vector3(unitInfo.Dir.X, unitInfo.Dir.Y, unitInfo.Dir.Z);
-                unit.Position = postion + new Vector3(0, 0.5f, 0);// 防止掉下去
+                unit.Position = postion ;
                 Dictionary<Type, IProperty> unitStateList = new Dictionary<Type, IProperty>();
                 P_Position property_Position = new P_Position();
                 property_Position.Value = postion ;// 防止掉下去

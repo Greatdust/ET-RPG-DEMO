@@ -53,7 +53,7 @@ namespace ETModel
 
         public void OnCollisionEnter(Unit unit, Vector3 pos)
         {
-            // Log.Debug("和unit  {0} 碰撞了,碰撞点在{1}", unit.UnitData.unitTag, pos);
+            Log.Debug(string.Format("和unit  {0} 碰撞了,碰撞点在{1}", unit.UnitData.unitTag, pos));
             OnCollisionEnterHandler?.Invoke(unit, pos);
         }
         public void OnCollisionStay(Unit unit)
@@ -103,6 +103,30 @@ namespace ETModel
 			}
 
 			base.Dispose();
-		}
+            if (OnCollisionEnterHandler != null)
+            {
+                var enterDelegates = OnCollisionEnterHandler.GetInvocationList();
+                for (int i = 0; i < enterDelegates.Length; i++)
+                {
+                    OnCollisionEnterHandler -= enterDelegates[i] as Action<Unit, Vector3>;
+                }
+            }
+            if (OnCollisionExitHandler != null)
+            {
+                var exitDelegates = OnCollisionExitHandler.GetInvocationList();
+                for (int i = 0; i < exitDelegates.Length; i++)
+                {
+                    OnCollisionExitHandler -= exitDelegates[i] as Action<Unit, Vector3>;
+                }
+            }
+            if (OnCollisionStayHandler != null)
+            {
+                var stayDelegates = OnCollisionStayHandler.GetInvocationList();
+                for (int i = 0; i < stayDelegates.Length; i++)
+                {
+                    OnCollisionStayHandler -= stayDelegates[i] as Action<Unit>;
+                }
+            }
+        }
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ETModel;
 
 namespace ETHotfix
@@ -18,8 +19,8 @@ namespace ETHotfix
                 }
                 ETModel.Game.EventSystem.Run(ETModel.EventIdType.LoadAssets);
                 // 加载Unit资源
-                ResourcesComponent resourcesComponent = ETModel.Game.Scene.GetComponent<ResourcesComponent>();
-                await resourcesComponent.LoadBundleAsync($"unit.unity3d");
+                //ResourcesComponent resourcesComponent = ETModel.Game.Scene.GetComponent<ResourcesComponent>();
+              //  await resourcesComponent.LoadBundleAsync($"unit.unity3d");
 
 
                 G2C_EnterMap g2CEnterMap = await ETModel.SessionComponent.Instance.Session.Call(new C2G_EnterMap()) as G2C_EnterMap;
@@ -34,6 +35,11 @@ namespace ETHotfix
                         v.AddComponent<CameraComponent>();
                         v.AddComponent<CommandComponent>().simulateFrame = g2CEnterMap.Frame;
                         Log.Debug("收到的当前帧为" + g2CEnterMap.Frame);
+                        var list = v.GetComponent<ActiveSkillComponent>().skillList.Keys.ToArray();
+                        var input = v.AddComponent<InputComponent>();
+                        input.AddSkillToHotKey("Q", list[0]);
+                        //input.AddSkillToHotKey("W", list[1]); // 暂时没做使用技能时,位置输入和目标输入的数据传输.
+                        //input.AddSkillToHotKey("E", list[2]);
                         break;
                     }
 

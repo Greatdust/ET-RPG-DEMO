@@ -14,16 +14,30 @@ namespace ETHotfix
             RunAsync(session, message, reply).Coroutine();
         }
 
+        public static int unitIndex = 2;
+
         protected async ETVoid RunAsync(Session session, G2M_CreateUnit message, Action<M2G_CreateUnit> reply)
         {
             M2G_CreateUnit response = new M2G_CreateUnit();
             try
             {
+                
                 UnitData playerData = new UnitData();
-                playerData.groupIndex = GroupIndex.Player;
-                playerData.layerMask = UnitLayerMask.ALL;
-                playerData.unitLayer = UnitLayer.Character;
-                playerData.unitTag = UnitTag.Player;
+                if (unitIndex % 2 == 0)
+                {
+                    playerData.groupIndex = GroupIndex.Player;
+                    playerData.layerMask = UnitLayerMask.ALL;
+                    playerData.unitLayer = UnitLayer.Character;
+                    playerData.unitTag = UnitTag.Player;
+                }
+                else
+                {
+                    playerData.groupIndex = GroupIndex.Monster;
+                    playerData.layerMask = UnitLayerMask.ALL;
+                    playerData.unitLayer = UnitLayer.Character;
+                    playerData.unitTag = UnitTag.Monster;
+                }
+                unitIndex++;
                 Unit unit = UnitFactory.Create(IdGenerater.GenerateId(),1001, playerData);
                 await unit.AddComponent<MailBoxComponent>().AddLocation();
                 unit.AddComponent<UnitGateComponent, long>(message.GateSessionId);
@@ -36,7 +50,6 @@ namespace ETHotfix
      
                 Game.Scene.GetComponent<UnitStateMgrComponent>().Add(stateCom);
 
-                Game.Scene.GetComponent<UnitComponent>().Add(unit);
                 response.UnitId = unit.Id;
 
 
@@ -56,7 +69,15 @@ namespace ETHotfix
                     unitInfo.LayerMask = (int)u.UnitData.layerMask;
                     unitInfo.UnitLayer = (int)u.UnitData.unitLayer;
                     unitInfo.UnitTag = (int)u.UnitData.unitTag;
-
+             
+                    foreach (var v in u.GetComponent<NumericComponent>().NumericDic)
+                    {
+                        unitInfo.UnitNumerics.Add(new UnitNumeric()
+                        {
+                            Type = v.Key,
+                            Value = v.Value
+                        });
+                    }
 
                     createUnits.Units.Add(unitInfo);
                 }

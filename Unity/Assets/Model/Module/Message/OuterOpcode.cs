@@ -33,6 +33,9 @@ namespace ETModel
 	[Message(OuterOpcode.UnitInfo)]
 	public partial class UnitInfo {}
 
+	[Message(OuterOpcode.UnitNumeric)]
+	public partial class UnitNumeric {}
+
 	[Message(OuterOpcode.M2C_CreateUnits)]
 	public partial class M2C_CreateUnits : IActorMessage {}
 
@@ -54,8 +57,38 @@ namespace ETModel
 	[Message(OuterOpcode.Input_UseSkill_Dir)]
 	public partial class Input_UseSkill_Dir : IActorLocationMessage {}
 
-	[Message(OuterOpcode.InputResult_UseSkill)]
-	public partial class InputResult_UseSkill : IActorMessage {}
+	[Message(OuterOpcode.InputResult_UseSkill_Dir)]
+	public partial class InputResult_UseSkill_Dir : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_Pushback)]
+	public partial class M2C_Pushback : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_HitEffect)]
+	public partial class M2C_HitEffect : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_PlayEffect)]
+	public partial class M2C_PlayEffect : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_PlaySound)]
+	public partial class M2C_PlaySound : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_GiveDamage)]
+	public partial class M2C_GiveDamage : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_GiveAttackMissing)]
+	public partial class M2C_GiveAttackMissing : IActorMessage {}
+
+	[Message(OuterOpcode.DamageData)]
+	public partial class DamageData {}
+
+	[Message(OuterOpcode.M2C_GiveHealth)]
+	public partial class M2C_GiveHealth : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_InterruptSkill)]
+	public partial class M2C_InterruptSkill : IActorMessage {}
+
+	[Message(OuterOpcode.M2C_DisposeEmitObj)]
+	public partial class M2C_DisposeEmitObj : IActorMessage {}
 
 	[Message(OuterOpcode.Vector3Info)]
 	public partial class Vector3Info {}
@@ -93,20 +126,31 @@ namespace ETModel
 		 public const ushort C2R_HeartBeat = 108;
 		 public const ushort R2C_HeartBeat = 109;
 		 public const ushort UnitInfo = 110;
-		 public const ushort M2C_CreateUnits = 111;
-		 public const ushort Frame_ClickMap = 112;
-		 public const ushort InputResult_Move = 113;
-		 public const ushort Input_Move = 114;
-		 public const ushort Input_UseSkill_Pos = 115;
-		 public const ushort Input_UseSkill_Tar = 116;
-		 public const ushort Input_UseSkill_Dir = 117;
-		 public const ushort InputResult_UseSkill = 118;
-		 public const ushort Vector3Info = 119;
-		 public const ushort M2C_PathfindingResult = 120;
-		 public const ushort C2R_Ping = 121;
-		 public const ushort R2C_Ping = 122;
-		 public const ushort G2C_Test = 123;
-		 public const ushort C2M_Reload = 124;
-		 public const ushort M2C_Reload = 125;
+		 public const ushort UnitNumeric = 111;
+		 public const ushort M2C_CreateUnits = 112;
+		 public const ushort Frame_ClickMap = 113;
+		 public const ushort InputResult_Move = 114;
+		 public const ushort Input_Move = 115;
+		 public const ushort Input_UseSkill_Pos = 116;
+		 public const ushort Input_UseSkill_Tar = 117;
+		 public const ushort Input_UseSkill_Dir = 118;
+		 public const ushort InputResult_UseSkill_Dir = 119;
+		 public const ushort M2C_Pushback = 120;
+		 public const ushort M2C_HitEffect = 121;
+		 public const ushort M2C_PlayEffect = 122;
+		 public const ushort M2C_PlaySound = 123;
+		 public const ushort M2C_GiveDamage = 124;
+		 public const ushort M2C_GiveAttackMissing = 125;
+		 public const ushort DamageData = 126;
+		 public const ushort M2C_GiveHealth = 127;
+		 public const ushort M2C_InterruptSkill = 128;
+		 public const ushort M2C_DisposeEmitObj = 129;
+		 public const ushort Vector3Info = 130;
+		 public const ushort M2C_PathfindingResult = 131;
+		 public const ushort C2R_Ping = 132;
+		 public const ushort R2C_Ping = 133;
+		 public const ushort G2C_Test = 134;
+		 public const ushort C2M_Reload = 135;
+		 public const ushort M2C_Reload = 136;
 	}
 }

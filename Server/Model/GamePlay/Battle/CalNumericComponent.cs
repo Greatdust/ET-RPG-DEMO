@@ -54,7 +54,10 @@ namespace ETModel
            // this.Entity.GetComponent<AnimatorComponent>().SetTrigger(CharacterAnim.Hit); //如果接下来还要被击飞之类的,导致播放对应的的动画. 这里不管.在Animator那里做好动画融合即可.
 
             Log.Debug("受到伤害  " + (-total));
+            
             Game.EventSystem.Run(EventIdType.NumbericChange, NumericType.HP, GetParent<Unit>().Id, -(float)total); //受到伤害,所以是负数
+
+
         }
 
         public async void GetDie()
@@ -117,58 +120,4 @@ namespace ETModel
 
         }
     }
-
-
-#region Events
-
-    [Event(EventIdType.GiveDamage)] 
-    public class Unit_GiveDamageEvent : AEvent<long, GameCalNumericTool.DamageData[]>
-    {
-        public override void Run(long a, GameCalNumericTool.DamageData[] b)
-        {
-            var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
-            
-            calNumeric.GetDamage(b);
-
-        }
-    }
-
-    [Event(EventIdType.OnUnitDie)]
-    public class Unit_GetDieEvent : AEvent<long>
-    {
-        public override void Run(long a)
-        {
-            var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
-
-            calNumeric.GetDie();
-
-        }
-    }
-
-    [Event(EventIdType.GiveHealth)]
-    public class Unit_GetHealthEvent : AEvent<long,int>
-    {
-        public override void Run(long a,int b)
-        {
-            var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
-
-            calNumeric.GetHP(b);
-
-        }
-    }
-
-    [Event(EventIdType.GiveMp)]
-    public class Unit_GetMPEvent : AEvent<long, int>
-    {
-        public override void Run(long a, int b)
-        {
-            var calNumeric = UnitComponent.Instance.Get(a).GetComponent<CalNumericComponent>();
-
-            calNumeric.GetMP(b);
-
-        }
-    }
-
-
-#endregion
 }

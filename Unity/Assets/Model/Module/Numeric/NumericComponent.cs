@@ -26,26 +26,26 @@ namespace ETModel
 
             Set(NumericType.ArmorResist, unitConfig.ArmorResist);
             Set(NumericType.ATK, unitConfig.ATK);
-            Set(NumericType.CritDamagePct, unitConfig.CritDamagePct);
-            Set(NumericType.CritRate, unitConfig.CritRate);
-            Set(NumericType.DodgeRate, unitConfig.DodgeRate);
+            Set(NumericType.CritDamagePct, (float)unitConfig.CritDamagePct);
+            Set(NumericType.CritRate, (float)unitConfig.CritRate);
+            Set(NumericType.DodgeRate, (float)unitConfig.DodgeRate);
 
 
-            Set(NumericType.HitRate, unitConfig.HitRate);
+            Set(NumericType.HitRate, (float)unitConfig.HitRate);
             Set(NumericType.HP, unitConfig.HPMax);
             Set(NumericType.HPMax_Base, unitConfig.HPMax);
 
 
-            Set(NumericType.HP_LeechRate, unitConfig.HP_LeechRate);
+            Set(NumericType.HP_LeechRate, (float)unitConfig.HP_LeechRate);
             Set(NumericType.HP_Restore, unitConfig.HP_Restore);
             Set(NumericType.Level, unitConfig.Level);
             Set(NumericType.MagicATK, unitConfig.MagicATK);
             Set(NumericType.MagicResist, unitConfig.MagicResist);
 
-            Set(NumericType.MoveSpeed, unitConfig.MoveSpeed);
+            Set(NumericType.MoveSpeed, (float)unitConfig.MoveSpeed);
             Set(NumericType.MP, unitConfig.MPMax);
             Set(NumericType.MPMax_Base, unitConfig.MPMax);
-            Set(NumericType.MP_LeechRate, unitConfig.MP_LeechRate);
+            Set(NumericType.MP_LeechRate, (float)unitConfig.MP_LeechRate);
             Set(NumericType.MP_Restore, unitConfig.MP_Restore);
 #endif
 

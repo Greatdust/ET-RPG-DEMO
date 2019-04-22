@@ -8,6 +8,9 @@ namespace ETModel
 	{
 		public override void Run( NumericType nt, long destUnitId, float updateValue)
 		{
+#if !SERVER
+            if (GlobalConfigComponent.Instance.networkPlayMode) return;
+#endif
             Unit unit = UnitComponent.Instance.Get(destUnitId);
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
       
@@ -49,7 +52,7 @@ namespace ETModel
                 //    //这些全都是百分比的值(float)
                 //    float fvalue = numericComponent.GetAsFloat(nt) + updateValue;
                 //    numericComponent.Set(nt, fvalue);
-                    break;
+                    //break;
                 case NumericType.HP_LosePct:
                 case NumericType.HP_RemainPct:
                 case NumericType.MP_LosePct:

@@ -348,6 +348,14 @@ namespace ETModel
 
 		public long GateSessionId { get; set; }
 
+		public int groupIndex { get; set; }
+
+		public int layerMask { get; set; }
+
+		public int unitLayer { get; set; }
+
+		public int unitTag { get; set; }
+
 	}
 
 	[Message(InnerOpcode.M2G_CreateUnit)]

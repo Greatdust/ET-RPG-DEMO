@@ -69,20 +69,22 @@ namespace ETModel
             return unit;
         }
 
-        public static Unit CreateEmitObj(GameObject go, UnitData unitData)
+        public static Unit CreateEmitObj(long id,GameObject go, UnitData unitData)
         {
-            UnitComponent unitComponent = Game.Scene.GetComponent<UnitComponent>();
-            Unit unit = ComponentFactory.CreateWithId<Unit,GameObject>(IdGenerater.GenerateId(), go);
-            AddCollider(unit, unitData, true);
+            EmitObjUnitComponent unitComponent = Game.Scene.GetComponent<EmitObjUnitComponent>();
+            Unit unit = ComponentFactory.CreateWithId<Unit,GameObject>(id, go);
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+                AddCollider(unit, unitData, true);
             unit.AddComponent<EmitObjMoveComponent>();
-
+            unitComponent.Add(unit);
             return unit;
         }
 
         public static Unit CreateStaticObj(GameObject go,UnitData unitData)
         {
             Unit unit = ComponentFactory.CreateWithId<Unit,GameObject>(IdGenerater.GenerateId(), go);
-            AddCollider(unit, unitData, false);
+            if (!GlobalConfigComponent.Instance.networkPlayMode)
+                AddCollider(unit, unitData, false);
             return unit;
         }
 

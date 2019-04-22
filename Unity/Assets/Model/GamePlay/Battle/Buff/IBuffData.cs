@@ -32,6 +32,26 @@ public enum BuffStackType
     独立
 }
 [Serializable]
+
+[MessagePack.Union(0, typeof(Buff_AddBuff))]
+[MessagePack.Union(1, typeof(Buff_CostHP_MP))]
+[MessagePack.Union(2, typeof(Buff_DamageByNumeric))]
+[MessagePack.Union(3, typeof(Buff_DirectDamage))]
+[MessagePack.Union(4, typeof(Buff_DOT))]
+[MessagePack.Union(5, typeof(Buff_EmitObj))]
+[MessagePack.Union(6, typeof(Buff_EnhanceSkillEffect))]
+[MessagePack.Union(7, typeof(Buff_GiveNumeric))]
+[MessagePack.Union(8, typeof(Buff_GiveRecover))]
+[MessagePack.Union(9, typeof(Buff_GiveSpecialDebuff))]
+[MessagePack.Union(10, typeof(Buff_HitEffect))]
+[MessagePack.Union(11, typeof(Buff_Move))]
+[MessagePack.Union(12, typeof(Buff_PlayAnim))]
+[MessagePack.Union(13, typeof(Buff_PlayEffect))]
+[MessagePack.Union(14, typeof(Buff_PlaySound))]
+[MessagePack.Union(15, typeof(Buff_PushBack))]
+[MessagePack.Union(16, typeof(Buff_RangeDetection))]
+[MessagePack.Union(17, typeof(Buff_UpdateNumeric))]
+
 public abstract class BaseBuffData
 {
     //这个string值的意义,是为了可能需要做的,将技能数据层放到热更代码里

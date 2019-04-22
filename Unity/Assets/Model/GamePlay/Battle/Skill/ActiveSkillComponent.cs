@@ -92,10 +92,13 @@ public class ActiveSkillComponent : ETModel.Component
     //中断可能正在执行的技能
     public void Interrupt(TypeOfInterruption type)
     {
-        //TODO: 根据当前使用技能允许的可打断类型判定打断是否可以成功
+        if (!GlobalConfigComponent.Instance.networkPlayMode)
+        {
+            //TODO: 根据当前使用技能允许的可打断类型判定打断是否可以成功
 
-        CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
-        if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
+            CharacterStateComponent characterStateComponent = GetParent<Unit>().GetComponent<CharacterStateComponent>();
+            if (characterStateComponent.Get(SpecialStateType.UnStoppable)) return;// 霸体状态,打断失败
+        }
         cancelToken?.Cancel();
         cancelToken = null;
     }

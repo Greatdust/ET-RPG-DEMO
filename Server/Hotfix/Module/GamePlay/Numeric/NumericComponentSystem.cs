@@ -23,26 +23,26 @@ namespace ETHotfix
 
             self.Set(NumericType.ArmorResist, unitConfig.ArmorResist);
             self.Set(NumericType.ATK, unitConfig.ATK);
-            self.Set(NumericType.CritDamagePct, unitConfig.CritDamagePct);
-            self.Set(NumericType.CritRate, unitConfig.CritRate);
-            self.Set(NumericType.DodgeRate, unitConfig.DodgeRate);
+            self.Set(NumericType.CritDamagePct, (float)unitConfig.CritDamagePct);
+            self.Set(NumericType.CritRate, (float)unitConfig.CritRate);
+            self.Set(NumericType.DodgeRate, (float)unitConfig.DodgeRate);
 
 
-            self.Set(NumericType.HitRate, unitConfig.HitRate);
+            self.Set(NumericType.HitRate, (float)unitConfig.HitRate);
             self.Set(NumericType.HP, unitConfig.HPMax);
             self.Set(NumericType.HPMax_Base, unitConfig.HPMax);
 
 
-            self.Set(NumericType.HP_LeechRate, unitConfig.HP_LeechRate);
+            self.Set(NumericType.HP_LeechRate, (float)unitConfig.HP_LeechRate);
             self.Set(NumericType.HP_Restore, unitConfig.HP_Restore);
             self.Set(NumericType.Level, unitConfig.Level);
             self.Set(NumericType.MagicATK, unitConfig.MagicATK);
             self.Set(NumericType.MagicResist, unitConfig.MagicResist);
 
-            self.Set(NumericType.MoveSpeed, unitConfig.MoveSpeed);
+            self.Set(NumericType.MoveSpeed, (float)unitConfig.MoveSpeed);
             self.Set(NumericType.MP, unitConfig.MPMax);
             self.Set(NumericType.MPMax_Base, unitConfig.MPMax);
-            self.Set(NumericType.MP_LeechRate, unitConfig.MP_LeechRate);
+            self.Set(NumericType.MP_LeechRate, (float)unitConfig.MP_LeechRate);
             self.Set(NumericType.MP_Restore, unitConfig.MP_Restore);
         }
     }

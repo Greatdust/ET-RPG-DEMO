@@ -1,7 +1,11 @@
 ﻿using ETModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,8 +31,19 @@ public class SkillConfigComponent : Component
     public void Awake()
     {
         instance = this;
-
+        TestDeserialize();
     }
+
+    void TestDeserialize()
+    {
+
+        activeSkillDataDic = MessagePack.MessagePackSerializer.Deserialize<Dictionary<string, ActiveSkillData>>(File.ReadAllBytes("../Config/ActiveSkillData.bytes"),
+            MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+        Log.Debug(activeSkillDataDic.Count.ToString());
+        Log.Debug(activeSkillDataDic.Keys.ToList().ListToString());
+    }
+
+
 
     public ActiveSkillData GetActiveSkill(string skillId)
     {

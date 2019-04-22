@@ -19,12 +19,7 @@ public struct BuffGroup
     [NonSerialized]
     public long sourceUnitId;// 添加到一个Unit的BuffMgr上时,这个用以记录这个buffGroup的来源
 
-    [LabelText("Buff组名称")]
-    [LabelWidth(150)]
-    public string buffGroupName;
-    [LabelText("Buff组描述")]
-    [LabelWidth(150)]
-    public string buffGroupDesc;//描述
+    public int buffTypeId;
     [InfoBox("-1代表持续到BUFF组被解除,0代表瞬间完成.大于0代表持续一段时间")]
     [LabelText("Buff持续时间")]
     [LabelWidth(150)]

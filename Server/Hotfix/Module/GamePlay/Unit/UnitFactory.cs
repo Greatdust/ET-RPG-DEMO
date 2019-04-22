@@ -1,5 +1,6 @@
 ﻿using Box2DSharp.Collision.Shapes;
 using ETModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -63,10 +64,10 @@ namespace ETHotfix
             return unit;
         }
 
-        public static Unit CreateEmitObj(UnitData unitData,string key)
+        public static Unit CreateEmitObj(long id, UnitData unitData,string key)
         {
             UnitComponent unitComponent = Game.Scene.GetComponent<UnitComponent>();
-            Unit unit = ComponentFactory.CreateWithId<Unit>(IdGenerater.GenerateId());
+            Unit unit = ComponentFactory.CreateWithId<Unit>(id);
             unit.AddComponent<UnitStateComponent>();
             AddCollider(unit, unitData, true, key);
             unit.AddComponent<EmitObjMoveComponent>();
@@ -118,6 +119,7 @@ namespace ETHotfix
                             circleDataDic[box.Key] = box.Value;
                         }
                         AddCollider_CircleData(unit, unitData, isSensor, circleDataDic[key]);
+
                         return;
                     }
                 }
@@ -127,25 +129,25 @@ namespace ETHotfix
 
         static Dictionary<string, PBoxData> DeserializeBox(string filePath)
         {
-            FileStream file = File.OpenRead(filePath);
+            Dictionary<string, PBoxData> data = MessagePack.MessagePackSerializer.Deserialize<Dictionary<string, PBoxData>>(File.ReadAllBytes(filePath),
+          MessagePack.Resolvers.ContractlessStandardResolver.Instance);
 
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            Dictionary<string, PBoxData> data = bf.Deserialize(file) as Dictionary<string, PBoxData>;
-            file.Close();
-            file.Dispose();
             return data;
         }
         static Dictionary<string, PCircleData> DeserializeCircle(string filePath)
         {
-            FileStream file = File.OpenRead(filePath);
+            try
+            {
+                Dictionary<string, PCircleData> data = MessagePack.MessagePackSerializer.Deserialize<Dictionary<string, PCircleData>>(File.ReadAllBytes(filePath),
+            MessagePack.Resolvers.ContractlessStandardResolver.Instance);
 
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            Dictionary<string, PCircleData> data = bf.Deserialize(file) as Dictionary<string, PCircleData>;
-            file.Close();
-            file.Dispose();
-            return data;
+                return data;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+                return null;
+            }
         }
 
         public static void AddCollider_BoxData(Unit unit, UnitData unitData, bool isSensor, PBoxData pBoxData)

@@ -38,7 +38,8 @@ public class BuffHandler_PushBack : BaseBuffHandler, IBuffActionWithGetInputHand
             {
                 if (buffHandlerVar.GetBufferValue(out BufferValue_AttackSuccess attackSuccess))
                 {
-                    if (!attackSuccess.successDic[v.Id]) continue;
+                    if (attackSuccess.successDic.ContainsKey(v.Id))
+                        if (!attackSuccess.successDic[v.Id]) continue;
                 }
                 Vector3 aimPos = v.Position + (buffer_dir.dir * buff.distance);
                 PushBack(v, aimPos, buff).Coroutine();

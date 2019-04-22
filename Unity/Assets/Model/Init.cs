@@ -28,6 +28,7 @@ namespace ETModel
 				Game.Scene.AddComponent<PlayerComponent>();
 				Game.Scene.AddComponent<UnitComponent>();
 				Game.Scene.AddComponent<UIComponent>();
+                Game.Scene.AddComponent<EmitObjUnitComponent>();
                 Game.Scene.AddComponent<AudioMgrComponent, AudioPlayerMgr>(GetComponent<AudioPlayerMgr>());
 
                 Game.Scene.AddComponent<CommandSimulaterComponent>();

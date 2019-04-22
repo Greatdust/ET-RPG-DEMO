@@ -61,6 +61,7 @@ public static class GameCalNumericTool
             if (rateCharge / 100.0f > hitRate)
             {
                 Game.EventSystem.Run(EventIdType.AttackMissing, sourceUnitId, destUnitId);
+
                 Log.Debug("Miss!  命中率 "+ hitRate);
                 return false;
             }

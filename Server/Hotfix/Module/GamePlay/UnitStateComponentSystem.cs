@@ -69,7 +69,7 @@ namespace ETHotfix
             unitStateComponent.preSendMsgFrame = -3;
         }
 
-        public static async void GetInput(this UnitStateComponent unitStateComponent, int frame, ICommandInput commandInput)
+        public static void GetInput(this UnitStateComponent unitStateComponent, int frame, ICommandInput commandInput)
         {
             try
             {
@@ -79,30 +79,43 @@ namespace ETHotfix
                 //UnitStateDelta unitStateDelta = new UnitStateDelta();
                 //unitStateDelta.frame = frame;
 
-                var result = Game.Scene.GetComponent<CommandSimulaterComponent>().commandSimulaters[typeof(CommandInput_Move)].Simulate(commandInput, unitStateComponent.unit);
+                var result = Game.Scene.GetComponent<CommandSimulaterComponent>().commandSimulaters[commandInput.GetType()].Simulate(commandInput, unitStateComponent.unit);
                 switch (result)
                 {
                     case CommandResult_Move result_Move:
                         unitStateComponent.unit.GetComponent<CharacterMoveComponent>().MoveAsync(result_Move.Path).Coroutine();
-                       
+
                         unitStateComponent.inputResult_Move.Frame = frame;
                         unitStateComponent.inputResult_Move.Id = unitStateComponent.unit.Id;
                         unitStateComponent.inputResult_Move.PathList = new Google.Protobuf.Collections.RepeatedField<Vector3Info>();
                         for (int i = 0; i < result_Move.Path.Count; i++)
                         {
-                            unitStateComponent.inputResult_Move.PathList.Add(new Vector3Info() {
-                                X = result_Move.Path[i].x, Y = result_Move.Path[i].y,  Z = result_Move.Path[i].z
+                            unitStateComponent.inputResult_Move.PathList.Add(new Vector3Info()
+                            {
+                                X = result_Move.Path[i].x,
+                                Y = result_Move.Path[i].y,
+                                Z = result_Move.Path[i].z
                             });
                         }
                         MessageHelper.Broadcast(unitStateComponent.inputResult_Move);
                         break;
                     case CommandResult_UseSkill result_UseSkill:
-                        ETTaskCompletionSource<bool> tcs = new ETTaskCompletionSource<bool>();
-                        unitStateComponent.unit.GetComponent<ActiveSkillComponent>().Execute(result_UseSkill.skillId, tcs).Coroutine();
-                        bool checkResult = await tcs.Task;
-                        unitStateComponent.inputResult_UseSkill.SkillId = result_UseSkill.skillId;
-                        unitStateComponent.inputResult_UseSkill.Success = checkResult;
-                        MessageHelper.Broadcast(unitStateComponent.inputResult_UseSkill);
+
+                        bool checkResult = unitStateComponent.unit.GetComponent<ActiveSkillComponent>().CheckCanUse(result_UseSkill.skillId);
+                        if (checkResult)
+                            unitStateComponent.unit.GetComponent<ActiveSkillComponent>().Execute(result_UseSkill.skillId).Coroutine();
+                        switch ((commandInput as CommandInput_UseSkill).bufferValue)
+                        {
+                            case BufferValue_Dir bufferValue_Dir:
+                                unitStateComponent.useSkill_Dir.SkillId = result_UseSkill.skillId;
+                                unitStateComponent.useSkill_Dir.Success = checkResult;
+                                unitStateComponent.useSkill_Dir.Id = unitStateComponent.unit.Id;
+                                unitStateComponent.useSkill_Dir.PipelineSignal = (commandInput as CommandInput_UseSkill).pipelineSignal;
+                                unitStateComponent.useSkill_Dir.Dir = bufferValue_Dir.dir.ToV3Info();
+                                MessageHelper.Broadcast(unitStateComponent.useSkill_Dir);
+                                break;
+
+                        }
                         break;
                 }
                 //unitStateDelta.commandResults.Add(result.GetType(), result);

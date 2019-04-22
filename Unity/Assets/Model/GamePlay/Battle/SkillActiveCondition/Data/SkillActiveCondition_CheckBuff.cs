@@ -9,7 +9,7 @@ using UnityEngine;
 [Serializable]
 public class SkillActiveCondition_CheckBuff : BaseSkillData.IActiveConditionData
 {
-    public string buffName;
+    public int buffTypeId;
 
     public string GetBuffActiveConditionType()
     {

@@ -836,6 +836,14 @@ namespace ETModel {
       }
     }
 
+    private static readonly pb::FieldCodec<global::ETModel.UnitNumeric> _repeated_unitNumerics_codec
+        = pb::FieldCodec.ForMessage(66, global::ETModel.UnitNumeric.Parser);
+    private pbc::RepeatedField<global::ETModel.UnitNumeric> unitNumerics_ = new pbc::RepeatedField<global::ETModel.UnitNumeric>();
+    public pbc::RepeatedField<global::ETModel.UnitNumeric> UnitNumerics {
+      get { return unitNumerics_; }
+      set { unitNumerics_ = value; }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (UnitId != 0L) {
         output.WriteRawTag(8);
@@ -865,6 +873,7 @@ namespace ETModel {
         output.WriteRawTag(56);
         output.WriteInt32(UnitTag);
       }
+      unitNumerics_.WriteTo(output, _repeated_unitNumerics_codec);
     }
 
     public int CalculateSize() {
@@ -890,6 +899,7 @@ namespace ETModel {
       if (UnitTag != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(UnitTag);
       }
+      size += unitNumerics_.CalculateSize(_repeated_unitNumerics_codec);
       return size;
     }
 
@@ -901,6 +911,8 @@ namespace ETModel {
       layerMask_ = 0;
       unitLayer_ = 0;
       unitTag_ = 0;
+      for (int i = 0; i < unitNumerics_.Count; i++) { MessagePool.Instance.Recycle(unitNumerics_[i]); }
+      unitNumerics_.Clear();
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -939,6 +951,75 @@ namespace ETModel {
           }
           case 56: {
             UnitTag = input.ReadInt32();
+            break;
+          }
+          case 66: {
+            unitNumerics_.AddEntriesFrom(input, _repeated_unitNumerics_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class UnitNumeric : pb::IMessage {
+    private static readonly pb::MessageParser<UnitNumeric> _parser = new pb::MessageParser<UnitNumeric>(() => (UnitNumeric)MessagePool.Instance.Fetch(typeof(UnitNumeric)));
+    public static pb::MessageParser<UnitNumeric> Parser { get { return _parser; } }
+
+    private int type_;
+    public int Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    private float value_;
+    public float Value {
+      get { return value_; }
+      set {
+        value_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Type != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Type);
+      }
+      if (Value != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Value);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
+      }
+      if (Value != 0F) {
+        size += 1 + 4;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      type_ = 0;
+      value_ = 0f;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Type = input.ReadInt32();
+            break;
+          }
+          case 21: {
+            Value = input.ReadFloat();
             break;
           }
         }
@@ -1903,9 +1984,9 @@ namespace ETModel {
 
   }
 
-  public partial class InputResult_UseSkill : pb::IMessage {
-    private static readonly pb::MessageParser<InputResult_UseSkill> _parser = new pb::MessageParser<InputResult_UseSkill>(() => (InputResult_UseSkill)MessagePool.Instance.Fetch(typeof(InputResult_UseSkill)));
-    public static pb::MessageParser<InputResult_UseSkill> Parser { get { return _parser; } }
+  public partial class InputResult_UseSkill_Dir : pb::IMessage {
+    private static readonly pb::MessageParser<InputResult_UseSkill_Dir> _parser = new pb::MessageParser<InputResult_UseSkill_Dir>(() => (InputResult_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(InputResult_UseSkill_Dir)));
+    public static pb::MessageParser<InputResult_UseSkill_Dir> Parser { get { return _parser; } }
 
     private long actorId_;
     public long ActorId {
@@ -1947,6 +2028,22 @@ namespace ETModel {
       }
     }
 
+    private string pipelineSignal_ = "";
+    public string PipelineSignal {
+      get { return pipelineSignal_; }
+      set {
+        pipelineSignal_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private global::ETModel.Vector3Info dir_;
+    public global::ETModel.Vector3Info Dir {
+      get { return dir_; }
+      set {
+        dir_ = value;
+      }
+    }
+
     public void WriteTo(pb::CodedOutputStream output) {
       if (Frame != 0) {
         output.WriteRawTag(8);
@@ -1959,6 +2056,14 @@ namespace ETModel {
       if (Success != false) {
         output.WriteRawTag(24);
         output.WriteBool(Success);
+      }
+      if (PipelineSignal.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(PipelineSignal);
+      }
+      if (dir_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Dir);
       }
       if (ActorId != 0L) {
         output.WriteRawTag(232, 5);
@@ -1987,6 +2092,12 @@ namespace ETModel {
       if (Success != false) {
         size += 1 + 1;
       }
+      if (PipelineSignal.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PipelineSignal);
+      }
+      if (dir_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Dir);
+      }
       return size;
     }
 
@@ -1994,6 +2105,8 @@ namespace ETModel {
       frame_ = 0;
       skillId_ = "";
       success_ = false;
+      pipelineSignal_ = "";
+      if (dir_ != null) MessagePool.Instance.Recycle(dir_); dir_ = null;
       actorId_ = 0;
       id_ = 0;
       uint tag;
@@ -2014,12 +2127,1121 @@ namespace ETModel {
             Success = input.ReadBool();
             break;
           }
+          case 34: {
+            PipelineSignal = input.ReadString();
+            break;
+          }
+          case 42: {
+            if (dir_ == null) {
+              dir_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(dir_);
+            break;
+          }
           case 744: {
             ActorId = input.ReadInt64();
             break;
           }
           case 752: {
             Id = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_Pushback : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_Pushback> _parser = new pb::MessageParser<M2C_Pushback>(() => (M2C_Pushback)MessagePool.Instance.Fetch(typeof(M2C_Pushback)));
+    public static pb::MessageParser<M2C_Pushback> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info moveTarget_;
+    public global::ETModel.Vector3Info MoveTarget {
+      get { return moveTarget_; }
+      set {
+        moveTarget_ = value;
+      }
+    }
+
+    private float time_;
+    public float Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (moveTarget_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(MoveTarget);
+      }
+      if (Time != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Time);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(Frame);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Frame != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (moveTarget_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MoveTarget);
+      }
+      if (Time != 0F) {
+        size += 1 + 4;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      if (moveTarget_ != null) MessagePool.Instance.Recycle(moveTarget_); moveTarget_ = null;
+      time_ = 0f;
+      frame_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (moveTarget_ == null) {
+              moveTarget_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(moveTarget_);
+            break;
+          }
+          case 29: {
+            Time = input.ReadFloat();
+            break;
+          }
+          case 720: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_HitEffect : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_HitEffect> _parser = new pb::MessageParser<M2C_HitEffect>(() => (M2C_HitEffect)MessagePool.Instance.Fetch(typeof(M2C_HitEffect)));
+    public static pb::MessageParser<M2C_HitEffect> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info pos_;
+    public global::ETModel.Vector3Info Pos {
+      get { return pos_; }
+      set {
+        pos_ = value;
+      }
+    }
+
+    private string hitObjId_ = "";
+    public string HitObjId {
+      get { return hitObjId_; }
+      set {
+        hitObjId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private float duration_;
+    public float Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (pos_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Pos);
+      }
+      if (HitObjId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(HitObjId);
+      }
+      if (Duration != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Duration);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (pos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pos);
+      }
+      if (HitObjId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HitObjId);
+      }
+      if (Duration != 0F) {
+        size += 1 + 4;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      if (pos_ != null) MessagePool.Instance.Recycle(pos_); pos_ = null;
+      hitObjId_ = "";
+      duration_ = 0f;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            if (pos_ == null) {
+              pos_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(pos_);
+            break;
+          }
+          case 18: {
+            HitObjId = input.ReadString();
+            break;
+          }
+          case 29: {
+            Duration = input.ReadFloat();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_PlayEffect : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_PlayEffect> _parser = new pb::MessageParser<M2C_PlayEffect>(() => (M2C_PlayEffect)MessagePool.Instance.Fetch(typeof(M2C_PlayEffect)));
+    public static pb::MessageParser<M2C_PlayEffect> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info pos_;
+    public global::ETModel.Vector3Info Pos {
+      get { return pos_; }
+      set {
+        pos_ = value;
+      }
+    }
+
+    private string effectObjId_ = "";
+    public string EffectObjId {
+      get { return effectObjId_; }
+      set {
+        effectObjId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private float duration_;
+    public float Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    private string buffSignal_ = "";
+    public string BuffSignal {
+      get { return buffSignal_; }
+      set {
+        buffSignal_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private bool lockTarget_;
+    public bool LockTarget {
+      get { return lockTarget_; }
+      set {
+        lockTarget_ = value;
+      }
+    }
+
+    private bool canBeInterupt_;
+    public bool CanBeInterupt {
+      get { return canBeInterupt_; }
+      set {
+        canBeInterupt_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (pos_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Pos);
+      }
+      if (EffectObjId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(EffectObjId);
+      }
+      if (Duration != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Duration);
+      }
+      if (BuffSignal.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(BuffSignal);
+      }
+      if (LockTarget != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(LockTarget);
+      }
+      if (CanBeInterupt != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(CanBeInterupt);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(Frame);
+      }
+      if (Id != 0L) {
+        output.WriteRawTag(216, 5);
+        output.WriteInt64(Id);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Frame != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (Id != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (pos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pos);
+      }
+      if (EffectObjId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EffectObjId);
+      }
+      if (Duration != 0F) {
+        size += 1 + 4;
+      }
+      if (BuffSignal.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BuffSignal);
+      }
+      if (LockTarget != false) {
+        size += 1 + 1;
+      }
+      if (CanBeInterupt != false) {
+        size += 1 + 1;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      if (pos_ != null) MessagePool.Instance.Recycle(pos_); pos_ = null;
+      effectObjId_ = "";
+      duration_ = 0f;
+      buffSignal_ = "";
+      lockTarget_ = false;
+      canBeInterupt_ = false;
+      frame_ = 0;
+      id_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            if (pos_ == null) {
+              pos_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(pos_);
+            break;
+          }
+          case 18: {
+            EffectObjId = input.ReadString();
+            break;
+          }
+          case 29: {
+            Duration = input.ReadFloat();
+            break;
+          }
+          case 34: {
+            BuffSignal = input.ReadString();
+            break;
+          }
+          case 40: {
+            LockTarget = input.ReadBool();
+            break;
+          }
+          case 48: {
+            CanBeInterupt = input.ReadBool();
+            break;
+          }
+          case 720: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 728: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_PlaySound : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_PlaySound> _parser = new pb::MessageParser<M2C_PlaySound>(() => (M2C_PlaySound)MessagePool.Instance.Fetch(typeof(M2C_PlaySound)));
+    public static pb::MessageParser<M2C_PlaySound> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private string audioClipName_ = "";
+    public string AudioClipName {
+      get { return audioClipName_; }
+      set {
+        audioClipName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private float playSpeed_;
+    public float PlaySpeed {
+      get { return playSpeed_; }
+      set {
+        playSpeed_ = value;
+      }
+    }
+
+    private float duration_;
+    public float Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (AudioClipName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(AudioClipName);
+      }
+      if (PlaySpeed != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(PlaySpeed);
+      }
+      if (Duration != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(Duration);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(Frame);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Frame != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (AudioClipName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AudioClipName);
+      }
+      if (PlaySpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (Duration != 0F) {
+        size += 1 + 4;
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      audioClipName_ = "";
+      playSpeed_ = 0f;
+      duration_ = 0f;
+      frame_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            AudioClipName = input.ReadString();
+            break;
+          }
+          case 29: {
+            PlaySpeed = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            Duration = input.ReadFloat();
+            break;
+          }
+          case 720: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_GiveDamage : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_GiveDamage> _parser = new pb::MessageParser<M2C_GiveDamage>(() => (M2C_GiveDamage)MessagePool.Instance.Fetch(typeof(M2C_GiveDamage)));
+    public static pb::MessageParser<M2C_GiveDamage> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private static readonly pb::FieldCodec<global::ETModel.DamageData> _repeated_damageDatas_codec
+        = pb::FieldCodec.ForMessage(18, global::ETModel.DamageData.Parser);
+    private pbc::RepeatedField<global::ETModel.DamageData> damageDatas_ = new pbc::RepeatedField<global::ETModel.DamageData>();
+    public pbc::RepeatedField<global::ETModel.DamageData> DamageDatas {
+      get { return damageDatas_; }
+      set { damageDatas_ = value; }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      damageDatas_.WriteTo(output, _repeated_damageDatas_codec);
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      size += damageDatas_.CalculateSize(_repeated_damageDatas_codec);
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      for (int i = 0; i < damageDatas_.Count; i++) { MessagePool.Instance.Recycle(damageDatas_[i]); }
+      damageDatas_.Clear();
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            damageDatas_.AddEntriesFrom(input, _repeated_damageDatas_codec);
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_GiveAttackMissing : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_GiveAttackMissing> _parser = new pb::MessageParser<M2C_GiveAttackMissing>(() => (M2C_GiveAttackMissing)MessagePool.Instance.Fetch(typeof(M2C_GiveAttackMissing)));
+    public static pb::MessageParser<M2C_GiveAttackMissing> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class DamageData : pb::IMessage {
+    private static readonly pb::MessageParser<DamageData> _parser = new pb::MessageParser<DamageData>(() => (DamageData)MessagePool.Instance.Fetch(typeof(DamageData)));
+    public static pb::MessageParser<DamageData> Parser { get { return _parser; } }
+
+    private int damageType_;
+    public int DamageType {
+      get { return damageType_; }
+      set {
+        damageType_ = value;
+      }
+    }
+
+    private int damageValue_;
+    public int DamageValue {
+      get { return damageValue_; }
+      set {
+        damageValue_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DamageType != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(DamageType);
+      }
+      if (DamageValue != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(DamageValue);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (DamageType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DamageType);
+      }
+      if (DamageValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DamageValue);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      damageType_ = 0;
+      damageValue_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            DamageType = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            DamageValue = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_GiveHealth : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_GiveHealth> _parser = new pb::MessageParser<M2C_GiveHealth>(() => (M2C_GiveHealth)MessagePool.Instance.Fetch(typeof(M2C_GiveHealth)));
+    public static pb::MessageParser<M2C_GiveHealth> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private int healthValue_;
+    public int HealthValue {
+      get { return healthValue_; }
+      set {
+        healthValue_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (HealthValue != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(HealthValue);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (HealthValue != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(HealthValue);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      healthValue_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            HealthValue = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_InterruptSkill : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_InterruptSkill> _parser = new pb::MessageParser<M2C_InterruptSkill>(() => (M2C_InterruptSkill)MessagePool.Instance.Fetch(typeof(M2C_InterruptSkill)));
+    public static pb::MessageParser<M2C_InterruptSkill> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(Frame);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Frame != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      frame_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 720: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public partial class M2C_DisposeEmitObj : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_DisposeEmitObj> _parser = new pb::MessageParser<M2C_DisposeEmitObj>(() => (M2C_DisposeEmitObj)MessagePool.Instance.Fetch(typeof(M2C_DisposeEmitObj)));
+    public static pb::MessageParser<M2C_DisposeEmitObj> Parser { get { return _parser; } }
+
+    private long actorId_;
+    public long ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = value;
+      }
+    }
+
+    private int frame_;
+    public int Frame {
+      get { return frame_; }
+      set {
+        frame_ = value;
+      }
+    }
+
+    private long id_;
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    private long unitId_;
+    public long UnitId {
+      get { return unitId_; }
+      set {
+        unitId_ = value;
+      }
+    }
+
+    private global::ETModel.Vector3Info pos_;
+    public global::ETModel.Vector3Info Pos {
+      get { return pos_; }
+      set {
+        pos_ = value;
+      }
+    }
+
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (UnitId != 0L) {
+        output.WriteRawTag(16);
+        output.WriteInt64(UnitId);
+      }
+      if (pos_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Pos);
+      }
+      if (Frame != 0) {
+        output.WriteRawTag(208, 5);
+        output.WriteInt32(Frame);
+      }
+      if (ActorId != 0L) {
+        output.WriteRawTag(232, 5);
+        output.WriteInt64(ActorId);
+      }
+    }
+
+    public int CalculateSize() {
+      int size = 0;
+      if (ActorId != 0L) {
+        size += 2 + pb::CodedOutputStream.ComputeInt64Size(ActorId);
+      }
+      if (Frame != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Frame);
+      }
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (UnitId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UnitId);
+      }
+      if (pos_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pos);
+      }
+      return size;
+    }
+
+    public void MergeFrom(pb::CodedInputStream input) {
+      id_ = 0;
+      unitId_ = 0;
+      if (pos_ != null) MessagePool.Instance.Recycle(pos_); pos_ = null;
+      frame_ = 0;
+      actorId_ = 0;
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            UnitId = input.ReadInt64();
+            break;
+          }
+          case 26: {
+            if (pos_ == null) {
+              pos_ = new global::ETModel.Vector3Info();
+            }
+            input.ReadMessage(pos_);
+            break;
+          }
+          case 720: {
+            Frame = input.ReadInt32();
+            break;
+          }
+          case 744: {
+            ActorId = input.ReadInt64();
             break;
           }
         }

@@ -10,6 +10,7 @@ namespace ETHotfix
 		protected override void Run(ETModel.Session session, InputResult_Move message)
 		{
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
+            if (message.PathList.Count == 0) return;
             List<Vector3> vector3s = new List<Vector3>();
             foreach (var v in message.PathList)
             {

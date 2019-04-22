@@ -15,13 +15,10 @@ public class SkillCollection : SerializedScriptableObject
     [Button("保存所有技能信息至文件", 25)]
     public void SaveToFile()
     {
-        using (FileStream file = File.Create(Application.dataPath + "../../../Config/ActiveSkillData.bytes"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            bf.Serialize(file, activeSkillDataDic);
-            file.Close();
-        }
+
+        var bin = MessagePack.MessagePackSerializer.Serialize(activeSkillDataDic, MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+        File.WriteAllBytes(Application.dataPath + "../../../Config/ActiveSkillData.bytes", bin);
+
         using (FileStream file = File.Create(Application.dataPath + "../../../Config/PassiveSkillData.bytes"))
         {
             BinaryFormatter bf = new BinaryFormatter();

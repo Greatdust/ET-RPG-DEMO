@@ -230,6 +230,10 @@ message G2M_CreateUnit // IRequest
     int32 RpcId = 90;
     int64 PlayerId = 1;
     int64 GateSessionId = 2;
+	int32 groupIndex = 4;
+	int32 layerMask = 5;
+	int32 unitLayer = 6;
+	int32 unitTag = 7;
 }
 
 message M2G_CreateUnit // IResponse

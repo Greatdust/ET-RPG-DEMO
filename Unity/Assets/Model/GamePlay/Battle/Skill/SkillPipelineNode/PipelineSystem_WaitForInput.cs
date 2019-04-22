@@ -121,7 +121,22 @@ public static class PipelineSystem_WaitForInput
 
     }
 #else
-
+        switch (pipeline_WaitForInput.inputType)
+        {
+            case InputType.Tar:
+                break;
+            case InputType.Dir:
+                break;
+            case InputType.Pos:
+                break;
+            case InputType.Charge:
+                break;
+            case InputType.Spell:
+                break;
+            case InputType.ContinualSpell:
+                SpellForTime(pipeline_WaitForInput.value, skillParams).Coroutine();
+                break;
+        }
 #endif
         return true;
     }

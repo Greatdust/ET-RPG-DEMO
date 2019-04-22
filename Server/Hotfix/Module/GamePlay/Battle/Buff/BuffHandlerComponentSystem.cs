@@ -24,8 +24,7 @@ public static class BuffHandlerComponentSystem
     }
     public static void Load(this BuffHandlerComponent self)
     {
-        List<Type> types = Game.EventSystem.GetTypes(typeof(BuffTypeAttribute));
-        foreach (Type type in types)
+        foreach (Type type in typeof(BuffHandlerComponentSystem).Assembly.GetTypes())
         {
             object[] attrs = type.GetCustomAttributes(typeof(BuffTypeAttribute), false);
 

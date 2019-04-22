@@ -95,7 +95,6 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBuffData.cs" Link="GamePlay\Battle\Buff\IBuffData.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBufferValue.cs" Link="GamePlay\Battle\Buff\IBufferValue.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Buff\IBuffHandler.cs" Link="GamePlay\Battle\Buff\IBuffHandler.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\EmitObj\EmitObjMoveComponent.cs" Link="GamePlay\Battle\EmitObj\EmitObjMoveComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckBuff.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckBuff.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckNumeric.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckNumeric.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\SkillActiveCondition\Data\SkillActiveCondition_CheckTiming.cs" Link="GamePlay\Battle\ActiveCondition\Data\SkillActiveCondition_CheckTiming.cs" />
@@ -113,7 +112,6 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillData.cs" Link="GamePlay\Battle\Skill\SkillData.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillEffectComponent.cs" Link="GamePlay\Battle\Skill\SkillEffectComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\Battle\Skill\SkillPipelineNode\PipelineNode.cs" Link="GamePlay\Battle\Skill\PipelineNode\PipelineNode.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\CharacterMoveComponent.cs" Link="GamePlay\CharacterCtr\CharacterMoveComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\CharacterStateComponent.cs" Link="GamePlay\CharacterCtr\CharacterStateComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\CharacterCtr\SpecialStateType.cs" Link="GamePlay\CharacterCtr\SpecialStateType.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Command.cs" Link="GamePlay\Command\Command.cs" />
@@ -122,7 +120,6 @@
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandInput\CommandInput_UseSkill_Pos.cs" Link="GamePlay\Command\CommandInput\CommandInput_UseSkill_Pos.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_Move.cs" Link="GamePlay\Command\CommandResult\CommandResult_Move.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandResult\CommandResult_UseSkill.cs" Link="GamePlay\Command\CommandResult\CommandResult_UseSkill.cs" />
-    <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\CommandSimulaterComponent.cs" Link="GamePlay\Command\CommandSimulaterComponent.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Math\NetworkDataConvert.cs" Link="GamePlay\Command\Math\NetworkDataConvert.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\CharacterState\P_NotInControl.cs" Link="GamePlay\Command\Property\CharacterState\P_NotInControl.cs" />
     <Compile Include="..\..\Unity\Assets\Model\GamePlay\NetWork\Property\CharacterState\P_UseSkill.cs" Link="GamePlay\Command\Property\CharacterState\P_UseSkill.cs" />
@@ -384,12 +381,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
+    <PackageReference Include="MessagePack" Version="1.7.3.4" />
+    <PackageReference Include="MessagePackAnalyzer" Version="1.6.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="2.9.0" />
     <PackageReference Include="NLog" Version="4.5.4" />
     <PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParty\Box2DSharp\Box2DSharp.csproj" />
+    <ProjectReference Include="..\ThirdParty\Box2D\Box2D.csproj" />
     <ProjectReference Include="..\ThirdParty\Google.Protobuf\Google.Protobuf.csproj" />
     <ProjectReference Include="..\ThirdParty\KcpLib\KcpLib.csproj" />
     <ProjectReference Include="..\ThirdParty\MongoDBDriver\MongoDB.Bson\MongoDB.Bson.csproj" />
@@ -411,7 +410,6 @@
     <Folder Include="GamePlay\Battle\Skill\Programmable\" />
     <Folder Include="GamePlay\Command\Math\" />
     <Folder Include="GamePlay\Physics\Shape\" />
-    <Folder Include="GamePlay\Battle\EmitObj\" />
     <Folder Include="Module\Message\Network\KCP\" />
     <Folder Include="Module\Message\Network\TCP\" />
     <Folder Include="Module\Message\MessagePool\" />
@@ -419,9 +417,6 @@
   <ItemGroup>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced, Version=1.9.1.9000, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ThirdParty\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
-    <Reference Include="Sirenix.OdinInspector.Attributes">
-      <HintPath>..\ThirdParty\Sirenix.OdinInspector.Attributes.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
