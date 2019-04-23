@@ -93,7 +93,7 @@ public class BuffHandler_EmitObj : BaseBuffHandler, IBuffActionWithGetInputHandl
 
             unit.Position = buffHandlerVar.source.Position + new Vector3(dir.x * startPosOffset.x, startPosOffset.y, dir.z * startPosOffset.z);
             //Log.Debug(string.Format("{0}使用者位置 方向{1} 初始位置偏移量{2},计算出的最终位置{3}", buffHandlerVar.source.Position, dir, startPosOffset, unit.Position));
-            //Log.Debug(string.Format("飞行物体的高度{0}", unit.Position.y));
+            Log.Debug(string.Format("飞行物体的高度{0}", unit.Position.y));
 
 
             Quaternion quaternion = Quaternion.LookRotation(buffer_dir.dir, Vector3.up);

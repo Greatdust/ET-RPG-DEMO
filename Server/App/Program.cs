@@ -120,12 +120,12 @@ namespace App
                         // 配置管理
                         Game.Scene.AddComponent<ConfigComponent>();
 
-                        Log.Debug("添加UnitStateMgrComponent");
+   
                         Game.Scene.AddComponent<UnitStateMgrComponent>();
                         Game.Scene.AddComponent<PathfindingComponent>();
                         Game.Scene.AddComponent<PhysicWorldComponent>();
                         Game.Scene.AddComponent<PhysicCollisionListenerComponent>();
-                        Game.Scene.AddComponent<PStaticBodyMgrComponent>();
+                        Game.Scene.AddComponent<PStaticBodyMgrComponent,int>(1001);
                         Game.Scene.AddComponent<GlobalVariableComponent>();
                         Game.Scene.AddComponent<BuffHandlerComponent>();
 

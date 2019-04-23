@@ -199,33 +199,41 @@ namespace ETModel
                 }
             }
             bool needRecal = false;
-            if (cacheCommands.ContainsKey(unitStateDelta.frame))
+            try
             {
-                switch (unitStateDelta.commandResult)
+                if (cacheCommands.ContainsKey(unitStateDelta.frame))
                 {
-                    case CommandResult_Move actualMove:
-                        foreach (var v in cacheCommands[unitStateDelta.frame])
-                        {
-                            if (v.commandResult is CommandResult_Move simulateMove)
+                    switch (unitStateDelta.commandResult)
+                    {
+                        case CommandResult_Move actualMove:
+                            foreach (var v in cacheCommands[unitStateDelta.frame])
                             {
-                                Log.Debug("frame : " + unitStateDelta.frame + "  收到服务器发过来的路径: " + actualMove.Path.ListToString<Vector3>());
-                                if (Vector3.Distance(simulateMove.Path[0], actualMove.Path[0]) < 0.05f
-                                    && Vector3.Distance(simulateMove.Path[simulateMove.Path.Count - 1], actualMove.Path[actualMove.Path.Count - 1]) < 0.05f)
+                                if (v.commandResult is CommandResult_Move simulateMove)
                                 {
+                                    Log.Debug("frame : " + unitStateDelta.frame + "  收到服务器发过来的路径: " + actualMove.Path.ListToString<Vector3>());
+                                    if (simulateMove.Path.Count == 0 || actualMove.Path.Count == 0) break;
+                                    if (Vector3.Distance(simulateMove.Path[0], actualMove.Path[0]) < 0.05f
+                                        && Vector3.Distance(simulateMove.Path[simulateMove.Path.Count - 1], actualMove.Path[actualMove.Path.Count - 1]) < 0.05f)
+                                    {
 
-                                    break;
-                                }
-                                else
-                                {
-                                    needRecal = true;
-                                    unit.Position = actualMove.Path[0];
-                                    break;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        needRecal = true;
+                                        unit.Position = actualMove.Path[0];
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        break;
+                            break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
             }
             
             preActualFrame = unitStateDelta.frame;

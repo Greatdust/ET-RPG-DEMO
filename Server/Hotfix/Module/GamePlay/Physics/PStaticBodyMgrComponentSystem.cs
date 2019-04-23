@@ -46,12 +46,8 @@ namespace ETHotfix
         }
         public static List<PBoxData> Deserialize(string path)
         {
-            FileStream file = File.OpenRead(path);
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            List<PBoxData> pBoxDatas = bf.Deserialize(file) as List<PBoxData>;
-            file.Dispose();
-            file.Close();
+            List<PBoxData> pBoxDatas = MessagePack.MessagePackSerializer.Deserialize<List<PBoxData>>(File.ReadAllBytes(path),
+           MessagePack.Resolvers.ContractlessStandardResolver.Instance);
             return pBoxDatas;
 
         }

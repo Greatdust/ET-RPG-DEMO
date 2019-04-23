@@ -94,12 +94,6 @@ namespace ETModel
             }
             float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.MoveSpeed);
 
-            if (Vector3.Distance(unit.Position, path[0]) > 1)
-            {
-                //直接拉扯
-                unit.Position = path[0];
-            }
-
 
             // 第一个点是unit的当前位置，所以不用发送
             for (int i = 1; i < path.Count; ++i)

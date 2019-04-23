@@ -78,7 +78,7 @@ namespace ETHotfix
         public static Unit CreateStaticObj_Box(UnitData unitData,PBoxData pBoxData)
         {
             Unit unit = ComponentFactory.CreateWithId<Unit>(IdGenerater.GenerateId());
-            AddCollider_BoxData(unit, unitData, false, pBoxData);
+            AddCollider_BoxData(unit, unitData, false, pBoxData,true);
             return unit;
         }
 
@@ -150,7 +150,7 @@ namespace ETHotfix
             }
         }
 
-        public static void AddCollider_BoxData(Unit unit, UnitData unitData, bool isSensor, PBoxData pBoxData)
+        public static void AddCollider_BoxData(Unit unit, UnitData unitData, bool isSensor, PBoxData pBoxData,bool usePos = false)
         {
             PBoxShape pBoxShape = new PBoxShape()
             {
@@ -161,7 +161,10 @@ namespace ETHotfix
             };
             pBoxShape.offset = pBoxData.offset.ToV3();
             pBoxShape.size = pBoxData.size.ToV3();
-
+            if (usePos)
+            {
+                unit.Position = pBoxData.pos.ToV3();
+            }
 
             unit.AddComponent<P2DBodyComponent, PBaseShape>(pBoxShape);
         }

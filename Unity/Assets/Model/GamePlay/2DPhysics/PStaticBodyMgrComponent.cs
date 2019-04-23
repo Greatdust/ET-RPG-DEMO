@@ -32,15 +32,23 @@ namespace ETModel
         public void Awake()
         {
             units = new List<Unit>();
-            ////ToDo: 根据 mapId和配置文件,加载场景内所有StaticBody的数据
+            //////ToDo: 根据 mapId和配置文件,加载场景内所有StaticBody的数据
             //ResourcesComponent resourcesComponent = Game.Scene.GetComponent<ResourcesComponent>();
             //resourcesComponent.LoadBundle(configName.StringToAB());
             //GameObject prefab = resourcesComponent.GetAsset(configName.StringToAB(), configName) as GameObject;
-            //var ta = prefab.Get<TextAsset>(mapId.ToString());
+            //var ta = prefab.Get<TextAsset>("1001");
             //var boxsData = Deserialize(ta.bytes);
+            //UnitData unitData = new UnitData()
+            //{
+            //    groupIndex = GroupIndex.Default,
+            //    layerMask = UnitLayerMask.ALL,
+            //    unitLayer = UnitLayer.Default,
+            //    unitTag = UnitTag.Static
+            //};
             //foreach (var v in boxsData)
             //{
-            //    Unit unit = UnitFactory.
+            //    Unit unit = UnitFactory.CreateStaticObj(new GameObject(), unitData);
+            //    self.units.Add(unit);
             //}
 
             //客户端直接从场景里找到所有静态物体
@@ -64,12 +72,8 @@ namespace ETModel
 
         public List<PBoxData> Deserialize(byte[] bytes)
         {
-            MemoryStream memoryStream = new MemoryStream(bytes);
-            BinaryFormatter bf = new BinaryFormatter();
-            //序列化
-            List<PBoxData> pBoxDatas = bf.Deserialize(memoryStream) as List<PBoxData>;
-            memoryStream.Dispose();
-            memoryStream.Close();
+             List<PBoxData> pBoxDatas = MessagePack.MessagePackSerializer.Deserialize<List<PBoxData>>(bytes,
+           MessagePack.Resolvers.ContractlessStandardResolver.Instance);
             return pBoxDatas;
         }
 
