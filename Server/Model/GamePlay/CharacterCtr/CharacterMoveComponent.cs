@@ -23,11 +23,7 @@ namespace ETModel
 
         public MoveType moveType;
         public Unit unit;
-#if !SERVER
-        public AnimatorComponent animatorComponent;
-#else
 
-#endif
         public Vector3 moveTarget;
         public Vector3 startPosition;
         public float moveSpeed;
@@ -45,9 +41,7 @@ namespace ETModel
         public void Awake()
         {
             unit = GetParent<Unit>();
-#if !SERVER
-            animatorComponent = unit.GetComponent<AnimatorComponent>();
-#endif
+
         }
 
       

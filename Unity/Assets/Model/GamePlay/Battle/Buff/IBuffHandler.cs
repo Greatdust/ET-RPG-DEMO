@@ -55,14 +55,9 @@ public interface IBuffActionWithSetOutputHandler
     IBufferValue[] ActionHandle(BuffHandlerVar buffHandlerVar);
 }
 
-public interface IBuffActionWithCollision
-{
-    void ActionHandle(BuffHandlerVar buffHandlerVar, Action<long> action); //这里的long是 Unit的Id
-}
-
 public interface IBuffRemoveHanlder 
 {
-    void Remove(BuffHandlerVar buffHandlerVar);//主动中断/打断或者正常的效果移除之类,会调用该方法
+    void Remove(BuffHandlerVar buffHandlerVar);//正常的效果移除之类,会调用该方法
 }
 
 public interface IBuffUpdateHanlder

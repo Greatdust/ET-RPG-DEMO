@@ -112,14 +112,21 @@ namespace ETModel
 			Game.EventSystem.Run(EventIdType.NumericUpdated, this.Entity.Id, (NumericType) final, this.NumericDic[final]);
 
             int reduceValue = final * 10 + 4;
-            //if (!Enum.TryParse<NumericType>(reduceValue.IntToString(),out var result)) return;
+            try
+            {
+                NumericType _type = (NumericType)reduceValue;
+            }
+            catch
+            {
+                return;
+            }
 
-            //int reducePct = final * 10 + 5;
-            //int remainPct = final * 10 + 6;
+            int reducePct = final * 10 + 5;
+            int remainPct = final * 10 + 6;
 
-            //Set((NumericType)reduceValue, this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1)));
-            //Set((NumericType)reducePct, this.GetAsFloat((NumericType)reduceValue)/this.GetAsFloat((NumericType)final));
-            //Set((NumericType)remainPct, 1 - this.GetAsFloat((NumericType)reducePct));
+            Set((NumericType)reduceValue, this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1)));
+            Set((NumericType)reducePct, this.GetAsFloat((NumericType)reduceValue) / this.GetAsFloat((NumericType)final));
+            Set((NumericType)remainPct, 1 - this.GetAsFloat((NumericType)reducePct));
 
         }
     }

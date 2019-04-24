@@ -18,6 +18,9 @@ public struct BuffGroup
     [HideInEditorMode]
     [NonSerialized]
     public long sourceUnitId;// 添加到一个Unit的BuffMgr上时,这个用以记录这个buffGroup的来源
+    [HideInEditorMode]
+    [NonSerialized]
+    public int skillLevel;//添加到一个Unit身上时,这个用以记录对应技能的等级
     [InfoBox("该值对应buff配置表里的某个元素")]
     [LabelText("Buff类型Id")]
     [LabelWidth(150)]
@@ -59,6 +62,36 @@ public struct BuffGroup
         return num;
     }
 
+    public void OnBuffGroupAdd(Unit source, Unit target)
+    {
+        if (buffList.Count > 0)
+        {
+            foreach (var v in buffList)
+            {
+                Add(in v, source, target);
+            }
+        }
+    }
+
+    void Add(in BaseBuffData buff, Unit source, Unit target)
+    {
+        BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(buff.GetBuffIdType());
+        IBuffActionWithGetInputHandler buffActionWithGetInputHandler = baseBuffHandler as IBuffActionWithGetInputHandler;
+        if (buffActionWithGetInputHandler != null)
+        {
+            BuffHandlerVar var1 = new BuffHandlerVar();
+            var1.bufferValues = new Dictionary<Type, IBufferValue>();
+            var1.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[1] { target } };
+            var1.source = source;
+            var1.skillLevel = skillLevel;
+            var1.playSpeed = 1;// 这个应该从角色属性计算得出,不过这里就先恒定为1好了.
+            var1.data = buff;
+            buffActionWithGetInputHandler.ActionHandle(var1);
+        }
+
+    }
+
+
     public void OnBuffGroupRemove(Unit source, Unit target)
     {
         if (buffList.Count > 0)
@@ -69,6 +102,8 @@ public struct BuffGroup
             }
         }
     }
+
+
 
     void Remove(in BaseBuffData v,Unit source,Unit target)
     {
