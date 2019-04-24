@@ -1254,9 +1254,9 @@ namespace ETModel {
 
   }
 
-  public partial class InputResult_Move : pb::IMessage {
-    private static readonly pb::MessageParser<InputResult_Move> _parser = new pb::MessageParser<InputResult_Move>(() => (InputResult_Move)MessagePool.Instance.Fetch(typeof(InputResult_Move)));
-    public static pb::MessageParser<InputResult_Move> Parser { get { return _parser; } }
+  public partial class M2C_InputResult_Move : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_InputResult_Move> _parser = new pb::MessageParser<M2C_InputResult_Move>(() => (M2C_InputResult_Move)MessagePool.Instance.Fetch(typeof(M2C_InputResult_Move)));
+    public static pb::MessageParser<M2C_InputResult_Move> Parser { get { return _parser; } }
 
     private long actorId_;
     public long ActorId {
@@ -1355,9 +1355,9 @@ namespace ETModel {
 
   }
 
-  public partial class Input_Move : pb::IMessage {
-    private static readonly pb::MessageParser<Input_Move> _parser = new pb::MessageParser<Input_Move>(() => (Input_Move)MessagePool.Instance.Fetch(typeof(Input_Move)));
-    public static pb::MessageParser<Input_Move> Parser { get { return _parser; } }
+  public partial class C2M_Input_Move : pb::IMessage {
+    private static readonly pb::MessageParser<C2M_Input_Move> _parser = new pb::MessageParser<C2M_Input_Move>(() => (C2M_Input_Move)MessagePool.Instance.Fetch(typeof(C2M_Input_Move)));
+    public static pb::MessageParser<C2M_Input_Move> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1483,9 +1483,9 @@ namespace ETModel {
 
   }
 
-  public partial class Input_UseSkill_Pos : pb::IMessage {
-    private static readonly pb::MessageParser<Input_UseSkill_Pos> _parser = new pb::MessageParser<Input_UseSkill_Pos>(() => (Input_UseSkill_Pos)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Pos)));
-    public static pb::MessageParser<Input_UseSkill_Pos> Parser { get { return _parser; } }
+  public partial class C2M_Input_UseSkill_Pos : pb::IMessage {
+    private static readonly pb::MessageParser<C2M_Input_UseSkill_Pos> _parser = new pb::MessageParser<C2M_Input_UseSkill_Pos>(() => (C2M_Input_UseSkill_Pos)MessagePool.Instance.Fetch(typeof(C2M_Input_UseSkill_Pos)));
+    public static pb::MessageParser<C2M_Input_UseSkill_Pos> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1651,9 +1651,9 @@ namespace ETModel {
 
   }
 
-  public partial class Input_UseSkill_Tar : pb::IMessage {
-    private static readonly pb::MessageParser<Input_UseSkill_Tar> _parser = new pb::MessageParser<Input_UseSkill_Tar>(() => (Input_UseSkill_Tar)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Tar)));
-    public static pb::MessageParser<Input_UseSkill_Tar> Parser { get { return _parser; } }
+  public partial class C2M_Input_UseSkill_Tar : pb::IMessage {
+    private static readonly pb::MessageParser<C2M_Input_UseSkill_Tar> _parser = new pb::MessageParser<C2M_Input_UseSkill_Tar>(() => (C2M_Input_UseSkill_Tar)MessagePool.Instance.Fetch(typeof(C2M_Input_UseSkill_Tar)));
+    public static pb::MessageParser<C2M_Input_UseSkill_Tar> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1816,9 +1816,9 @@ namespace ETModel {
 
   }
 
-  public partial class Input_UseSkill_Dir : pb::IMessage {
-    private static readonly pb::MessageParser<Input_UseSkill_Dir> _parser = new pb::MessageParser<Input_UseSkill_Dir>(() => (Input_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(Input_UseSkill_Dir)));
-    public static pb::MessageParser<Input_UseSkill_Dir> Parser { get { return _parser; } }
+  public partial class C2M_Input_UseSkill_Dir : pb::IMessage {
+    private static readonly pb::MessageParser<C2M_Input_UseSkill_Dir> _parser = new pb::MessageParser<C2M_Input_UseSkill_Dir>(() => (C2M_Input_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(C2M_Input_UseSkill_Dir)));
+    public static pb::MessageParser<C2M_Input_UseSkill_Dir> Parser { get { return _parser; } }
 
     private int rpcId_;
     public int RpcId {
@@ -1984,9 +1984,9 @@ namespace ETModel {
 
   }
 
-  public partial class InputResult_UseSkill_Dir : pb::IMessage {
-    private static readonly pb::MessageParser<InputResult_UseSkill_Dir> _parser = new pb::MessageParser<InputResult_UseSkill_Dir>(() => (InputResult_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(InputResult_UseSkill_Dir)));
-    public static pb::MessageParser<InputResult_UseSkill_Dir> Parser { get { return _parser; } }
+  public partial class M2C_InputResult_UseSkill_Dir : pb::IMessage {
+    private static readonly pb::MessageParser<M2C_InputResult_UseSkill_Dir> _parser = new pb::MessageParser<M2C_InputResult_UseSkill_Dir>(() => (M2C_InputResult_UseSkill_Dir)MessagePool.Instance.Fetch(typeof(M2C_InputResult_UseSkill_Dir)));
+    public static pb::MessageParser<M2C_InputResult_UseSkill_Dir> Parser { get { return _parser; } }
 
     private long actorId_;
     public long ActorId {

@@ -5,9 +5,9 @@ using UnityEngine;
 namespace ETHotfix
 {
 	[MessageHandler]
-	public class M2C_CommandResult_MoveHandler : AMHandler<InputResult_Move>
+	public class M2C_CommandResult_MoveHandler : AMHandler<M2C_InputResult_Move>
 	{
-		protected override void Run(ETModel.Session session, InputResult_Move message)
+		protected override void Run(ETModel.Session session, M2C_InputResult_Move message)
 		{
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
             if (message.PathList.Count == 0) return;
