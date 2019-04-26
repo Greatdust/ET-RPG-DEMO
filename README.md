@@ -32,7 +32,10 @@
 8.加入双端行为树,制作支持多人合作的副本
 
 ## 进度展示(视频连接,占位)
-https://www.bilibili.com/video/av50305562/    
+技能系统(3种技能),BOX2D模拟3D碰撞效果演示    
+https://www.bilibili.com/video/av49728546   
+双端移动技能同步:   
+https://www.bilibili.com/video/av50305562/        
 
 
 ## 注意事项
