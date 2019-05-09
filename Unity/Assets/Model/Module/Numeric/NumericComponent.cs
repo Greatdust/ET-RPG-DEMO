@@ -124,9 +124,9 @@ namespace ETModel
             int reducePct = final * 10 + 5;
             int remainPct = final * 10 + 6;
 
-            Set((NumericType)reduceValue, this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1)));
-            Set((NumericType)reducePct, this.GetAsFloat((NumericType)reduceValue) / this.GetAsFloat((NumericType)final));
-            Set((NumericType)remainPct, 1 - this.GetAsFloat((NumericType)reducePct));
+            this.NumericDic[reduceValue] = this.GetAsFloat((NumericType)final) - this.GetAsFloat((NumericType)(final - 1));
+	    this.NumericDic[reducePct] = this.GetAsFloat((NumericType)reduceValue) / this.GetAsFloat((NumericType)final);
+	    this.NumericDic[remainPct] = 1 - this.GetAsFloat((NumericType)reducePct);
 
         }
     }
