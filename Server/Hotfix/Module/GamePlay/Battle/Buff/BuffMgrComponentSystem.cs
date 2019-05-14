@@ -100,6 +100,13 @@ public static class BuffMgrComponentSystem
 
             BuffGroup newGroup = group;
             newGroup.BuffGroupId = group.BuffGroupId;
+            Unit target = self.Parent as Unit;
+            Unit source = null;
+            if (group.sourceUnitId != 0)
+                source = UnitComponent.Instance.Get(group.sourceUnitId);
+            else
+                source = target;
+            newGroup.OnBuffGroupAdd(source, target);
             self.buffGroupDic[groupId] = newGroup;
             if (newGroup.duration > 0)
             {

@@ -5,9 +5,9 @@ using UnityEngine;
 namespace ETHotfix
 {
 	[ActorMessageHandler(AppType.Map)]
-	public class CommandInputInfo_UseSkill_Dir_Handler : AMActorLocationHandler<Unit, Input_UseSkill_Dir>
+	public class CommandInputInfo_UseSkill_Dir_Handler : AMActorLocationHandler<Unit, C2M_Input_UseSkill_Dir>
 	{
-		protected override void Run(Unit unit, Input_UseSkill_Dir message)
+		protected override void Run(Unit unit, C2M_Input_UseSkill_Dir message)
 		{
             UnitStateComponent unitStateComponent = unit.GetComponent<UnitStateComponent>();
             CommandInput_UseSkill commandInput_UseSkill = CommandGCHelper.GetCommandInput<CommandInput_UseSkill>();

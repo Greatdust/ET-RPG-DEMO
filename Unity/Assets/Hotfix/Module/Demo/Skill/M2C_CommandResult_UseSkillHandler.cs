@@ -6,9 +6,9 @@ using UnityEngine;
 namespace ETHotfix
 {
 	[MessageHandler]
-	public class M2C_CommandResult_UseSkill_DirHandler : AMHandler<InputResult_UseSkill_Dir>
+	public class M2C_CommandResult_UseSkill_DirHandler : AMHandler<M2C_InputResult_UseSkill_Dir>
 	{
-		protected override void Run(ETModel.Session session, InputResult_UseSkill_Dir message)
+		protected override void Run(ETModel.Session session, M2C_InputResult_UseSkill_Dir message)
 		{
 			Unit unit = ETModel.Game.Scene.GetComponent<UnitComponent>().Get(message.Id);
             ActiveSkillComponent activeSkillComponent = unit.GetComponent<ActiveSkillComponent>();

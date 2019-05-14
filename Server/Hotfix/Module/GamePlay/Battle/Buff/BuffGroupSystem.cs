@@ -24,6 +24,36 @@ public static class BuffGroupSystem
         return num;
     }
 
+    public static void OnBuffGroupAdd(this BuffGroup self, Unit source, Unit target)
+    {
+        if (self.buffList.Count > 0)
+        {
+            foreach (var v in self.buffList)
+            {
+                self.Add(in v, source, target);
+            }
+        }
+    }
+
+    static void Add(this BuffGroup self, in BaseBuffData buff, Unit source, Unit target)
+    {
+        BaseBuffHandler baseBuffHandler = BuffHandlerComponent.Instance.GetHandler(buff.GetBuffIdType());
+        IBuffActionWithGetInputHandler buffActionWithGetInputHandler = baseBuffHandler as IBuffActionWithGetInputHandler;
+        if (buffActionWithGetInputHandler != null)
+        {
+            BuffHandlerVar var1 = new BuffHandlerVar();
+            var1.bufferValues = new Dictionary<Type, IBufferValue>();
+            var1.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[1] { target } };
+            var1.source = source;
+            var1.skillLevel = self.skillLevel;
+            var1.playSpeed = 1;// 这个应该从角色属性计算得出,不过这里就先恒定为1好了.
+            var1.data = buff;
+            buffActionWithGetInputHandler.ActionHandle(var1);
+        }
+
+    }
+
+
     public static void OnBuffGroupRemove(this BuffGroup self, Unit source, Unit target)
     {
         if (self.buffList.Count > 0)
@@ -45,6 +75,7 @@ public static class BuffGroupSystem
             buffHandlerVar.bufferValues = new Dictionary<Type, IBufferValue>(1);
             buffHandlerVar.bufferValues[typeof(BufferValue_TargetUnits)] = new BufferValue_TargetUnits() { targets = new Unit[1] { target } };
             buffHandlerVar.source = source;
+            buffHandlerVar.skillLevel = self.skillLevel;
             buffHandlerVar.playSpeed = 1;// 这个应该从角色属性计算得出,不过这里就先恒定为1好了.
             buffHandlerVar.data = v;
             buffRemoveHanlder.Remove(buffHandlerVar);

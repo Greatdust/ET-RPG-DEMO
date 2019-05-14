@@ -105,7 +105,7 @@ message Frame_ClickMap // IActorLocationMessage
 	float Z = 3;
 }
 
-message InputResult_Move // IActorMessage
+message M2C_InputResult_Move // IActorMessage
 {
 	int64 ActorId = 93;
 	int64 Id = 94;
@@ -115,7 +115,7 @@ message InputResult_Move // IActorMessage
 	int32 frame = 2;
 }
 
-message Input_Move // IActorLocationMessage
+message C2M_Input_Move // IActorLocationMessage
 {
     int32 RpcId = 90;
 	int64 ActorId = 93;
@@ -125,7 +125,7 @@ message Input_Move // IActorLocationMessage
 	int32 frame = 2;
 }
 
-message Input_UseSkill_Pos // IActorLocationMessage
+message C2M_Input_UseSkill_Pos // IActorLocationMessage
 {
     int32 RpcId = 90;
 	int64 ActorId = 93;
@@ -137,7 +137,7 @@ message Input_UseSkill_Pos // IActorLocationMessage
 	Vector3Info aimPos = 4;	
 }
 
-message Input_UseSkill_Tar // IActorLocationMessage
+message C2M_Input_UseSkill_Tar // IActorLocationMessage
 {
     int32 RpcId = 90;
 	int64 ActorId = 93;
@@ -149,7 +149,7 @@ message Input_UseSkill_Tar // IActorLocationMessage
 	int64 unitId = 4;	
 }
 
-message Input_UseSkill_Dir // IActorLocationMessage
+message C2M_Input_UseSkill_Dir // IActorLocationMessage
 {
     int32 RpcId = 90;
 	int64 ActorId = 93;
@@ -161,7 +161,7 @@ message Input_UseSkill_Dir // IActorLocationMessage
 	Vector3Info aimDir = 4;	
 }
 
-message InputResult_UseSkill_Dir // IActorMessage
+message M2C_InputResult_UseSkill_Dir // IActorMessage
 {
 	int64 ActorId = 93;
 	int64 Id = 94;

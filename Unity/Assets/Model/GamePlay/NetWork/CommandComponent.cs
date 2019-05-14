@@ -35,10 +35,10 @@ namespace ETModel
         private CommandSimulaterComponent simulaterComponent;
 
 
-        private Input_Move inputInfo_Move = new Input_Move();
-        private Input_UseSkill_Pos Input_UseSkill_Pos = new Input_UseSkill_Pos();
-        private Input_UseSkill_Dir Input_UseSkill_Dir = new Input_UseSkill_Dir();
-        private Input_UseSkill_Tar Input_UseSkill_Tar = new Input_UseSkill_Tar();
+        private C2M_Input_Move inputInfo_Move = new C2M_Input_Move();
+        private C2M_Input_UseSkill_Pos Input_UseSkill_Pos = new C2M_Input_UseSkill_Pos();
+        private C2M_Input_UseSkill_Dir Input_UseSkill_Dir = new C2M_Input_UseSkill_Dir();
+        private C2M_Input_UseSkill_Tar Input_UseSkill_Tar = new C2M_Input_UseSkill_Tar();
 
         public int simulateFrame;//预测帧
 

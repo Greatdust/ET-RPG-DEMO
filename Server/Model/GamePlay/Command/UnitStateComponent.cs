@@ -41,8 +41,8 @@ namespace ETModel
 
         public ETCancellationTokenSource cancelToken;
 
-        public InputResult_Move inputResult_Move = new InputResult_Move();
-        public InputResult_UseSkill_Dir useSkill_Dir = new InputResult_UseSkill_Dir();
+        public M2C_InputResult_Move inputResult_Move = new M2C_InputResult_Move();
+        public M2C_InputResult_UseSkill_Dir useSkill_Dir = new M2C_InputResult_UseSkill_Dir();
 
 
         public void Awake()

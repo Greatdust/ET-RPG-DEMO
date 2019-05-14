@@ -30,7 +30,7 @@ public class BuffMgrComponentUpdateSystem : FixedUpdateSystem<BuffMgrComponent>
 public class BuffMgrComponent : ETModel.Component
 {
 
-    public Dictionary<long, BuffGroup> buffGroupDic;
+    public Dictionary<long, BuffGroup> buffGroupDic; 
 
     public List<BuffGroup> updateList;//保存duration>0的BuffGroup,战斗结束后统一移除.
     //如果是节日,活动等导致的长时间BUFF. 比如新人奖励(等级在50级之前,获得的经验值额外增加50%),或者常驻一个持续一周的副本内属性提升的BUFF
@@ -114,7 +114,15 @@ public class BuffMgrComponent : ETModel.Component
 
             BuffGroup newGroup = group;
             newGroup.BuffGroupId = group.BuffGroupId;
+            Unit target = Parent as Unit;
+            Unit source = null;
+            if (group.sourceUnitId != 0)
+                source = UnitComponent.Instance.Get(group.sourceUnitId);
+            else
+                source = target;
+            newGroup.OnBuffGroupAdd(source, target);
             buffGroupDic[groupId] = newGroup;
+            
             if (newGroup.duration > 0)
             {
                 updateList.Add(newGroup);

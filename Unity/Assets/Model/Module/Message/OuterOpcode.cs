@@ -42,23 +42,23 @@ namespace ETModel
 	[Message(OuterOpcode.Frame_ClickMap)]
 	public partial class Frame_ClickMap : IActorLocationMessage {}
 
-	[Message(OuterOpcode.InputResult_Move)]
-	public partial class InputResult_Move : IActorMessage {}
+	[Message(OuterOpcode.M2C_InputResult_Move)]
+	public partial class M2C_InputResult_Move : IActorMessage {}
 
-	[Message(OuterOpcode.Input_Move)]
-	public partial class Input_Move : IActorLocationMessage {}
+	[Message(OuterOpcode.C2M_Input_Move)]
+	public partial class C2M_Input_Move : IActorLocationMessage {}
 
-	[Message(OuterOpcode.Input_UseSkill_Pos)]
-	public partial class Input_UseSkill_Pos : IActorLocationMessage {}
+	[Message(OuterOpcode.C2M_Input_UseSkill_Pos)]
+	public partial class C2M_Input_UseSkill_Pos : IActorLocationMessage {}
 
-	[Message(OuterOpcode.Input_UseSkill_Tar)]
-	public partial class Input_UseSkill_Tar : IActorLocationMessage {}
+	[Message(OuterOpcode.C2M_Input_UseSkill_Tar)]
+	public partial class C2M_Input_UseSkill_Tar : IActorLocationMessage {}
 
-	[Message(OuterOpcode.Input_UseSkill_Dir)]
-	public partial class Input_UseSkill_Dir : IActorLocationMessage {}
+	[Message(OuterOpcode.C2M_Input_UseSkill_Dir)]
+	public partial class C2M_Input_UseSkill_Dir : IActorLocationMessage {}
 
-	[Message(OuterOpcode.InputResult_UseSkill_Dir)]
-	public partial class InputResult_UseSkill_Dir : IActorMessage {}
+	[Message(OuterOpcode.M2C_InputResult_UseSkill_Dir)]
+	public partial class M2C_InputResult_UseSkill_Dir : IActorMessage {}
 
 	[Message(OuterOpcode.M2C_Pushback)]
 	public partial class M2C_Pushback : IActorMessage {}
@@ -129,12 +129,12 @@ namespace ETModel
 		 public const ushort UnitNumeric = 111;
 		 public const ushort M2C_CreateUnits = 112;
 		 public const ushort Frame_ClickMap = 113;
-		 public const ushort InputResult_Move = 114;
-		 public const ushort Input_Move = 115;
-		 public const ushort Input_UseSkill_Pos = 116;
-		 public const ushort Input_UseSkill_Tar = 117;
-		 public const ushort Input_UseSkill_Dir = 118;
-		 public const ushort InputResult_UseSkill_Dir = 119;
+		 public const ushort M2C_InputResult_Move = 114;
+		 public const ushort C2M_Input_Move = 115;
+		 public const ushort C2M_Input_UseSkill_Pos = 116;
+		 public const ushort C2M_Input_UseSkill_Tar = 117;
+		 public const ushort C2M_Input_UseSkill_Dir = 118;
+		 public const ushort M2C_InputResult_UseSkill_Dir = 119;
 		 public const ushort M2C_Pushback = 120;
 		 public const ushort M2C_HitEffect = 121;
 		 public const ushort M2C_PlayEffect = 122;
